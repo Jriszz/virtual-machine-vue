@@ -2,6 +2,23 @@ import request from '@/utils/request'
 
 const PREFIX = '/user'
 
+// 查询是否开放用户注册
+export function openSignup() {
+  return request({
+    url: PREFIX + '/signup',
+    method: 'get'
+  })
+}
+
+// 用户注册
+export function signup(data) {
+  return request({
+    url: PREFIX + '/signup',
+    method: 'post',
+    data
+  })
+}
+
 // 用户登陆
 export function login(data) {
   return request({

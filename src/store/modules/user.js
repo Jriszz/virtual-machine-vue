@@ -1,4 +1,4 @@
-import { addUser, editUser, login, logout, getSessionInfo, getUserList, resetUserPassword } from '@/api/users'
+import { openSignup, signup, addUser, editUser, login, logout, getSessionInfo, getUserList, resetUserPassword } from '@/api/users'
 import { removeToken } from '@/utils/auth'
 
 const users = {
@@ -14,15 +14,26 @@ const users = {
     resetPasswordFormVisable: false,
     // 用户详情、修改、新建页
     userFormVisable: false,
-    userFormType: 'info'
+    userFormType: 'info',
+    userSignUpVisable: false,
+    isOpenSignUp: false
   },
 
   mutations: {
+    SET_SIGNUP_STATUS: (state, isOpen) => {
+      state.isOpenSignUp = isOpen
+    },
     SET_USER_LIST: (state, userList) => {
       state.userList = userList
     },
     SET_SESSION_USER: (state, user) => {
       state.sessionUser = user
+    },
+    OPEN_SIGNUP_FORM: (state) => {
+      state.userSignUpVisable = true
+    },
+    CLOSE_SIGNUP_FORM: (state) => {
+      state.userSignUpVisable = false
     },
     OPEN_USER_FORM: (state, payload) => {
       state.selectUser = payload.user
@@ -42,11 +53,34 @@ const users = {
   },
 
   actions: {
+    // 查询是否开放注册
+    OpenSignup({ commit }) {
+      return new Promise((resolve, reject) => {
+        openSignup().then(response => {
+          commit('SET_SIGNUP_STATUS', response.data.signup)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+
+    // 注册
+    Signup({ commit }, loginForm) {
+      return new Promise((resolve, reject) => {
+        signup(loginForm).then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+
     // 登录
     Login({ commit }, loginForm) {
       return new Promise((resolve, reject) => {
         login(loginForm).then(response => {
-          resolve()
+          resolve(response)
         }).catch(error => {
           reject(error)
         })

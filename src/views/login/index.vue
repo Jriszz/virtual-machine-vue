@@ -1,55 +1,60 @@
 <template>
-  <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-      <h3 class="title">用户中心</h3>
-      <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input v-model="loginForm.username" name="username" type="text" auto-complete="on" />
-      </el-form-item>
-      <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input
-          :type="pwdType"
-          v-model="loginForm.password"
-          name="password"
-          auto-complete="on"
-          @keyup.enter.native="handleLogin" />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="pwdType === 'password' ? 'eye' : 'eye-open'" />
-        </span>
-      </el-form-item>
-      <el-form-item v-show="false" prop="redirect">
-        <el-input v-model="loginForm.redirect" name="redirect" type="text" />
-      </el-form-item>
-      <el-form-item>
-        <el-row>
-          <el-col :span="11">
-            <el-button :loading="loading" type="primary" style="width:100%;" @click.native.prevent="handleLogin">
-              登陆
-            </el-button>
-          </el-col>
-          <el-col :span="2">
-            <span>&#12288;</span>
-          </el-col>
-          <el-col :span="11">
-            <el-button :loading="loading" type="primary" style="width:100%;" @click.native.prevent="signUp">
-              注册
-            </el-button>
-          </el-col>
-        </el-row>
-      </el-form-item>
-    </el-form>
+  <div>
+    <div class="login-container">
+      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+        <h3 class="title">用户中心</h3>
+        <el-form-item prop="username">
+          <span class="svg-container">
+            <svg-icon icon-class="user" />
+          </span>
+          <el-input v-model="loginForm.username" name="username" type="text" auto-complete="on" />
+        </el-form-item>
+        <el-form-item prop="password">
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
+          <el-input
+            :type="pwdType"
+            v-model="loginForm.password"
+            name="password"
+            auto-complete="on"
+            @keyup.enter.native="handleLogin" />
+          <span class="show-pwd" @click="showPwd">
+            <svg-icon :icon-class="pwdType === 'password' ? 'eye' : 'eye-open'" />
+          </span>
+        </el-form-item>
+        <el-form-item v-show="false" prop="redirect">
+          <el-input v-model="loginForm.redirect" name="redirect" type="text" />
+        </el-form-item>
+        <el-form-item>
+          <el-row>
+            <el-col :span="11">
+              <el-button :loading="loading" type="primary" style="width:100%;" @click.native.prevent="handleLogin">
+                登陆
+              </el-button>
+            </el-col>
+            <el-col :span="2">
+              <span>&#12288;</span>
+            </el-col>
+            <el-col :span="11">
+              <el-button :disabled="!isOpenSignUp" :loading="loading" type="primary" style="width:100%;" @click.native.prevent="signUp">
+                注册
+              </el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+    </div>
+    <sign-up />
   </div>
 </template>
 
 <script>
+import signUp from '@/views/login/signUp'
 
 export default {
   name: 'Login',
+  components: { signUp },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!value) {
@@ -82,6 +87,11 @@ export default {
       redirect: undefined
     }
   },
+  computed: {
+    isOpenSignUp: function() {
+      return this.$store.state.users.isOpenSignUp
+    }
+  },
   watch: {
     $route: {
       handler: function(route) {
@@ -90,6 +100,9 @@ export default {
       },
       immediate: true
     }
+  },
+  mounted() {
+    this.$store.dispatch('OpenSignup')
   },
   methods: {
     showPwd() {
@@ -115,7 +128,8 @@ export default {
       })
     },
     signUp() {
-      alert('待实现')
+      // this.$router.push({ path: '/signup' })
+      this.$store.commit('OPEN_SIGNUP_FORM')
     }
   }
 }
