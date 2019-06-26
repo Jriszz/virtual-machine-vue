@@ -54,15 +54,15 @@ export default {
     const validateUsername = (rule, value, callback) => {
       if (!value) {
         callback(new Error('请输入用户名'))
-      } else if (value.length < 5 || value.length > 20) {
-        callback(new Error('用户名限制为5到20个字符'))
+      } else if (value.length < 4 || value.length > 20) {
+        callback(new Error('用户名限制为4到20个字符'))
       } else {
         callback()
       }
     }
     const validatePass = (rule, value, callback) => {
-      if (value.length < 5) {
-        callback(new Error('密码不能小于5位'))
+      if (value.length < 6) {
+        callback(new Error('密码不能小于6位'))
       } else {
         callback()
       }
