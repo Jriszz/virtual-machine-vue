@@ -1,0 +1,113 @@
+
+/* loading蒙层样式 */
+.el-loading-mask {
+  /* z-index: 1998; */
+}
+/* 请求成功消息提示框 */
+.el-message {
+  top: 61px;
+}
+
+/* 组件级样式 */
+/* 组件模块 */
+.cs-model {
+  margin: 0px auto;
+}
+
+// 新增表单页面标题样式
+.formTitle {
+  color: #666666;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: 'PingFang SC';
+  text-align: center;
+  margin: -20px auto 10px auto;
+}
+
+.formDesc {
+  color: #666666;
+  line-height: 150%;
+  font-size: 14px;
+  font-family: 'PingFang SC';
+  text-align: left;
+}
+
+/* card标题栏 */
+.el-card__header {
+  padding: 10px 20px;
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: #ffffff;
+  background-color: #c2bfbfda;
+}
+
+/* 单选按钮标签文字颜色 */
+.el-radio__label {
+  color: #999999;
+}
+/* 单选按钮选中时标签文字颜色 */
+.el-radio__input.is-checked + .el-radio__label {
+  color: #666666;
+}
+/* 单独按钮选中时颜色 */
+.el-radio__input.is-checked .el-radio__inner {
+  border-color: #666666;
+  background: #666666;
+}
+
+/* 复选框标签文字颜色 */
+.el-checkbox__label {
+  color: #999999;
+}
+/* 复选框选中时标签文字颜色 */
+.el-checkbox__input.is-checked + .el-checkbox__label {
+  color: #666666;
+}
+/* 复选框选中时颜色 */
+.el-checkbox__input.is-checked .el-checkbox__inner,
+.el-checkbox__input.is-indeterminate .el-checkbox__inner {
+  background-color: #666666;
+  border-color: #666666;
+}
+
+/* 告警框 */
+.el-alert {
+  justify-content: left;
+}
+
+/* 下拉选择框 */
+.el-select {
+  width: 100%;
+}
+
+/* 日期选择框 */
+.el-date-editor.el-input,
+.el-date-editor.el-input__inner {
+  width: 100%;
+}
+
+/* 计数框 */
+.el-input-number {
+  width: 100%;
+}
+
+/* 计数框 */
+.el-input-number .el-input__inner {
+  text-align: left;
+}
+
+/* 表格展示后表单样式——上线记录模块 */
+.demo-table-expand .el-textarea.is-disabled .el-textarea__inner {
+  color: #7f7fad;
+  cursor: auto;
+}
+
+.demo-table-expand .el-input.is-disabled .el-input__inner {
+  color: #7f7fad;
+  cursor: auto;
+}
+
+.djoy_req_link {
+  text-decoration: none;
+  color: #4040f0;
+}

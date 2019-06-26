@@ -1,0 +1,81 @@
+import request from '@/utils/request'
+
+const PREFIX = '/user'
+
+// 用户登陆
+export function login(data) {
+  return request({
+    url: PREFIX + '/login',
+    method: 'post',
+    data
+  })
+}
+
+// 获取当前会话用户信息
+export function getSessionInfo() {
+  return request({
+    url: PREFIX + '/session-info',
+    method: 'get'
+  })
+}
+
+// 用户退出登陆
+export function logout() {
+  return request({
+    url: PREFIX + '/logout',
+    method: 'post'
+  })
+}
+
+// 用户列表
+export function getUserList(params) {
+  return request({
+    url: PREFIX + '',
+    method: 'get',
+    params
+  })
+}
+
+// 用户注册
+export function addUser(data) {
+  return request({
+    url: PREFIX + '',
+    method: 'post',
+    data
+  })
+}
+
+// 用户详情
+export function getUserDetail(user_id) {
+  return request({
+    url: PREFIX + '/' + user_id,
+    method: 'get'
+  })
+}
+
+// 修改用户信息
+export function editUser(user_id, data) {
+  return request({
+    url: PREFIX + '/' + user_id,
+    method: 'put',
+    data
+  })
+}
+
+// 修改用户密码
+export function modifyUserPassword(data) {
+  return request({
+    url: PREFIX + '/modify_user_password',
+    method: 'post',
+    data
+  })
+}
+
+// 重置用户密码
+export function resetUserPassword(user_id, data) {
+  return request({
+    url: PREFIX + '/' + user_id + '/reset_user_password',
+    method: 'post',
+    data
+  })
+}
