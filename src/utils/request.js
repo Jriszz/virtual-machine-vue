@@ -3,6 +3,9 @@ import { Message, MessageBox } from 'element-ui'
 import store from '../store'
 import TokenKey, { getToken } from '@/utils/auth'
 
+// 路由
+import Router from '../router/index'
+
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.BASE_API, // api 的 base_url
@@ -28,15 +31,25 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data
-    if (res.error_code !== 0) {
+    if (res.error_code === 0) {
+      return response.data
+    } else if (res.error_code === 1005) {
+      Message({
+        message: res.msg,
+        type: 'error',
+        duration: 5 * 1000
+      })
+      console.log('当前会话已过期，重新认证,')
+      store.commit('CLEAN_SESSION_USER')
+      Router.push({ path: '/' })
+      return Promise.reject(response)
+    } else {
       Message({
         message: res.msg,
         type: 'error',
         duration: 10 * 1000
       })
-      return Promise.reject('error')
-    } else {
-      return response.data
+      return Promise.reject(response)
     }
   },
   error => {

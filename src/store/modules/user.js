@@ -1,4 +1,4 @@
-import { openSignup, signup, addUser, editUser, login, logout, getSessionInfo, getUserList, modifyUserPassword, resetUserPassword } from '@/api/users'
+import { openSignup, signup, addUser, editUser, login, logout, getSessionInfo, getUserList, modifyUserPassword, resetUserPassword, getUserAccessLogList } from '@/api/users'
 import { removeToken } from '@/utils/auth'
 
 const users = {
@@ -32,6 +32,9 @@ const users = {
     },
     SET_SESSION_USER: (state, user) => {
       state.sessionUser = user
+    },
+    CLEAN_SESSION_USER: (state) => {
+      state.sessionUser = {}
     },
     OPEN_SIGNUP_FORM: (state) => {
       state.userSignUpVisable = true
@@ -111,7 +114,7 @@ const users = {
     },
 
     // 登出
-    LogOut({ commit, dispatch }) {
+    LogOut({ dispatch }) {
       return new Promise((resolve, reject) => {
         logout().then(response => {
           dispatch('FedLogOut')
@@ -126,6 +129,7 @@ const users = {
     // 前端 登出
     FedLogOut({ commit }) {
       return new Promise(resolve => {
+        commit('CLEAN_SESSION_USER')
         removeToken()
         resolve()
       })
@@ -214,7 +218,22 @@ const users = {
           reject(error)
         })
       })
+    },
+
+    // 获取用户列表
+    GetUserAccessLogList({ commit }, params) {
+      return new Promise((resolve, reject) => {
+        getUserAccessLogList(params).then(response => {
+          if (response.error_code !== 0) {
+            reject('获取用户列表失败')
+          }
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+      })
     }
+
   }
 }
 

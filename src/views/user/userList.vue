@@ -64,15 +64,14 @@
         <el-table
           :data="userList"
           :stripe="true"
-          :border="true"
-          :height="500">
+          :border="true">
           <el-table-column
             prop="username"
             width="120"
             label="用户名"/>
           <el-table-column
             prop="name"
-            width="80"
+            width="120"
             label="姓名"/>
           <el-table-column
             width="60"
@@ -196,9 +195,9 @@ export default {
       this.errorflag = false
       this.$refs[form].validate(valid => {
         const params = this.tools.cleanObjNullProperty(this.form)
-        this.$store.dispatch('GetUserList', params).then((data) => {
+        this.$store.dispatch('GetUserList', params).then((response) => {
           this.loading = false
-          this.totals = data['totals']
+          this.totals = response.data.totals
         }).catch(() => {
           this.loading = false
         })

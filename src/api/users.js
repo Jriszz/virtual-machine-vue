@@ -96,3 +96,12 @@ export function resetUserPassword(user_id, data) {
     data
   })
 }
+
+// 用户操作日志列表
+export function getUserAccessLogList(params) {
+  return request({
+    url: PREFIX + '/access-log',
+    method: 'get',
+    params
+  })
+}

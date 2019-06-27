@@ -49,6 +49,19 @@ export const constantRouterMap = [
     }]
   },
 
+  {
+    path: '/accesslog',
+    component: Layout,
+    redirect: '/',
+    name: 'accesslog',
+    hidden: false,
+    children: [{
+      path: '',
+      component: () => import('@/views/user/userAccessLog'),
+      meta: { title: '访问日志', icon: 'form' }
+    }]
+  },
+
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
 
