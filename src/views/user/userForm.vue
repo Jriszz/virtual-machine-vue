@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-dialog
+      v-if="dialogVisible"
       :visible.sync="dialogVisible"
       @close="closeDialog">
       <div class="formTitle">
@@ -46,7 +47,7 @@
             <el-radio :label="0">末知</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="状态" prop="status">
+        <el-form-item v-if="!isAddScene" label="状态" prop="status">
           <el-radio-group :disabled="!isSuperAdmin" v-model="form.status">
             <el-radio :label="1">在职</el-radio>
             <el-radio :label="2">离职</el-radio>
@@ -89,6 +90,7 @@
 </template>
 
 <script>
+import { Message } from 'element-ui'
 export default {
   name: 'UserForm',
   components: {},
@@ -106,7 +108,12 @@ export default {
       isSuperAdmin: false,
       form: this.initForm(),
       rules: {
-        address: [{ required: true, message: '地址必填', trigger: 'blur' }]
+        name: [{ required: true, message: '姓名必填', trigger: 'blur' }],
+        username: [{ required: true, message: '用户名必填', trigger: 'blur' }],
+        password: [{ required: true, message: '密码必填', trigger: 'blur' }],
+        password2: [{ required: true, message: '密码2必填', trigger: 'blur' }],
+        phone: [{ required: true, message: '手机必填', trigger: 'blur' }],
+        email: [{ required: true, message: '邮箱必填', trigger: 'blur' }]
       }
     }
   },
@@ -176,10 +183,21 @@ export default {
         submitType = 'EditUser'
       }
       this.$refs[form].validate(valid => {
+        if (!valid) {
+          this.loading = false
+          return false
+        }
         const params = this.tools.cleanObjNullProperty(this.form)
-        this.$store.dispatch(submitType, params).then(() => {
+        this.$store.dispatch(submitType, params).then((response) => {
           this.loading = false
           this.form = this.initForm()
+          if (response.error_code === 0) {
+            Message({
+              message: response.msg,
+              type: 'success',
+              duration: 5 * 1000
+            })
+          }
         }).catch(() => {
           this.loading = false
         })

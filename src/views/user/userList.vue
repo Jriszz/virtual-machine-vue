@@ -118,7 +118,6 @@
               <el-button v-if="isSuperAdmin" size="mini" type="primary" plain @click="resetPassword(scope.row)">重置密码</el-button>
               <el-button size="mini" type="primary" plain @click="openUserForm(scope.row, 'Edit')">修改</el-button>
               <el-button size="mini" type="primary" plain @click="openUserForm(scope.row, 'Info')">详情</el-button>
-              <el-button v-if="isSuperAdmin" size="mini" type="primary" plain @click="changeUserStatus(scope.row)">更改状态</el-button>
             </template>
           </el-table-column>
         </el-table>

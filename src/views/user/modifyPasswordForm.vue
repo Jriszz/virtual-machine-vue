@@ -5,7 +5,7 @@
       :visible.sync="dialogVisible"
       @close="closeDialog">
       <div class="formTitle">
-        <span>重置用户密码</span>
+        <span>修改用户密码</span>
       </div>
 
       <el-form
@@ -16,14 +16,14 @@
         :rules="rules"
         :disabled="isDetailScene"
         size="small">
-        <el-form-item v-show="false" label="用户ID">
-          <el-input v-model="form.id"/>
-        </el-form-item>
-        <el-form-item label="新密码" prop="password">
+        <el-form-item label="旧密码" prop="password">
           <el-input v-model="form.password" show-password/>
         </el-form-item>
-        <el-form-item label="新密码2" prop="password2">
-          <el-input v-model="form.password2" show-password/>
+        <el-form-item label="新密码" prop="password_new">
+          <el-input v-model="form.password_new" show-password/>
+        </el-form-item>
+        <el-form-item label="新密码2" prop="password_new2">
+          <el-input v-model="form.password_new2" show-password/>
         </el-form-item>
         <el-form-item>
           <el-button @click="submit('form')">提交</el-button>
@@ -38,7 +38,7 @@
 <script>
 import { Message } from 'element-ui'
 export default {
-  name: 'ResetPasswordForm',
+  name: 'ModifyPasswordForm',
   components: {},
 
   data() {
@@ -51,32 +51,29 @@ export default {
       isDetailScene: false,
       form: this.initForm(),
       rules: {
-        password: [{ required: true, message: '密码必填', trigger: 'blur' }],
-        password2: [{ required: true, message: '密码2必填', trigger: 'blur' }]
+        password: [{ required: true, message: '旧密码必填', trigger: 'blur' }],
+        password_new: [{ required: true, message: '新密码必填', trigger: 'blur' }],
+        password_new2: [{ required: true, message: '新密码2必填', trigger: 'blur' }]
       }
     }
   },
   computed: {
     dialogVisible: {
       get: function() {
-        return this.$store.state.users.resetPasswordFormVisable
+        return this.$store.state.users.modifyPasswordFormVisable
       },
       set: function() {
       }
     }
   },
   watch: {
-    dialogVisible: function() {
-      // this.form 赋值
-      this.form['id'] = this.$store.state.users.selectUser.id
-    }
   },
   methods: {
     initForm() {
       const _form = {
-        id: '',
         password: '',
-        password2: ''
+        password_new: '',
+        password_new2: ''
       }
       return _form
     },
@@ -88,7 +85,7 @@ export default {
           return false
         }
         const params = this.tools.cleanObjNullProperty(this.form)
-        this.$store.dispatch('ResetUserPassword', params).then((response) => {
+        this.$store.dispatch('ModifyUserPassword', params).then((response) => {
           this.loading = false
           this.form = this.initForm()
           if (response.error_code === 0) {
@@ -97,6 +94,13 @@ export default {
               type: 'success',
               duration: 5 * 1000
             })
+            this.$store.dispatch('LogOut').then(() => {
+              Message({
+                message: '密码修改成功，请重新登陆',
+                type: 'success',
+                duration: 5 * 1000
+              })
+            })
           }
         }).catch(() => {
           this.loading = false
@@ -104,7 +108,7 @@ export default {
       })
     },
     closeDialog() {
-      this.$store.commit('CLOSE_RESET_PASSWORD_FORM')
+      this.$store.commit('CLOSE_MODIFY_PASSWORD_FORM')
     }
   }
 }

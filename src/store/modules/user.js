@@ -1,4 +1,4 @@
-import { openSignup, signup, addUser, editUser, login, logout, getSessionInfo, getUserList, resetUserPassword } from '@/api/users'
+import { openSignup, signup, addUser, editUser, login, logout, getSessionInfo, getUserList, modifyUserPassword, resetUserPassword } from '@/api/users'
 import { removeToken } from '@/utils/auth'
 
 const users = {
@@ -10,12 +10,16 @@ const users = {
     selectUser: '',
     // 用户列表
     userList: [],
+    // 修改密码页
+    modifyPasswordFormVisable: false,
     // 重置密码页
     resetPasswordFormVisable: false,
     // 用户详情、修改、新建页
     userFormVisable: false,
     userFormType: 'info',
+    // 用户注册页
     userSignUpVisable: false,
+    // 服务端是否开放用户注册
     isOpenSignUp: false
   },
 
@@ -49,6 +53,12 @@ const users = {
     },
     CLOSE_RESET_PASSWORD_FORM: (state) => {
       state.resetPasswordFormVisable = false
+    },
+    OPEN_MODIFY_PASSWORD_FORM: (state) => {
+      state.modifyPasswordFormVisable = true
+    },
+    CLOSE_MODIFY_PASSWORD_FORM: (state) => {
+      state.modifyPasswordFormVisable = false
     }
   },
 
@@ -106,6 +116,7 @@ const users = {
         logout().then(response => {
           dispatch('FedLogOut')
           resolve(response)
+          window.location.reload()
         }).catch(error => {
           reject(error)
         })
@@ -128,6 +139,22 @@ const users = {
             commit('SET_USER_LIST', response.data.users)
           } else {
             reject('获取用户列表失败')
+          }
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+
+    // 修改用户密码
+    ModifyUserPassword({ commit }, params) {
+      return new Promise((resolve, reject) => {
+        modifyUserPassword(params).then(response => {
+          if (response.error_code === 0) {
+            commit('CLOSE_MODIFY_PASSWORD_FORM')
+          } else {
+            reject('修改用户密码失败')
           }
           resolve(response)
         }).catch(error => {
@@ -169,13 +196,16 @@ const users = {
       })
     },
 
-    // 修改用户密码
-    EditUser({ commit, dispatch }, data) {
+    // 修改用户
+    EditUser({ state, commit, dispatch }, data) {
       return new Promise((resolve, reject) => {
         editUser(data.id, data).then(response => {
           if (response.error_code === 0) {
             commit('CLOSE_USER_FORM')
             dispatch('GetUserList')
+            if (data.id === state.sessionUser.id) {
+              dispatch('GetSessionInfo')
+            }
           } else {
             reject('修改用户失败')
           }
