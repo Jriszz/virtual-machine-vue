@@ -1,5 +1,5 @@
 #!/bin/bash
-env_name=$1
+env_name=prod
 if [[ "${env_name}" == "dev" ]]
 then 
   env_name="apidev"

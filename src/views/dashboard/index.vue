@@ -104,10 +104,10 @@ export default {
       actionType: 'Info',
       form: this.initForm(),
       rules: {
-        name: [{ required: true, message: '旧密码必填', trigger: 'blur' }],
-        username: [{ required: true, message: '旧密码必填', trigger: 'blur' }],
-        phone: [{ required: true, message: '旧密码必填', trigger: 'blur' }],
-        email: [{ required: true, message: '旧密码必填', trigger: 'blur' }]
+        name: [{ required: true, message: '姓名必填', trigger: 'blur' }],
+        username: [{ required: true, message: '用户名必填', trigger: 'blur' }],
+        phone: [{ required: true, message: '手机必填', trigger: 'blur' }],
+        email: [{ required: true, message: '邮箱必填', trigger: 'blur' }]
       }
     }
   },
