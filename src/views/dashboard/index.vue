@@ -72,8 +72,8 @@
               <el-input v-model="form.last_reset_password_time"/>
             </el-form-item>
             <el-form-item v-if="actionType==='Edit'">
-              <el-button @click="submit('form')">提交</el-button>
-              <el-button @click="reset">重置</el-button>
+              <el-button type="primary" plain @click="submit('form')">提交</el-button>
+              <el-button type="primary" plain @click="reset">重置</el-button>
             </el-form-item>
           </el-form>
           <el-button type="primary" @click="changeType">
