@@ -4,7 +4,7 @@ import store from '../store'
 import TokenKey, { getToken } from '@/utils/auth'
 
 // 路由
-import Router from '../router/index'
+// import Router from '../router/index'
 
 // 创建axios实例
 const service = axios.create({
@@ -40,8 +40,9 @@ service.interceptors.response.use(
         duration: 5 * 1000
       })
       console.log('当前会话已过期，重新认证,')
-      store.commit('CLEAN_SESSION_USER')
-      Router.push({ path: '/' })
+      store.dispatch('FedLogOut')
+      // store.commit('CLEAN_SESSION_USER')
+      // Router.push({ path: '/' })
       return Promise.reject(response)
     } else {
       Message({

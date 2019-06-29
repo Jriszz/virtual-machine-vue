@@ -115,6 +115,7 @@ const users = {
 
     // 登出
     LogOut({ dispatch }) {
+      console.log('前端后端一起退出')
       return new Promise((resolve, reject) => {
         logout().then(response => {
           dispatch('FedLogOut')
@@ -128,6 +129,7 @@ const users = {
 
     // 前端 登出
     FedLogOut({ commit }) {
+      console.log('前端退出')
       return new Promise(resolve => {
         commit('CLEAN_SESSION_USER')
         removeToken()
