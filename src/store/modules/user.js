@@ -106,7 +106,7 @@ const users = {
         getSessionInfo().then(response => {
           const data = response.data
           commit('SET_SESSION_USER', data)
-          resolve(response)
+          resolve(data)
         }).catch(error => {
           reject(error)
         })

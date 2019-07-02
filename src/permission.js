@@ -8,7 +8,7 @@ import { getToken } from '@/utils/auth' // getToken from cookie
 NProgress.configure({ showSpinner: false })// NProgress configuration
 
 const whiteList = ['/login'] // 不重定向白名单
-router.beforeEach((to, from, next) => {
+router.beforeEach(async(to, from, next) => {
   NProgress.start()
   if (getToken()) {
     console.log('getToken not null')
@@ -17,8 +17,6 @@ router.beforeEach((to, from, next) => {
       next({ path: '/' })
       NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
     } else {
-      console.log('to=', to)
-      console.log('from=', from)
       // 判断是否跳转到别的站点
       if (to.path === '/404') {
         console.log('to.path = 404')
@@ -30,20 +28,24 @@ router.beforeEach((to, from, next) => {
         }
         console.log('跳回到最初始的来源站点失败')
       } else {
-        if (store.getters.roles.length === 0) {
-          console.log('开始拉取会话信息')
-          store.dispatch('GetSessionInfo').then(res => { // 拉取用户信息
-            console.log('拉取会话信息成功')
-            next()
-          }).catch((err) => {
+        const hasRoles = store.getters.roles && store.getters.roles.length > 0
+        if (hasRoles) {
+          next()
+        } else {
+          try {
+            console.log('开始拉取会话信息')
+            const { roles } = await store.dispatch('GetSessionInfo')
+            const accessRoutes = await store.dispatch('generateRoutes', roles)
+            router.addRoutes(accessRoutes)
+            next({ ...to, replace: true })
+          } catch (error) {
             console.log('拉取会话信息失败')
+            console.log(error)
             store.dispatch('FedLogOut').then(() => {
-              Message.error(err || 'Verification failed, please login again')
+              Message.error('获取用户信息失败，请重新登陆！')
               next({ path: '/' })
             })
-          })
-        } else {
-          next()
+          }
         }
       }
     }
