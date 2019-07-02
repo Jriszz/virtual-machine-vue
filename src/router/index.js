@@ -63,6 +63,7 @@ export const asyncRoutes = [
     redirect: '/',
     name: 'users',
     hidden: false,
+    meta: { roles: ['super_admin'] },
     children: [{
       path: '',
       component: () => import('@/views/user/index'),
