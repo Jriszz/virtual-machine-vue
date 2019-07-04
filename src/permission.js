@@ -23,10 +23,17 @@ router.beforeEach(async(to, from, next) => {
         const redirectedFrom = to.redirectedFrom
         console.log(redirectedFrom)
         if (redirectedFrom) {
-          console.log('跳回到最初始的来源站点')
-          window.location.href = redirectedFrom.substring(1)
+          let from_url = redirectedFrom.substring(1)
+          if (from_url.lastIndexOf('?') === -1) {
+            from_url = from_url + '?SSO-TICKET=' + getToken()
+          } else if (from_url.lastIndexOf('&') === -1) {
+            from_url = from_url + 'SSO-TICKET=' + getToken()
+          } else {
+            from_url = from_url + '&SSO-TICKET=' + getToken()
+          }
+          console.log('跳回到最初始的来源站点:' + from_url)
+          window.location.href = from_url
         }
-        console.log('跳回到最初始的来源站点失败')
       } else {
         const hasRoles = store.getters.roles && store.getters.roles.length > 0
         if (hasRoles) {
