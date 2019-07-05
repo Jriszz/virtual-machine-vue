@@ -25,8 +25,7 @@
     "vue": "2.5.17",
     "vue-monaco-editor": "0.0.19",
     "vue-router": "3.0.1",
-    "vuex": "3.0.1",
-    "less": "^3.9.0"
+    "vuex": "3.0.1"
   },
   "devDependencies": {
     "autoprefixer": "8.5.0",
@@ -52,6 +51,7 @@
     "file-loader": "1.1.11",
     "friendly-errors-webpack-plugin": "1.7.0",
     "html-webpack-plugin": "4.0.0-alpha",
+    "less": "^3.9.0",
     "mini-css-extract-plugin": "0.4.1",
     "monaco-editor-webpack-plugin": "^1.7.0",
     "node-notifier": "5.2.1",
