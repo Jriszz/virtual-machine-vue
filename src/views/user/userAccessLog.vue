@@ -30,6 +30,18 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
+            <el-form-item label="访问日期">
+              <el-input :disabled="true" v-model="form.access_time" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="姓名">
+              <el-input v-model="form.name" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item v-if="isSuperAdmin" label="用户名">
               <el-input v-model="form.username" />
             </el-form-item>
@@ -64,6 +76,10 @@
             prop="access_time"
             width="170"
             label="访问时间"/>
+          <el-table-column
+            prop="name"
+            width="120"
+            label="访问人"/>
           <el-table-column
             prop="username"
             width="120"
@@ -150,6 +166,8 @@ export default {
         site_name: null,
         api_url: null,
         domain: null,
+        name: null,
+        access_time: null,
         page: 1,
         pageSize: 10
       }
