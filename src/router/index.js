@@ -71,6 +71,20 @@ export const asyncRoutes = [
     }]
   },
 
+  {
+    path: '/systems',
+    component: Layout,
+    redirect: '/',
+    name: 'systems',
+    hidden: false,
+    meta: { roles: ['super_admin'] },
+    children: [{
+      path: '',
+      component: () => import('@/views/businessSystem/index'),
+      meta: { title: '站点列表', icon: 'form', roles: ['super_admin'] }
+    }]
+  },
+
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
