@@ -12,24 +12,33 @@
         :label-width="labelWidth"
         size="small">
         <el-row>
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item label="用户姓名">
               <el-input v-model="form.name" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item label="登陆名">
               <el-input v-model="form.username" />
             </el-form-item>
           </el-col>
+          <el-col :span="8">
+            <el-form-item label="是否管理员">
+              <el-radio-group v-model="form.super_admin">
+                <el-radio :label="999">全部</el-radio>
+                <el-radio :label="1">管理员</el-radio>
+                <el-radio :label="0">非管理员</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item label="手机号码">
               <el-input v-model="form.phone"/>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item label="用户邮箱">
               <el-input v-model="form.email"/>
             </el-form-item>
@@ -184,6 +193,7 @@ export default {
         phone: '',
         email: '',
         username: '',
+        super_admin: 999,
         page: 1,
         pageSize: 10
       }
