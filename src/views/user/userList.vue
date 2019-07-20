@@ -88,7 +88,7 @@
             <template slot-scope="scope">
               <span v-if="scope.row.gender===1">男</span>
               <span v-else-if="scope.row.gender===2">女</span>
-              <span v-else>末知</span>
+              <span v-else>未知</span>
             </template>
           </el-table-column>
           <el-table-column

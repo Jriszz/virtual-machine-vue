@@ -72,16 +72,44 @@ export const asyncRoutes = [
   },
 
   {
+    path: '/roles',
+    component: Layout,
+    redirect: '/',
+    name: 'roles',
+    hidden: false,
+    // meta: { roles: ['super_admin'] },
+    children: [{
+      path: '',
+      component: () => import('@/views/role/index'),
+      meta: { title: '角色列表', icon: 'form' }
+    }]
+  },
+
+  {
     path: '/systems',
     component: Layout,
     redirect: '/',
     name: 'systems',
     hidden: false,
-    meta: { roles: ['super_admin'] },
+    // meta: { roles: ['super_admin'] },
     children: [{
       path: '',
       component: () => import('@/views/businessSystem/index'),
-      meta: { title: '站点列表', icon: 'form', roles: ['super_admin'] }
+      meta: { title: '站点列表', icon: 'form' }
+    }]
+  },
+
+  {
+    path: '/resources',
+    component: Layout,
+    redirect: '/',
+    name: 'resources',
+    hidden: false,
+    // meta: { roles: ['super_admin'] },
+    children: [{
+      path: '',
+      component: () => import('@/views/systemResource/index'),
+      meta: { title: '站点资源', icon: 'form' }
     }]
   },
 

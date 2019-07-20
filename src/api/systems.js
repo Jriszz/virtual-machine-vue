@@ -11,6 +11,14 @@ export function getSystemList(params) {
   })
 }
 
+// 站点枚举
+export function getSystemEnum() {
+  return request({
+    url: PREFIX + '/enum',
+    method: 'get'
+  })
+}
+
 // 站点添加
 export function addSystem(data) {
   return request({

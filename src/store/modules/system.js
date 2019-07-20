@@ -1,12 +1,14 @@
-import { getSystemList, addSystem, getSystemDetail, editSystem, deleteSystem, enableSystem } from '@/api/systems'
+import { getSystemList, getSystemEnum, addSystem, getSystemDetail, editSystem, deleteSystem, enableSystem } from '@/api/systems'
 
 const systems = {
   state: {
-    // 选中用户
+    // 选中业务系统
     selectSystem: '',
-    // 用户列表
+    // 业务系统列表
     systemList: [],
-    // 用户详情、修改、新建页
+    // 业务系统枚举
+    systemEnum: [],
+    // 业务系统详情、修改、新建页
     systemFormVisable: false,
     systemFormType: 'info'
   },
@@ -14,6 +16,9 @@ const systems = {
   mutations: {
     SET_SYSTEM_LIST: (state, systemList) => {
       state.systemList = systemList
+    },
+    SET_SYSTEM_ENUM: (state, systemEnum) => {
+      state.systemEnum = systemEnum
     },
     OPEN_SYSTEM_FORM: (state, payload) => {
       state.selectSystem = payload.system
@@ -26,14 +31,14 @@ const systems = {
   },
 
   actions: {
-    // 获取用户列表
+    // 获取业务系统列表
     GetSystemList({ commit }, params) {
       return new Promise((resolve, reject) => {
         getSystemList(params).then(response => {
           if (response.error_code === 0) {
             commit('SET_SYSTEM_LIST', response.data.systems)
           } else {
-            reject('获取用户列表失败')
+            reject('获取业务系统列表失败')
           }
           resolve(response)
         }).catch(error => {
@@ -42,7 +47,23 @@ const systems = {
       })
     },
 
-    // 添加用户
+    // 获取业务系统枚举
+    GetSystemEnum({ commit }) {
+      return new Promise((resolve, reject) => {
+        getSystemEnum().then(response => {
+          if (response.error_code === 0) {
+            commit('SET_SYSTEM_ENUM', response.data)
+          } else {
+            reject('获取业务系统列表枚举')
+          }
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+
+    // 添加业务系统
     AddSystem({ commit, dispatch }, data) {
       return new Promise((resolve, reject) => {
         addSystem(data).then(response => {
@@ -50,7 +71,7 @@ const systems = {
             commit('CLOSE_SYSTEM_FORM')
             dispatch('GetSystemList')
           } else {
-            reject('添加用户失败')
+            reject('添加业务系统失败')
           }
           resolve(response)
         }).catch(error => {
@@ -59,12 +80,12 @@ const systems = {
       })
     },
 
-    // 获取用户列表
+    // 获取业务系统列表
     GetSystemDetail({ commit }, system_id) {
       return new Promise((resolve, reject) => {
         getSystemDetail(system_id).then(response => {
           if (response.error_code !== 0) {
-            reject('获取用户详情失败')
+            reject('获取业务系统详情失败')
           }
           resolve(response)
         }).catch(error => {
@@ -73,7 +94,7 @@ const systems = {
       })
     },
 
-    // 修改用户
+    // 修改业务系统
     EditSystem({ state, commit, dispatch }, data) {
       return new Promise((resolve, reject) => {
         editSystem(data.id, data).then(response => {
@@ -81,7 +102,7 @@ const systems = {
             commit('CLOSE_SYSTEM_FORM')
             dispatch('GetSystemList')
           } else {
-            reject('修改用户失败')
+            reject('修改业务系统失败')
           }
           resolve(response)
         }).catch(error => {
