@@ -1,4 +1,4 @@
-import { openSignup, signup, addUser, editUser, login, logout, getSessionInfo, getUserList, modifyUserPassword, resetUserPassword, getUserAccessLogList } from '@/api/users'
+import { openSignup, signup, addUser, editUser, login, logout, getSessionInfo, getUserList, modifyUserPassword, resetUserPassword, getUserAccessLogList, getUserRoleList, userJoinRole, userLeaveRole, getUserEnumList } from '@/api/users'
 import { removeToken } from '@/utils/auth'
 
 const users = {
@@ -10,6 +10,8 @@ const users = {
     selectUser: '',
     // 用户列表
     userList: [],
+    // 用户枚举列表
+    userEnum: [],
     // 修改密码页
     modifyPasswordFormVisable: false,
     // 重置密码页
@@ -20,7 +22,11 @@ const users = {
     // 用户注册页
     userSignUpVisable: false,
     // 服务端是否开放用户注册
-    isOpenSignUp: false
+    isOpenSignUp: false,
+    // 用户角色维护页
+    userRoleFormVisable: false,
+    // 当前选择用户
+    currentSelectUser: ''
   },
 
   mutations: {
@@ -29,6 +35,9 @@ const users = {
     },
     SET_USER_LIST: (state, userList) => {
       state.userList = userList
+    },
+    SET_USER_ENUM_LIST: (state, userEnum) => {
+      state.userEnum = userEnum
     },
     SET_SESSION_USER: (state, user) => {
       state.sessionUser = user
@@ -62,6 +71,13 @@ const users = {
     },
     CLOSE_MODIFY_PASSWORD_FORM: (state) => {
       state.modifyPasswordFormVisable = false
+    },
+    OPEN_USER_ROLE_FORM: (state, user) => {
+      state.userRoleFormVisable = true
+      state.currentSelectUser = user
+    },
+    CLOSE_USER_ROLE_FORM: (state) => {
+      state.userRoleFormVisable = false
     }
   },
 
@@ -153,6 +169,22 @@ const users = {
       })
     },
 
+    // 获取用户列表
+    GetUserEnumList({ commit }) {
+      return new Promise((resolve, reject) => {
+        getUserEnumList().then(response => {
+          if (response.error_code === 0) {
+            commit('SET_USER_ENUM_LIST', response.data)
+          } else {
+            reject('获取用户枚举列表失败')
+          }
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+
     // 修改用户密码
     ModifyUserPassword({ commit }, params) {
       return new Promise((resolve, reject) => {
@@ -234,8 +266,49 @@ const users = {
           reject(error)
         })
       })
-    }
+    },
 
+    // 获取用户角色列表
+    GetUserRoleList({ commit }, user_id) {
+      return new Promise((resolve, reject) => {
+        getUserRoleList(user_id).then(response => {
+          if (response.error_code !== 0) {
+            reject('获取用户角色列表失败')
+          }
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+
+    // 用户加入角色
+    UserJoinRole({ commit, dispatch }, { user_id, role_id }) {
+      return new Promise((resolve, reject) => {
+        userJoinRole(user_id, role_id).then(response => {
+          if (response.error_code !== 0) {
+            reject(response.msg)
+          }
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+
+    // 用户离开角色
+    UserLeaveRole({ commit }, { user_id, role_id }) {
+      return new Promise((resolve, reject) => {
+        userLeaveRole(user_id, role_id).then(response => {
+          if (response.error_code !== 0) {
+            reject(response.msg)
+          }
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    }
   }
 }
 

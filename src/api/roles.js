@@ -45,3 +45,62 @@ export function deleteRole(role_id) {
   })
 }
 
+// 角色枚举列表
+export function getRoleEnumList() {
+  return request({
+    url: PREFIX + '/enum',
+    method: 'get'
+  })
+}
+
+// 角色成员列表
+export function getRoleMemberList(role_id) {
+  return request({
+    url: PREFIX + '/' + role_id + '/memberlist',
+    method: 'get'
+  })
+}
+
+// 角色添加用户
+export function addUserToRole(user_id, role_id) {
+  return request({
+    url: PREFIX + '/' + role_id + '/memberlist',
+    method: 'post',
+    data: { user_id }
+  })
+}
+
+// 角色踢除用户
+export function removeUserfromRole(user_id, role_id) {
+  return request({
+    url: PREFIX + '/' + role_id + '/memberlist',
+    method: 'delete',
+    data: { user_id }
+  })
+}
+
+// 角色资源列表
+export function getRoleResourceList(role_id) {
+  return request({
+    url: PREFIX + '/' + role_id + '/resourcelist',
+    method: 'get'
+  })
+}
+
+// 角色添加资源
+export function addResourceToRole(role_id, resource_id) {
+  return request({
+    url: PREFIX + '/' + role_id + '/resourcelist',
+    method: 'post',
+    data: { resource_id }
+  })
+}
+
+// 角色踢除资源
+export function removeResourcefromRole(role_id, resource_id) {
+  return request({
+    url: PREFIX + '/' + role_id + '/resourcelist',
+    method: 'delete',
+    data: { resource_id }
+  })
+}

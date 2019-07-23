@@ -78,9 +78,10 @@
             label="角色描述"/>
           <el-table-column
             label="操作"
-            width="220">
+            width="300">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" plain @click="openMemberForm(scope.row)">成员</el-button>
+              <el-button size="mini" type="primary" plain @click="openResourceForm(scope.row)">资源</el-button>
               <el-button size="mini" type="primary" plain @click="openRoleForm(scope.row, 'Edit')">修改</el-button>
               <el-button size="mini" type="danger" plain @click="deleteRole(scope.row)">删除</el-button>
             </template>
@@ -101,6 +102,8 @@
       </el-card>
     </el-card>
     <role-form />
+    <role-member-list-form />
+    <role-resource-list-form />
   </div>
 </template>
 
@@ -108,10 +111,12 @@
 import { MessageBox, Message } from 'element-ui'
 import roleForm from './roleForm'
 import systemSelect from '@/components/systemSelect'
+import roleMemberListForm from './roleMemberListForm'
+import roleResourceListForm from './roleResourceListForm'
 
 export default {
   name: 'RoleList',
-  components: { roleForm, MessageBox, Message, systemSelect },
+  components: { roleForm, MessageBox, Message, systemSelect, roleMemberListForm, roleResourceListForm },
 
   data() {
     return {
@@ -160,7 +165,10 @@ export default {
       this.$store.commit('OPEN_ROLE_FORM', { type, role })
     },
     openMemberForm(role) {
-      this.$store.commit('OPEN_ROLE_FORM', { type, role })
+      this.$store.commit('OPEN_ROLE_MEMBER_FORM', { role })
+    },
+    openResourceForm(role) {
+      this.$store.commit('OPEN_ROLE_RESOURCE_FORM', { role })
     },
     reset() {
       this.form = this.initForm()

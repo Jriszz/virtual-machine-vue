@@ -123,6 +123,7 @@
           <el-table-column
             label="操作">
             <template slot-scope="scope">
+              <el-button size="mini" type="primary" plain @click="openUserRoleForm(scope.row)">角色</el-button>
               <el-button v-if="isSuperAdmin" size="mini" type="primary" plain @click="resetPassword(scope.row)">重置密码</el-button>
               <el-button size="mini" type="primary" plain @click="openUserForm(scope.row, 'Edit')">修改</el-button>
               <el-button size="mini" type="primary" plain @click="openUserForm(scope.row, 'Info')">详情</el-button>
@@ -145,6 +146,7 @@
     </el-card>
     <user-form />
     <reset-password-form />
+    <user-role-list-form />
   </div>
 </template>
 
@@ -152,10 +154,11 @@
 import { MessageBox } from 'element-ui'
 import userForm from './userForm'
 import resetPasswordForm from './resetPasswordForm'
+import userRoleListForm from './userRoleListForm'
 
 export default {
   name: 'UserList',
-  components: { userForm, resetPasswordForm, MessageBox },
+  components: { userForm, resetPasswordForm, MessageBox, userRoleListForm },
 
   data() {
     return {
@@ -215,6 +218,9 @@ export default {
     },
     resetPassword(user) {
       this.$store.commit('OPEN_RESET_PASSWORD_FORM', user)
+    },
+    openUserRoleForm(user) {
+      this.$store.commit('OPEN_USER_ROLE_FORM', user)
     },
     openUserForm(user, type) {
       this.$store.commit('OPEN_USER_FORM', { type, user })

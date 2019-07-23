@@ -53,6 +53,14 @@ export function getUserList(params) {
   })
 }
 
+// 用户枚举列表
+export function getUserEnumList() {
+  return request({
+    url: PREFIX + '/enum',
+    method: 'get'
+  })
+}
+
 // 用户注册
 export function addUser(data) {
   return request({
@@ -103,5 +111,31 @@ export function getUserAccessLogList(params) {
     url: PREFIX + '/access-log',
     method: 'get',
     params
+  })
+}
+
+// 用户角色列表
+export function getUserRoleList(user_id) {
+  return request({
+    url: PREFIX + '/' + user_id + '/rolelist',
+    method: 'get'
+  })
+}
+
+// 用户加入角色
+export function userJoinRole(user_id, role_id) {
+  return request({
+    url: PREFIX + '/' + user_id + '/rolelist',
+    method: 'post',
+    data: { role_id }
+  })
+}
+
+// 用户离开角色
+export function userLeaveRole(user_id, role_id) {
+  return request({
+    url: PREFIX + '/' + user_id + '/rolelist',
+    method: 'delete',
+    data: { role_id }
   })
 }

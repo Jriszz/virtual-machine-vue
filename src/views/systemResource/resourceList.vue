@@ -78,8 +78,9 @@
             label="资源路径"/>
           <el-table-column
             label="操作"
-            width="150">
+            width="220">
             <template slot-scope="scope">
+              <el-button size="mini" type="primary" plain @click="openResourceRoleForm(scope.row)">角色</el-button>
               <el-button size="mini" type="primary" plain @click="openResourceForm(scope.row, 'Edit')">修改</el-button>
               <el-button size="mini" type="danger" plain @click="deleteResource(scope.row)">删除</el-button>
             </template>
@@ -100,17 +101,19 @@
       </el-card>
     </el-card>
     <resource-form />
+    <resource-role-list-form />
   </div>
 </template>
 
 <script>
 import { MessageBox, Message } from 'element-ui'
 import resourceForm from './resourceForm'
+import resourceRoleListForm from './resourceRoleListForm'
 import systemSelect from '@/components/systemSelect'
 
 export default {
   name: 'ResourceList',
-  components: { resourceForm, MessageBox, Message, systemSelect },
+  components: { resourceForm, MessageBox, Message, systemSelect, resourceRoleListForm },
 
   data() {
     return {
@@ -157,6 +160,9 @@ export default {
     },
     openResourceForm(resource, type) {
       this.$store.commit('OPEN_RESOURCE_FORM', { type, resource })
+    },
+    openResourceRoleForm(resource) {
+      this.$store.commit('OPEN_RESOURCE_ROLE_FORM', resource)
     },
     reset() {
       this.form = this.initForm()
