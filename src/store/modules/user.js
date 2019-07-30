@@ -240,7 +240,9 @@ const users = {
         editUser(data.id, data).then(response => {
           if (response.error_code === 0) {
             commit('CLOSE_USER_FORM')
-            dispatch('GetUserList')
+            if (state.sessionUser.super_admin === 1) {
+              dispatch('GetUserList')
+            }
             if (data.id === state.sessionUser.id) {
               dispatch('GetSessionInfo')
             }
