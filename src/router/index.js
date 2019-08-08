@@ -47,7 +47,7 @@ export const constantRoutes = [
     children: [{
       path: '',
       component: () => import('@/views/user/userAccessLog'),
-      meta: { title: '访问日志', icon: 'form' }
+      meta: { title: '访问日志', icon: 'eye-open' }
     }]
   }
 ]
@@ -67,7 +67,7 @@ export const asyncRoutes = [
     children: [{
       path: '',
       component: () => import('@/views/user/index'),
-      meta: { title: '用户列表', icon: 'form', roles: ['super_admin'] }
+      meta: { title: '用户列表', icon: 'user', roles: ['super_admin'] }
     }]
   },
 
@@ -81,7 +81,7 @@ export const asyncRoutes = [
     children: [{
       path: '',
       component: () => import('@/views/role/index'),
-      meta: { title: '角色列表', icon: 'form' }
+      meta: { title: '角色列表', icon: 'peoples' }
     }]
   },
 
@@ -95,7 +95,7 @@ export const asyncRoutes = [
     children: [{
       path: '',
       component: () => import('@/views/businessSystem/index'),
-      meta: { title: '站点列表', icon: 'form' }
+      meta: { title: '站点列表', icon: 'component' }
     }]
   },
 
@@ -109,7 +109,7 @@ export const asyncRoutes = [
     children: [{
       path: '',
       component: () => import('@/views/systemResource/index'),
-      meta: { title: '站点资源', icon: 'form' }
+      meta: { title: '站点资源', icon: 'list' }
     }]
   },
 
