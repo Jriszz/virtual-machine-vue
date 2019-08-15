@@ -35,6 +35,12 @@
             <el-option key="DELETE" value="DELETE" label="DELETE" />
           </el-select>
         </el-form-item>
+        <el-form-item label="权限校验" prop="check">
+          <el-radio-group v-model="form.check">
+            <el-radio :label="true">校验</el-radio>
+            <el-radio :label="false">不校验</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item v-if="!isDetailScene">
           <el-button @click="submit('form')">提交</el-button>
           <el-button v-if="!isAddScene" @click="closeDialog">关闭</el-button>
@@ -114,10 +120,11 @@ export default {
   methods: {
     initForm() {
       const _form = {
+        site_code: '',
         name: '',
-        code: '',
-        desc: '',
-        token: ''
+        api_url: '',
+        method: '',
+        check: false
       }
       return _form
     },

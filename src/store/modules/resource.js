@@ -104,12 +104,12 @@ const resources = {
     },
 
     // 修改资源
-    EditResource({ state, commit, dispatch }, data) {
+    EditResource({ state, commit, dispatch }, data, noRefresh) {
       return new Promise((resolve, reject) => {
         editResource(data.id, data).then(response => {
           if (response.error_code === 0) {
             commit('CLOSE_RESOURCE_FORM')
-            dispatch('GetResourceList')
+            if (!noRefresh) { dispatch('GetResourceList') }
           } else {
             reject('修改资源失败')
           }

@@ -82,8 +82,8 @@
             <template slot-scope="scope">
               <el-button size="mini" type="primary" plain @click="openMemberForm(scope.row)">成员</el-button>
               <el-button size="mini" type="primary" plain @click="openResourceForm(scope.row)">资源</el-button>
-              <el-button size="mini" type="primary" plain @click="openRoleForm(scope.row, 'Edit')">修改</el-button>
-              <el-button size="mini" type="danger" plain @click="deleteRole(scope.row)">删除</el-button>
+              <el-button v-if="isSuperAdmin" size="mini" type="primary" plain @click="openRoleForm(scope.row, 'Edit')">修改</el-button>
+              <el-button v-if="isSuperAdmin" size="mini" type="danger" plain @click="deleteRole(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -131,6 +131,13 @@ export default {
   computed: {
     roleList: function() {
       return this.$store.state.roles.roleList
+    },
+    isSuperAdmin: function() {
+      if (this.$store.state.users.sessionUser.super_admin === 1) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   mounted() {

@@ -116,9 +116,9 @@ export default {
       this.loading = true
       this.errorflag = false
       this.$store.dispatch('GetSystemDetail', this.form.id).then((response) => {
-        this.loading = false
         this.form = response.data
       })
+      this.loading = false
     },
     submit(form) {
       this.loading = true

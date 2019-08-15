@@ -78,7 +78,7 @@
           <el-table-column
             label="操作"
             width="250">
-            <template slot-scope="scope">
+            <template v-if="isSuperAdmin" slot-scope="scope">
               <el-button size="mini" type="primary" plain @click="openSystemForm(scope.row, 'Info')">详情</el-button>
               <el-button size="mini" type="primary" plain @click="openSystemForm(scope.row, 'Edit')">修改</el-button>
               <el-button v-if="scope.row.status===1" size="mini" type="danger" plain @click="deleteSystem(scope.row)">禁用</el-button>
@@ -125,6 +125,13 @@ export default {
   computed: {
     systemList: function() {
       return this.$store.state.systems.systemList
+    },
+    isSuperAdmin: function() {
+      if (this.$store.state.users.sessionUser.super_admin === 1) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   mounted() {

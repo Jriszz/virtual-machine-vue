@@ -12,19 +12,30 @@
         :label-width="labelWidth"
         size="small">
         <el-row>
-          <el-col :span="8">
+          <el-col :span="12">
             <el-form-item label="所属站点">
               <system-select v-model="form.site_code" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="资源名称">
-              <el-input v-model="form.name" />
+          <el-col :span="12">
+            <el-form-item label="权限校验">
+              <el-radio-group v-model="form.check">
+                <el-radio label="all">全部</el-radio>
+                <el-radio label="yes">校验</el-radio>
+                <el-radio label="no">不校验</el-radio>
+              </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+        </el-row>
+        <el-row>
+          <el-col :span="12">
             <el-form-item label="资源路径">
               <el-input v-model="form.api_url" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="资源名称">
+              <el-input v-model="form.name" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -70,6 +81,18 @@
             width="250"
             label="资源名称"/>
           <el-table-column
+            prop="check"
+            width="80"
+            label="权限校验">
+            <template slot-scope="scope">
+              <el-switch
+                v-model="scope.row.check"
+                active-color="#13ce66"
+                inactive-color="#999999"
+                @change="enableResourceCheck(scope.row)"/>
+            </template>
+          </el-table-column>
+          <el-table-column
             prop="method"
             width="80"
             label="资源方法"/>
@@ -81,8 +104,8 @@
             width="220">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" plain @click="openResourceRoleForm(scope.row)">角色</el-button>
-              <el-button size="mini" type="primary" plain @click="openResourceForm(scope.row, 'Edit')">修改</el-button>
-              <el-button size="mini" type="danger" plain @click="deleteResource(scope.row)">删除</el-button>
+              <el-button v-if="isSuperAdmin" size="mini" type="primary" plain @click="openResourceForm(scope.row, 'Edit')">修改</el-button>
+              <el-button v-if="isSuperAdmin" size="mini" type="danger" plain @click="deleteResource(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -128,6 +151,13 @@ export default {
   computed: {
     resourceList: function() {
       return this.$store.state.resources.resourceList
+    },
+    isSuperAdmin: function() {
+      if (this.$store.state.users.sessionUser.super_admin === 1) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   mounted() {
@@ -139,6 +169,7 @@ export default {
         name: '',
         site_code: '',
         api_url: '',
+        check: 'yes',
         page: 1,
         pageSize: 10
       }
@@ -156,6 +187,29 @@ export default {
         }).catch(() => {
           this.loading = false
         })
+      })
+    },
+    // 启用资源权限校验
+    enableResourceCheck(record) {
+      const params = this.tools.cleanObjNullProperty(record)
+      this.$store.dispatch('EditResource', params, 'noRefresh').then((response) => {
+        if (response.error_code === 0) {
+          Message({
+            message: response.msg,
+            type: 'success',
+            duration: 5 * 1000
+          })
+        } else {
+          record.check = !record.check
+          Message({
+            message: response.msg,
+            type: 'error',
+            duration: 5 * 1000
+          })
+        }
+      }).catch((error) => {
+        record.check = !record.check
+        console.log(error)
       })
     },
     openResourceForm(resource, type) {
