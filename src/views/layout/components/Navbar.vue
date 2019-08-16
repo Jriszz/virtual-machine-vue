@@ -10,7 +10,7 @@
       <el-dropdown-menu slot="dropdown" class="user-dropdown">
         <router-link class="inlineBlock" to="/">
           <el-dropdown-item>
-            Home
+            {{ username }}
           </el-dropdown-item>
         </router-link>
         <el-dropdown-item divided>
@@ -35,7 +35,10 @@ export default {
     ...mapGetters([
       'sidebar',
       'avatar'
-    ])
+    ]),
+    username: function() {
+      return this.$store.state.users.sessionUser.name
+    }
   },
   methods: {
     toggleSideBar() {
