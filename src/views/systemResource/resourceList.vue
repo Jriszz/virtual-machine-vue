@@ -43,7 +43,7 @@
           <el-button
             type="info"
             plain
-            @click="getResourceList('form')">查询</el-button>
+            @click="getResourceList">查询</el-button>
           <el-button
             type="info"
             plain
@@ -158,10 +158,21 @@ export default {
       } else {
         return false
       }
+    },
+    refresh: function() {
+      return this.$store.state.resources.refresh
+    }
+  },
+  watch: {
+    refresh: function(newValue, oldValue) {
+      if (newValue === true) {
+        this.getResourceList()
+        this.$store.commit('FINISH_REFRESH')
+      }
     }
   },
   mounted() {
-    this.getResourceList('form')
+    this.getResourceList()
   },
   methods: {
     initForm() {
@@ -175,42 +186,37 @@ export default {
       }
       return _form
     },
-    getResourceList(form) {
+    async getResourceList() {
       this.resetResult()
       this.loading = true
       this.errorflag = false
-      this.$refs[form].validate(valid => {
-        const params = this.tools.cleanObjNullProperty(this.form)
-        this.$store.dispatch('GetResourceList', params).then((response) => {
-          this.loading = false
-          this.totals = response.data.totals
-        }).catch(() => {
-          this.loading = false
-        })
-      })
+      const params = this.tools.cleanObjNullProperty(this.form)
+      const res = await this.$store.dispatch('GetResourceList', params)
+      if (res.error_code === 0) {
+        this.totals = res.data.totals
+      } else {
+        console.log(res)
+      }
+      this.loading = false
     },
     // 启用资源权限校验
-    enableResourceCheck(record) {
+    async enableResourceCheck(record) {
       const params = this.tools.cleanObjNullProperty(record)
-      this.$store.dispatch('EditResource', params, 'noRefresh').then((response) => {
-        if (response.error_code === 0) {
-          Message({
-            message: response.msg,
-            type: 'success',
-            duration: 5 * 1000
-          })
-        } else {
-          record.check = !record.check
-          Message({
-            message: response.msg,
-            type: 'error',
-            duration: 5 * 1000
-          })
-        }
-      }).catch((error) => {
+      const res = await this.$store.dispatch('EditResource', params)
+      if (res.error_code === 0) {
+        Message({
+          message: res.msg,
+          type: 'success',
+          duration: 5 * 1000
+        })
+      } else {
         record.check = !record.check
-        console.log(error)
-      })
+        Message({
+          message: res.msg,
+          type: 'error',
+          duration: 5 * 1000
+        })
+      }
     },
     openResourceForm(resource, type) {
       this.$store.commit('OPEN_RESOURCE_FORM', { type, resource })
@@ -233,8 +239,8 @@ export default {
     editResource(resource) {
       this.$store.commit('OPEN_RESOURCE_FORM', { type: 'Edit', resource })
     },
-    deleteResource(resource) {
-      MessageBox.confirm(
+    async deleteResource(resource) {
+      const opt = await MessageBox.confirm(
         '此操作将删除资源【' + resource.name + '】，是否继续？',
         '操作确认',
         {
@@ -242,44 +248,21 @@ export default {
           confirmButtonText: '删除',
           cancelButtonText: '取消'
         }
-      ).then(() => {
-        this.$store.dispatch('DeleteResource', resource.id).then((response) => {
-          this.loading = false
-          if (response.error_code === 0) {
-            Message({
-              message: response.msg,
-              type: 'success',
-              duration: 5 * 1000
-            })
-          }
-        }).catch(() => {
-          this.loading = false
-        })
-      }).catch(action => {})
-    },
-    enableResource(resource) {
-      MessageBox.confirm(
-        '此操作将允许资源【' + resource.name + '】接入用户中心，是否继续？',
-        '操作确认',
-        {
-          distinguishCancelAndClose: true,
-          confirmButtonText: '允许',
-          cancelButtonText: '取消'
+      ).catch(() => {
+      })
+      if (opt === 'confirm') {
+        const res = await this.$store.dispatch('DeleteResource', resource.id)
+        if (res.error_code === 0) {
+          this.getResourceList()
+          Message({
+            message: res.msg,
+            type: 'success',
+            duration: 5 * 1000
+          })
+        } else {
+          console.log(res)
         }
-      ).then(() => {
-        this.$store.dispatch('EnableResource', resource.id).then((response) => {
-          this.loading = false
-          if (response.error_code === 0) {
-            Message({
-              message: response.msg,
-              type: 'success',
-              duration: 5 * 1000
-            })
-          }
-        }).catch(() => {
-          this.loading = false
-        })
-      }).catch(action => {})
+      }
     },
     // 分页相关的方法
     getNextPage() {
@@ -291,11 +274,11 @@ export default {
     changePageSize(val) {
       this.form.pageSize = val
       this.form.page = 1
-      this.getResourceList('form')
+      this.getResourceList()
     },
     changeCurrentPage(val) {
       this.form.page = val
-      this.getResourceList('form')
+      this.getResourceList()
     }
     // 分页相关的方法
   }

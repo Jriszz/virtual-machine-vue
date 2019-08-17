@@ -2,6 +2,8 @@ import { getResourceList, addResource, getResourceDetail, editResource, deleteRe
 
 const resources = {
   state: {
+    // 刷新列表页
+    refresh: false,
     // 选中资源
     selectResource: '',
     // 资源列表
@@ -36,146 +38,75 @@ const resources = {
     },
     CLOSE_RESOURCE_ROLE_FORM: (state) => {
       state.resourceRoleFormVisable = false
+    },
+    TRIGGER_REFRESH: (state) => {
+      state.refresh = true
+    },
+    FINISH_REFRESH: (state) => {
+      state.refresh = false
     }
   },
 
   actions: {
     // 获取资源列表
-    GetResourceList({ commit }, params) {
-      return new Promise((resolve, reject) => {
-        getResourceList(params).then(response => {
-          if (response.error_code === 0) {
-            commit('SET_RESOURCE_LIST', response.data.resources)
-          } else {
-            reject('获取资源列表失败')
-          }
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-      })
+    async GetResourceList({ commit }, params) {
+      const res = await getResourceList(params)
+      if (res.error_code === 0) {
+        commit('SET_RESOURCE_LIST', res.data.resources)
+      }
+      return res
     },
 
     // 获取资源枚举
-    GetResourceEnum({ commit }) {
-      return new Promise((resolve, reject) => {
-        getResourceEnum().then(response => {
-          if (response.error_code !== 0) {
-            reject('获取资源列表失败')
-          } else {
-            commit('SET_RESOURCE_ENUM', response.data)
-          }
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-      })
+    async GetResourceEnum({ commit }) {
+      const res = await getResourceEnum()
+      if (res.error_code === 0) {
+        commit('SET_RESOURCE_ENUM', res.data)
+      }
+      return res
     },
 
     // 添加资源
-    AddResource({ commit, dispatch }, data) {
-      return new Promise((resolve, reject) => {
-        addResource(data).then(response => {
-          if (response.error_code === 0) {
-            commit('CLOSE_RESOURCE_FORM')
-            dispatch('GetResourceList')
-          } else {
-            reject('添加资源失败')
-          }
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-      })
+    async AddResource({ commit, dispatch }, data) {
+      const res = await addResource(data)
+      if (res.error_code === 0) {
+        commit('CLOSE_RESOURCE_FORM')
+      }
+      return res
     },
 
     // 获取资源列表
-    GetResourceDetail({ commit }, resource_id) {
-      return new Promise((resolve, reject) => {
-        getResourceDetail(resource_id).then(response => {
-          if (response.error_code !== 0) {
-            reject('获取资源详情失败')
-          }
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-      })
+    async GetResourceDetail({ commit }, resource_id) {
+      return await getResourceDetail(resource_id)
     },
 
     // 修改资源
-    EditResource({ state, commit, dispatch }, data, noRefresh) {
-      return new Promise((resolve, reject) => {
-        editResource(data.id, data).then(response => {
-          if (response.error_code === 0) {
-            commit('CLOSE_RESOURCE_FORM')
-            if (!noRefresh) { dispatch('GetResourceList') }
-          } else {
-            reject('修改资源失败')
-          }
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-      })
+    async EditResource({ state, commit, dispatch }, data) {
+      const res = await editResource(data.id, data)
+      if (res.error_code === 0) {
+        commit('CLOSE_RESOURCE_FORM')
+      }
+      return res
     },
 
     // 删除资源
-    DeleteResource({ commit, dispatch }, resource_id) {
-      return new Promise((resolve, reject) => {
-        deleteResource(resource_id).then(response => {
-          if (response.error_code === 0) {
-            dispatch('GetResourceList')
-          } else {
-            reject('删除资源失败')
-          }
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-      })
+    async DeleteResource({ commit, dispatch }, resource_id) {
+      return await deleteResource(resource_id)
     },
 
     // 获取资源角色列表
-    GetResourceRoleList({ commit }, resource_id) {
-      return new Promise((resolve, reject) => {
-        getResourceRoleList(resource_id).then(response => {
-          if (response.error_code !== 0) {
-            reject('获取资源角色列表失败')
-          }
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-      })
+    async GetResourceRoleList({ commit }, resource_id) {
+      return await getResourceRoleList(resource_id)
     },
 
     // 资源加入角色
-    ResourceJoinRole({ commit, dispatch }, { resource_id, role_id }) {
-      return new Promise((resolve, reject) => {
-        resourceJoinRole(resource_id, role_id).then(response => {
-          if (response.error_code !== 0) {
-            reject(response.msg)
-          }
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-      })
+    async ResourceJoinRole({ commit, dispatch }, { resource_id, role_id }) {
+      return await resourceJoinRole(resource_id, role_id)
     },
 
     // 资源离开角色
-    ResourceLeaveRole({ commit }, { resource_id, role_id }) {
-      return new Promise((resolve, reject) => {
-        resourceLeaveRole(resource_id, role_id).then(response => {
-          if (response.error_code !== 0) {
-            reject(response.msg)
-          }
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-      })
+    async ResourceLeaveRole({ commit }, { resource_id, role_id }) {
+      return await resourceLeaveRole(resource_id, role_id)
     }
   }
 }

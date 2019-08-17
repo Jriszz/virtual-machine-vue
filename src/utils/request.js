@@ -41,8 +41,6 @@ service.interceptors.response.use(
       })
       console.log('当前会话已过期，重新认证,')
       store.dispatch('FedLogOut')
-      // store.commit('CLEAN_SESSION_USER')
-      // Router.push({ path: '/' })
       return Promise.reject(response)
     } else {
       Message({
@@ -50,7 +48,7 @@ service.interceptors.response.use(
         type: 'error',
         duration: 10 * 1000
       })
-      return Promise.reject(response)
+      return response.data
     }
   },
   error => {

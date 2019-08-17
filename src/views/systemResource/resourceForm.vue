@@ -128,15 +128,17 @@ export default {
       }
       return _form
     },
-    getResourceDetail() {
+    async getResourceDetail() {
       this.loading = true
       this.errorflag = false
-      this.$store.dispatch('GetResourceDetail', this.form.id).then((response) => {
-        this.loading = false
-        this.form = response.data
-      })
+      const res = await this.$store.dispatch('GetResourceDetail', this.form.id)
+      if (res.error_code === 0) {
+        this.form = res.data
+      }
+      this.loading = false
+      return res
     },
-    submit(form) {
+    async submit(form) {
       this.loading = true
       let submitType
       if (this.$store.state.resources.resourceFormType === 'Add') {
@@ -149,21 +151,23 @@ export default {
           this.loading = false
           return false
         }
-        const params = this.tools.cleanObjNullProperty(this.form)
-        this.$store.dispatch(submitType, params).then((response) => {
-          this.loading = false
-          this.form = this.initForm()
-          if (response.error_code === 0) {
-            Message({
-              message: response.msg,
-              type: 'success',
-              duration: 5 * 1000
-            })
-          }
-        }).catch(() => {
-          this.loading = false
-        })
       })
+
+      const params = this.tools.cleanObjNullProperty(this.form)
+      const res = await this.$store.dispatch(submitType, params)
+      if (res.error_code === 0) {
+        this.form = this.initForm()
+        Message({
+          message: res.msg,
+          type: 'success',
+          duration: 5 * 1000
+        })
+        this.$store.commit('TRIGGER_REFRESH')
+      } else {
+        this.loading = false
+        console.log(res)
+      }
+      this.loading = false
     },
     reset() {
       this.form = this.initForm()
