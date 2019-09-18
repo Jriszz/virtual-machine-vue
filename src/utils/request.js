@@ -34,13 +34,15 @@ service.interceptors.response.use(
     if (res.error_code === 0) {
       return response.data
     } else if (res.error_code === 1005) {
-      Message({
-        message: res.msg,
-        type: 'error',
-        duration: 5 * 1000
+      MessageBox.confirm('会话超时，是重新登陆还是停留在此页面？', '会话超时', {
+        confirmButtonText: '重新登陆',
+        cancelButtonText: '保持在当前页',
+        type: 'warning'
+      }).then(() => {
+        store.dispatch('FedLogOut').then(() => {
+          location.reload()
+        })
       })
-      console.log('当前会话已过期，重新认证,')
-      store.dispatch('FedLogOut')
       return Promise.reject(response)
     } else {
       Message({
