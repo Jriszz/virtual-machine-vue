@@ -54,7 +54,7 @@ router.beforeEach(async(to, from, next) => {
       console.log('未登陆，但为白名单')
       next()
     } else {
-      window.location.href = 'http://sso.xsts.xyz/api/user/login'
+      window.location.href = '/api/user/login'
       NProgress.done()
     }
   }
