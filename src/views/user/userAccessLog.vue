@@ -48,12 +48,12 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="开始日期">
-              <el-date-picker v-model="form.start_date" type="date" placeholder="请选择开始日期" />
+              <el-date-picker v-model="form.start_date" type="date" value-format="yyyy-MM-dd" placeholder="请选择开始日期" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="结束日期">
-              <el-date-picker v-model="form.end_date" type="date" placeholder="请选择结束日期" />
+              <el-date-picker v-model="form.end_date" type="date" value-format="yyyy-MM-dd" placeholder="请选择结束日期" />
             </el-form-item>
           </el-col>
         </el-row>
