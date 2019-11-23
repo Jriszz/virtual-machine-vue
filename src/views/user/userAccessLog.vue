@@ -13,8 +13,30 @@
         size="small">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="域名">
-              <el-input v-model="form.domain"/>
+            <el-form-item label="系统站点">
+              <system-select v-model="form.site_name" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="请求方法">
+              <el-select v-model="form.method" clearable placeholder="请选择">
+                <el-option value="GET" label="GET" />
+                <el-option value="POST" label="POST" />
+                <el-option value="PUT" label="PUT" />
+                <el-option value="DELETE" label="DELETE" />
+                <el-option value="HEAD" label="HEAD" />
+                <el-option value="PATCH" label="PATCH" />
+                <el-option value="OPTIONS" label="OPTIONS" />
+                <el-option value="CONNECT" label="CONNECT" />
+                <el-option value="TRACE" label="TRACE" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="接口描述">
+              <el-input v-model="form.api_desc"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -25,24 +47,24 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="站点">
-              <el-input v-model="form.site_name" />
+            <el-form-item label="开始日期">
+              <el-date-picker v-model="form.start_date" type="date" placeholder="请选择开始日期" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="访问日期">
-              <el-input :disabled="true" v-model="form.access_time" />
+            <el-form-item label="结束日期">
+              <el-date-picker v-model="form.end_date" type="date" placeholder="请选择结束日期" />
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row v-if="isSuperAdmin">
           <el-col :span="12">
-            <el-form-item label="姓名">
+            <el-form-item label="用户姓名">
               <el-input v-model="form.name" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-if="isSuperAdmin" label="用户名">
+            <el-form-item label="用户名">
               <el-input v-model="form.username" />
             </el-form-item>
           </el-col>
@@ -78,19 +100,19 @@
             label="访问时间"/>
           <el-table-column
             prop="name"
-            width="120"
+            width="150"
             label="访问人"/>
           <el-table-column
             prop="username"
-            width="120"
+            width="170"
             label="用户名"/>
           <el-table-column
             prop="site_name"
-            width="100"
+            width="80"
             label="站点"/>
           <el-table-column
             prop="domain"
-            width="250"
+            width="180"
             label="域名"/>
           <el-table-column
             prop="method"
@@ -98,10 +120,11 @@
             label="请求类型"/>
           <el-table-column
             prop="api_url"
-            width="200"
+            min-width="250"
             label="接口路径"/>
           <el-table-column
             prop="api_desc"
+            min-width="250"
             label="接口描述"/>
         </el-table>
         <div class="block">
@@ -118,19 +141,16 @@
         </div>
       </el-card>
     </el-card>
-    <user-form />
-    <reset-password-form />
   </div>
 </template>
 
 <script>
 import { MessageBox } from 'element-ui'
-import userForm from './userForm'
-import resetPasswordForm from './resetPasswordForm'
+import systemSelect from '@/components/systemSelect'
 
 export default {
   name: 'UserList',
-  components: { userForm, resetPasswordForm, MessageBox },
+  components: { MessageBox, systemSelect },
 
   data() {
     return {
@@ -139,7 +159,7 @@ export default {
       errorflag: false,
       errorinfo: '',
       userAccessLogList: [],
-      form: this.initform(),
+      form: this.initForm(),
       totals: 0
     }
   },
@@ -160,14 +180,16 @@ export default {
     this.getUserAccessLogList('form')
   },
   methods: {
-    initform() {
+    initForm() {
       const _form = {
         username: null,
         site_name: null,
         api_url: null,
-        domain: null,
+        api_desc: null,
+        method: null,
         name: null,
-        access_time: null,
+        start_date: null,
+        end_date: null,
         page: 1,
         pageSize: 10
       }
@@ -189,7 +211,7 @@ export default {
       })
     },
     reset() {
-      this.form = this.initform()
+      this.form = this.initForm()
       this.resetResult()
       this.totals = 0
     },
