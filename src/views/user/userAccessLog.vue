@@ -12,12 +12,24 @@
         :label-width="labelWidth"
         size="small">
         <el-row>
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item label="系统站点">
               <system-select v-model="form.site_name" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="8">
+            <el-form-item label="接口描述">
+              <el-input v-model="form.api_desc" :clearable="true" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="开始日期">
+              <el-date-picker v-model="form.start_date" type="date" value-format="yyyy-MM-dd" placeholder="请选择开始日期" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
             <el-form-item label="请求方法">
               <el-select v-model="form.method" clearable placeholder="请选择">
                 <el-option value="GET" label="GET" />
@@ -32,40 +44,35 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="接口描述">
-              <el-input v-model="form.api_desc"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item label="接口地址">
-              <el-input v-model="form.api_url"/>
+              <el-input v-model="form.api_url" :clearable="true" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="开始日期">
-              <el-date-picker v-model="form.start_date" type="date" value-format="yyyy-MM-dd" placeholder="请选择开始日期" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item label="结束日期">
               <el-date-picker v-model="form.end_date" type="date" value-format="yyyy-MM-dd" placeholder="请选择结束日期" />
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-if="isSuperAdmin">
-          <el-col :span="12">
-            <el-form-item label="用户姓名">
-              <el-input v-model="form.name" />
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="请求结果">
+              <el-radio-group v-model="form.status" :value="form.status">
+                <el-radio label="all">所有</el-radio>
+                <el-radio label="success">成功</el-radio>
+                <el-radio label="failed">失败</el-radio>
+              </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col v-if="isSuperAdmin" :span="8">
+            <el-form-item label="用户姓名">
+              <el-input v-model="form.name" :clearable="true" />
+            </el-form-item>
+          </el-col>
+          <el-col v-if="isSuperAdmin" :span="8">
             <el-form-item label="用户名">
-              <el-input v-model="form.username" />
+              <el-input v-model="form.username" :clearable="true" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -98,6 +105,14 @@
             prop="access_time"
             width="170"
             label="访问时间"/>
+          <el-table-column
+            width="80"
+            label="请求类型">
+            <template slot-scope="scope">
+              <span v-if="scope.row.error_code === 0">成功</span>
+              <span v-else style="background-color: #FA8F78">失败</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="name"
             width="150"
@@ -181,7 +196,7 @@ export default {
   },
   methods: {
     initForm() {
-      const _form = {
+      return {
         username: null,
         site_name: null,
         api_url: null,
@@ -190,10 +205,10 @@ export default {
         name: null,
         start_date: null,
         end_date: null,
+        status: 'all',
         page: 1,
         pageSize: 10
       }
-      return _form
     },
     getUserAccessLogList(form) {
       this.resetResult()
