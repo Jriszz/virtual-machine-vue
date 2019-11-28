@@ -140,13 +140,17 @@ export default {
   computed: {},
   watch: {
     conditions: function(newValue, oldValue) {
-      if (newValue !== null) {
-        console.log(newValue)
+      console.log(newValue)
+      if (newValue) {
+        console.log('正常流程刷新数据')
         this.getStatisResult()
+      } else {
+        console.log('不刷新数据')
       }
     }
   },
   mounted() {
+    console.log('mounted入口刷新数据')
     this.getStatisResult()
   },
   created() {
@@ -154,11 +158,13 @@ export default {
   methods: {
     getStatisResult() {
       console.log(JSON.stringify(this.conditions))
-      this.getStatByUser()
-      this.getStatByInterface()
-      this.getStatByDate()
-      this.getStatBySite()
-      this.getStatByStatus()
+      if (this.conditions) {
+        this.getStatByUser()
+        this.getStatByInterface()
+        this.getStatByDate()
+        this.getStatBySite()
+        this.getStatByStatus()
+      }
     },
     getStatByUser() {
       this.byUserLoading = true
