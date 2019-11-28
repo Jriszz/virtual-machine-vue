@@ -140,7 +140,7 @@ export default {
   computed: {},
   watch: {
     conditions: function(newValue, oldValue) {
-      if (newValue) {
+      if (newValue !== null) {
         console.log(newValue)
         this.getStatisResult()
       }
