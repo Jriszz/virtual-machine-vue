@@ -31,7 +31,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="请求方法">
-              <el-select v-model="form.method" clearable placeholder="请选择">
+              <el-select v-model="form.method" multiple clearable placeholder="请选择">
                 <el-option value="GET" label="GET" />
                 <el-option value="POST" label="POST" />
                 <el-option value="PUT" label="PUT" />
@@ -84,6 +84,10 @@
           <el-button
             type="info"
             plain
+            @click="openStatPage">统计</el-button>
+          <el-button
+            type="info"
+            plain
             @click="reset('form')">重置</el-button>
         </el-form-item>
       </el-form>
@@ -95,6 +99,16 @@
         type="error"
         show-icon
         @close="errorflag=false"/>
+
+      <el-dialog
+        :visible.sync="statPageVisable"
+        :before-close="closeStatPage"
+        :destroy-on-close="true"
+        title="日志统计"
+        width="70%"
+      >
+        <stat-user-access-log :conditions="statForm" />
+      </el-dialog>
 
       <el-card>
         <el-table
@@ -162,10 +176,11 @@
 <script>
 import { MessageBox } from 'element-ui'
 import systemSelect from '@/components/systemSelect'
+import statUserAccessLog from './statUserAccessLog'
 
 export default {
   name: 'UserList',
-  components: { MessageBox, systemSelect },
+  components: { MessageBox, systemSelect, statUserAccessLog },
 
   data() {
     return {
@@ -175,6 +190,8 @@ export default {
       errorinfo: '',
       userAccessLogList: [],
       form: this.initForm(),
+      statForm: {},
+      statPageVisable: false,
       totals: 0
     }
   },
@@ -224,6 +241,19 @@ export default {
           this.loading = false
         })
       })
+    },
+    openStatPage() {
+      this.statForm = { ...this.form }
+      if (this.statForm.method.length === 0) {
+        this.statForm.method = null
+      } else {
+        this.statForm.method = this.statForm.method.join()
+      }
+      this.statPageVisable = true
+    },
+    closeStatPage() {
+      this.statForm = null
+      this.statPageVisable = false
     },
     reset() {
       this.form = this.initForm()
