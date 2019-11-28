@@ -141,6 +141,7 @@ export default {
   watch: {
     conditions: function(newValue, oldValue) {
       if (newValue) {
+        console.log(newValue)
         this.getStatisResult()
       }
     }
@@ -231,13 +232,6 @@ export default {
         this.byStatusLoading = false
         console.log(error)
       })
-    },
-    resetResult() {
-      this.statResultByUser.rows = []
-      this.statResultByInterface.rows = []
-      this.statResultByDate.rows = []
-      this.statResultBySite.rows = []
-      this.statResultByStatus.rows = []
     }
   }
 }
