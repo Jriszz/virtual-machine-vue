@@ -153,6 +153,7 @@ export default {
   },
   methods: {
     getStatisResult() {
+      console.log(JSON.stringify(this.conditions))
       this.getStatByUser()
       this.getStatByInterface()
       this.getStatByDate()
