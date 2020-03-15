@@ -5,7 +5,7 @@ import 'nprogress/nprogress.css' // progress bar style
 import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth' // getToken from cookie
 
-NProgress.configure({ showSpinner: false })// NProgress configuration
+NProgress.configure({ showSpinner: false }) // NProgress configuration
 
 const whiteList = ['/login'] // 不重定向白名单
 router.beforeEach(async(to, from, next) => {
@@ -54,7 +54,8 @@ router.beforeEach(async(to, from, next) => {
       console.log('未登陆，但为白名单')
       next()
     } else {
-      window.location.href = '/api/user/login'
+      // window.location.href = '/api/user/login'
+      next(`/login?redirect=${to.path}`)
       NProgress.done()
     }
   }
