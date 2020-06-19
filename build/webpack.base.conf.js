@@ -95,11 +95,8 @@ module.exports = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    new MonacoWebpackPlugin()
-    // new CopyWebpackPlugin({
-    //   from: 'node_modules/monaco-editor/min/vs',
-    //   to: 'vs'
-    // })
+    new MonacoWebpackPlugin({
+    })
   ],
   node: {
     // prevent webpack from injecting useless setImmediate polyfill because Vue
