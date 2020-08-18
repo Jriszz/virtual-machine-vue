@@ -72,7 +72,7 @@ export default {
         password: [{ required: true, message: '密码必填', trigger: 'blur' }],
         password2: [{ required: true, message: '密码2必填', trigger: 'blur' }],
         phone: [{ required: true, message: '手机必填', trigger: 'blur' }],
-        email: [{ required: true, message: '邮箱必填，且只支持@xsyxsc.com后缀邮箱', trigger: 'blur' }]
+        email: [{ required: true, message: '邮箱必填且只支持指定后缀的邮箱', trigger: 'blur' }]
       }
     }
   },
