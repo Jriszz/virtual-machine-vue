@@ -146,27 +146,24 @@ export default {
       } else {
         submitType = 'EditResource'
       }
-      this.$refs[form].validate(valid => {
+      this.$refs[form].validate(async valid => {
         if (!valid) {
-          this.loading = false
           return false
         }
+        const params = this.tools.cleanObjNullProperty(this.form)
+        const res = await this.$store.dispatch(submitType, params)
+        if (res.error_code === 0) {
+          this.form = this.initForm()
+          Message({
+            message: res.msg,
+            type: 'success',
+            duration: 5 * 1000
+          })
+          this.$store.commit('TRIGGER_REFRESH')
+        } else {
+          console.log(res)
+        }
       })
-
-      const params = this.tools.cleanObjNullProperty(this.form)
-      const res = await this.$store.dispatch(submitType, params)
-      if (res.error_code === 0) {
-        this.form = this.initForm()
-        Message({
-          message: res.msg,
-          type: 'success',
-          duration: 5 * 1000
-        })
-        this.$store.commit('TRIGGER_REFRESH')
-      } else {
-        this.loading = false
-        console.log(res)
-      }
       this.loading = false
     },
     reset() {

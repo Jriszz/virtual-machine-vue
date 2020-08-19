@@ -75,7 +75,14 @@
           <el-table-column
             prop="receiver"
             width="100"
-            label="消息接收群"/>
+            label="消息接收群">
+            <template slot-scope="scope">
+              <span v-if="scope.row.receiver==='all'">长研日常群</span>
+              <span v-else-if="scope.row.receiver==='test'">长研测试群</span>
+              <span v-else-if="scope.row.receiver==='debug'">开发调试群</span>
+              <span v-else>出错</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="branch"
             width="120"
