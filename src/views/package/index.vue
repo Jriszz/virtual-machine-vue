@@ -1,7 +1,7 @@
 <template>
   <div>
-    <package-list/>
     <package-add/>
+    <package-list/>
   </div>
 </template>
 

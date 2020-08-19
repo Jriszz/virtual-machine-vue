@@ -4,7 +4,7 @@
       <div slot="header">
         <span>在线打包队列</span>
       </div>
-
+      <!--
       <el-form
         v-loading="loading"
         ref="form"
@@ -17,7 +17,7 @@
             plain
             @click="getPackageList">刷新队列</el-button>
         </el-form-item>
-      </el-form>
+      </el-form> -->
 
       <el-alert
         v-show="errorflag"
@@ -27,85 +27,85 @@
         show-icon
         @close="errorflag=false"/>
 
-      <el-card>
-        <el-table
-          :data="packageList"
-          :stripe="true"
-          :border="true">
-          <el-table-column
-            prop="ver"
-            width="60"
-            label="版本"/>
-          <el-table-column
-            prop="sub_type"
-            width="100"
-            label="子版本"/>
-          <el-table-column
-            prop="pack_type"
-            width="80"
-            label="产品"/>
-          <el-table-column
-            prop="arch"
-            width="50"
-            label="平台"/>
-          <el-table-column
-            prop="language"
-            width="60"
-            label="语言"/>
-          <el-table-column
-            prop="channel"
-            width="80"
-            label="渠道"/>
-          <el-table-column
-            prop="stage_type"
-            width="80"
-            label="测试阶段">
-            <template slot-scope="scope">
-              <span v-if="scope.row.stage_type==='module'">模块测试</span>
-              <span v-else-if="scope.row.stage_type==='integration'">集成测试</span>
-              <span v-else-if="scope.row.stage_type==='release'">发布阶段</span>
-              <span v-else-if="scope.row.stage_type==='patch'">补丁阶段</span>
-              <span v-else>出错</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="beta"
-            width="80"
-            label="beta版"/>
-          <el-table-column
-            prop="receiver"
-            width="100"
-            label="消息接收群">
-            <template slot-scope="scope">
-              <span v-if="scope.row.receiver==='all'">长研日常群</span>
-              <span v-else-if="scope.row.receiver==='test'">长研测试群</span>
-              <span v-else-if="scope.row.receiver==='debug'">开发调试群</span>
-              <span v-else>出错</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="branch"
-            width="120"
-            label="打包脚本分支"/>
-          <el-table-column
-            prop="debug"
-            width="50"
-            label="调试">
-            <template slot-scope="scope">
-              <span v-if="scope.row.debug===''">是</span>
-              <span v-else>否</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="操作"
-            width="150">
-            <template slot-scope="scope">
-              <el-button size="mini" type="primary" plain @click="removePackage(scope.row.key)">删除</el-button>
-              <el-button size="mini" type="primary" plain @click="getPackageDetail(scope.row.key)">详情</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-card>
+      <el-table
+        :data="packageList"
+        :stripe="true">
+        <el-table-column
+          label="操作"
+          width="150">
+          <template slot-scope="scope">
+            <el-button size="mini" type="danger" plain @click="removePackage(scope.row.key)">删除</el-button>
+            <el-button size="mini" type="primary" plain @click="getPackageDetail(scope.row.key)">详情</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="pack_type"
+          width="120"
+          label="产品"/>
+        <el-table-column
+          prop="ver"
+          width="80"
+          label="版本"/>
+        <el-table-column
+          prop="sub_type"
+          width="120"
+          label="子版本"/>
+        <el-table-column
+          prop="beta"
+          width="100"
+          label="beta版"/>
+        <el-table-column
+          prop="arch"
+          width="80"
+          label="平台"/>
+        <el-table-column
+          prop="language"
+          width="80"
+          label="语言"/>
+        <el-table-column
+          prop="channel"
+          width="100"
+          label="渠道"/>
+        <el-table-column
+          prop="stage_type"
+          width="120"
+          label="测试阶段">
+          <template slot-scope="scope">
+            <span v-if="scope.row.stage_type==='module'">模块测试</span>
+            <span v-else-if="scope.row.stage_type==='integration'">集成测试</span>
+            <span v-else-if="scope.row.stage_type==='release'">发布阶段</span>
+            <span v-else-if="scope.row.stage_type==='patch'">补丁阶段</span>
+            <span v-else>出错</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="receiver"
+          width="120"
+          label="消息接收群">
+          <template slot-scope="scope">
+            <span v-if="scope.row.receiver==='all'">长研日常群</span>
+            <span v-else-if="scope.row.receiver==='test'">长研测试群</span>
+            <span v-else-if="scope.row.receiver==='debug'">开发调试群</span>
+            <span v-else>出错</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="branch"
+          width="120"
+          label="打包脚本分支"/>
+        <!-- <el-table-column
+          prop="debug"
+          width="80"
+          label="调试">
+          <template slot-scope="scope">
+            <span v-if="scope.row.debug===''">否</span>
+            <span v-else>调试版</span>
+          </template>
+        </el-table-column> -->
+        <el-table-column
+          prop="tags"
+          label="源码分支"/>
+      </el-table>
     </el-card>
   </div>
 </template>

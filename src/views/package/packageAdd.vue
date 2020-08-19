@@ -104,8 +104,9 @@
         </el-row>
 
         <el-form-item>
-          <el-button @click="AddPackage('form')">提交</el-button>
+          <el-button @click="addPackage('form')">提交</el-button>
           <el-button @click="reset">重置</el-button>
+          <el-button @click="refreshList">刷新队列</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -159,7 +160,7 @@ export default {
       }
       return _form
     },
-    async AddPackage(form) {
+    async addPackage(form) {
       this.loading = true
       this.$refs[form].validate(async valid => {
         if (!valid) {
@@ -177,6 +178,9 @@ export default {
         }
       })
       this.loading = false
+    },
+    async refreshList() {
+      this.$store.commit('TRIGGER_REFRESH')
     },
     reset() {
       this.form = this.initForm()
