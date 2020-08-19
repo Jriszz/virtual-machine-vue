@@ -113,6 +113,34 @@ export const asyncRoutes = [
     }]
   },
 
+  {
+    path: '/tasks',
+    component: Layout,
+    redirect: '/',
+    name: 'tasks',
+    hidden: false,
+    // meta: { roles: ['super_admin'] },
+    children: [{
+      path: '',
+      component: () => import('@/views/tasks/index'),
+      meta: { title: '任务列表', icon: 'list' }
+    }]
+  },
+
+  {
+    path: '/package',
+    component: Layout,
+    redirect: '/',
+    name: 'package',
+    hidden: false,
+    // meta: { roles: ['super_admin'] },
+    children: [{
+      path: '',
+      component: () => import('@/views/package/index'),
+      meta: { title: '在线打包', icon: 'list' }
+    }]
+  },
+
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

@@ -11,6 +11,20 @@ module.exports = {
     assetsPublicPath: '/',
     assetsRoot: path.resolve(__dirname, '../dist'),
     proxyTable: {
+      "/api/ferrymen": {
+        "target": "http://192.168.0.111:8000",
+        "pathRewrite": {
+          "^/api/ferrymen": ""
+        },
+        "changeOrigin": true
+      },
+      "/api/package": {
+        "target": "http://127.0.0.1:8002",
+        "pathRewrite": {
+          "^/api/package": ""
+        },
+        "changeOrigin": true
+      },
       "/api": {
         "target": "http://127.0.0.1:5500",
         "pathRewrite": {

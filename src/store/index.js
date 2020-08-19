@@ -7,6 +7,8 @@ import permission from './modules/permission'
 import systems from './modules/system'
 import resources from './modules/resource'
 import roles from './modules/role'
+import tasks from './modules/task'
+import packages from './modules/package'
 
 Vue.use(Vuex)
 
@@ -17,7 +19,9 @@ const store = new Vuex.Store({
     permission,
     systems,
     resources,
-    roles
+    roles,
+    tasks,
+    packages
   },
   getters
 })
