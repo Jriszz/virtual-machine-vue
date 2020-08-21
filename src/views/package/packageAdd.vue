@@ -27,7 +27,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="运行平台">
-              <el-radio-group v-model="form.arch">
+              <el-radio-group v-model="form.arch" :disabled="!arch">
                 <el-radio label="all">所有</el-radio>
                 <el-radio label="x86">32位</el-radio>
                 <el-radio label="x64">64位</el-radio>
@@ -36,7 +36,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="产品名称">
-              <el-radio-group v-model="form.pack_type">
+              <el-radio-group v-model="form.pack_type" :disabled="!pack_type">
                 <el-radio label="creator">Creator</el-radio>
                 <el-radio label="worker">Worker</el-radio>
               </el-radio-group>
@@ -44,7 +44,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="Beta版本">
-              <el-radio-group v-model="form.beta">
+              <el-radio-group v-model="form.beta" :disabled="!beta">
                 <el-radio label="beta">是</el-radio>
                 <el-radio label="">否</el-radio>
               </el-radio-group>
@@ -55,12 +55,12 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="版本编号" prop="ver">
-              <el-input v-model="form.ver"/>
+              <el-input v-model="form.ver" :disabled="!ver"/>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="软件语言">
-              <el-radio-group v-model="form.language">
+              <el-radio-group v-model="form.language" :disabled="!language">
                 <el-radio label="zh-cn">中文</el-radio>
                 <el-radio label="en-us">英文</el-radio>
                 <el-radio label="ja-jp">日文</el-radio>
@@ -69,7 +69,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="子版本号">
-              <el-radio-group v-model="form.sub_type">
+              <el-radio-group v-model="form.sub_type" :disabled="!sub_type">
                 <el-radio label="enterprise">企业版</el-radio>
                 <el-radio label="community">社区版</el-radio>
               </el-radio-group>
@@ -88,12 +88,12 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="打包分支">
-              <el-input v-model="form.branch"/>
+              <el-input v-model="form.branch" :disabled="!branch"/>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="消息接收">
-              <el-radio-group v-model="form.receiver">
+              <el-radio-group v-model="form.receiver" :disabled="!receiver">
                 <el-radio label="all">长研群</el-radio>
                 <el-radio label="test">测试群</el-radio>
                 <el-radio label="debug">调试群</el-radio>
@@ -102,7 +102,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="测试阶段">
-              <el-radio-group v-model="form.stage_type">
+              <el-radio-group v-model="form.stage_type" :disabled="!stage_type">
                 <el-radio label="module">模块测试</el-radio>
                 <el-radio label="integration">集成测试</el-radio>
               </el-radio-group>
@@ -110,7 +110,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="渠道代码" prop="channel">
-              <el-input v-model="form.channel"/>
+              <el-input v-model="form.channel" :disabled="!channel"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -118,7 +118,7 @@
         <el-row>
           <el-col>
             <el-form-item label="源码分支">
-              <el-input :rows="2" v-model="form.tags" type="textarea" placeholder="形如：BotScript:BRANCH:release-5.1.1;extends:BRANCH:product-5.1.2"/>
+              <el-input :rows="2" :disabled="!tags" v-model="form.tags" type="textarea" placeholder="形如：BotScript:BRANCH:release-5.1.1;extends:BRANCH:product-5.1.2"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -182,16 +182,52 @@ export default {
         this.form = this.initForm()
         this.form.ver = ''
         this.form.branch = 'master'
+        this.ver = true
+        this.tag_name = true
+        this.tags = true
+        this.branch = true
+        this.stage_type = true
+        this.arch = true
+        this.beta = true
+        this.pack_type = true
+        this.sub_type = true
+        this.language = true
+        this.channel = true
+        this.receiver = true
       } else if (newValue === 'hailianxun5.1.1') {
         this.form = this.initForm()
         this.form.ver = '5.1.1'
         this.form.branch = '海联讯-5.1.1'
         this.form.arch = 'x86'
+        this.ver = false
+        this.tag_name = false
+        this.tags = false
+        this.branch = false
+        this.stage_type = false
+        this.arch = true
+        this.beta = false
+        this.pack_type = false
+        this.sub_type = false
+        this.language = false
+        this.channel = false
+        this.receiver = false
       } else if (newValue === 'international5.1.2') {
         this.form = this.initForm()
         this.form.ver = '5.1.2'
         this.form.branch = 'language-5.1.2'
         this.form.language = 'en-us'
+        this.ver = false
+        this.tag_name = false
+        this.tags = false
+        this.branch = false
+        this.stage_type = false
+        this.arch = true
+        this.beta = false
+        this.pack_type = true
+        this.sub_type = true
+        this.language = false
+        this.channel = false
+        this.receiver = false
       } else {
         this.form = this.initForm()
       }
