@@ -14,8 +14,15 @@
         size="small">
         <el-row>
           <el-col :span="6">
-            <el-form-item label="版本编号" prop="ver">
-              <el-input v-model="form.ver"/>
+            <el-form-item label="预制版本">
+              <el-select v-model="builtin_version" placeholder="请选择">
+                <el-option
+                  v-for="item in builtin_versions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="item.disabled"/>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -47,8 +54,8 @@
 
         <el-row>
           <el-col :span="6">
-            <el-form-item label="渠道代码" prop="channel">
-              <el-input v-model="form.channel"/>
+            <el-form-item label="版本编号" prop="ver">
+              <el-input v-model="form.ver"/>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -65,6 +72,14 @@
               <el-radio-group v-model="form.sub_type">
                 <el-radio label="enterprise">企业版</el-radio>
                 <el-radio label="community">社区版</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="调试模式">
+              <el-radio-group v-model="form.debug" :disabled="!isSuperAdmin">
+                <el-radio label="yes">是</el-radio>
+                <el-radio label="">否</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -91,6 +106,11 @@
                 <el-radio label="module">模块测试</el-radio>
                 <el-radio label="integration">集成测试</el-radio>
               </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="渠道代码" prop="channel">
+              <el-input v-model="form.channel"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -129,6 +149,17 @@ export default {
       title: '在线打包',
       isEditScene: false,
       isAddScene: false,
+      builtin_version: 'current',
+      builtin_versions: [{
+        value: 'current',
+        label: '当前迭代'
+      }, {
+        value: 'hailianxun5.1.1',
+        label: '海联讯5.1.1'
+      }, {
+        value: 'international5.1.2',
+        label: '国际版5.1.2'
+      }],
       form: this.initForm(),
       rules: {
         ver: [{ required: true, message: '版本编号必填', trigger: 'blur' }],
@@ -137,8 +168,34 @@ export default {
     }
   },
   computed: {
+    isSuperAdmin: function() {
+      if (this.$store.state.users.sessionUser.super_admin === 1) {
+        return true
+      } else {
+        return false
+      }
+    }
   },
   watch: {
+    builtin_version: function(newValue, oldValue) {
+      if (newValue === 'current') {
+        this.form = this.initForm()
+        this.form.ver = ''
+        this.form.branch = 'master'
+      } else if (newValue === 'hailianxun5.1.1') {
+        this.form = this.initForm()
+        this.form.ver = '5.1.1'
+        this.form.branch = '海联讯-5.1.1'
+        this.form.arch = 'x86'
+      } else if (newValue === 'international5.1.2') {
+        this.form = this.initForm()
+        this.form.ver = '5.1.2'
+        this.form.branch = 'language-5.1.2'
+        this.form.language = 'en-us'
+      } else {
+        this.form = this.initForm()
+      }
+    }
   },
   methods: {
     initForm() {
@@ -150,8 +207,8 @@ export default {
         branch: 'master',
         stage_type: 'module',
         arch: 'all',
-        beta: 'beta',
-        pack_type: 'worker',
+        beta: '',
+        pack_type: 'creator',
         sub_type: 'enterprise',
         language: 'zh-cn',
         channel: 'official',
