@@ -31,14 +31,6 @@
         :data="packageList"
         :stripe="true">
         <el-table-column
-          label="操作"
-          width="150">
-          <template slot-scope="scope">
-            <el-button size="mini" type="danger" plain @click="removePackage(scope.row.key)">删除</el-button>
-            <el-button size="mini" type="primary" plain @click="getPackageDetail(scope.row.key)">详情</el-button>
-          </template>
-        </el-table-column>
-        <el-table-column
           prop="pack_type"
           width="120"
           label="产品"/>
@@ -50,10 +42,6 @@
           prop="sub_type"
           width="120"
           label="子版本"/>
-        <el-table-column
-          prop="beta"
-          width="100"
-          label="beta版"/>
         <el-table-column
           prop="arch"
           width="80"
@@ -93,20 +81,43 @@
           prop="branch"
           width="120"
           label="打包脚本分支"/>
-        <!-- <el-table-column
+        <el-table-column
+          prop="beta"
+          width="100"
+          label="beta版"/>
+        <el-table-column
           prop="debug"
-          width="80"
           label="调试">
           <template slot-scope="scope">
             <span v-if="scope.row.debug===''">否</span>
-            <span v-else>调试版</span>
+            <span v-else>是</span>
           </template>
-        </el-table-column> -->
+        </el-table-column>
         <el-table-column
-          prop="tags"
-          label="源码分支"/>
+          label="操作"
+          width="150">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" plain @click="showTags(scope.row.tags)">分支</el-button>
+            <el-button size="mini" type="danger" plain @click="removePackage(scope.row.key)">删除</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </el-card>
+
+    <el-dialog :visible.sync="packageShowTags" width="50%" title="打包源库分支信息">
+      <el-link type="warning">没有指定时由打包程序自动计算分支，一般情况下会默认取master分支</el-link>
+      <el-table :data="currentTags">
+        <el-table-column
+          prop="name"
+          label="源库名称"/>
+        <el-table-column
+          prop="type"
+          label="目标类型"/>
+        <el-table-column
+          prop="value"
+          label="目标名称"/>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -123,6 +134,8 @@ export default {
       loading: false,
       errorflag: false,
       errorinfo: '',
+      currentTags: [],
+      packageShowTags: false,
       form: {}
     }
   },
@@ -168,6 +181,10 @@ export default {
         console.log(res)
       }
       this.loading = false
+    },
+    showTags(tags) {
+      this.currentTags = tags
+      this.packageShowTags = true
     },
     async getPackageDetail(key) {
       this.loading = true

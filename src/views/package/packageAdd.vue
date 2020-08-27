@@ -124,9 +124,10 @@
         </el-row>
 
         <el-form-item>
-          <el-button @click="addPackage('form')">提交</el-button>
-          <el-button @click="reset">重置</el-button>
-          <el-button @click="refreshList">刷新队列</el-button>
+          <el-button type="primary" @click="addPackage('form')">提交</el-button>
+          <el-button type="primary" @click="reset">重置</el-button>
+          <el-button type="success" @click="refreshList">刷新队列</el-button>
+          <el-button type="success" @click="refreshServiceList">刷新服务</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -280,12 +281,16 @@ export default {
             duration: 5 * 1000
           })
           this.$store.commit('TRIGGER_REFRESH')
+          this.$store.commit('TRIGGER_SERVICE_REFRESH')
         }
       })
       this.loading = false
     },
     async refreshList() {
       this.$store.commit('TRIGGER_REFRESH')
+    },
+    async refreshServiceList() {
+      this.$store.commit('TRIGGER_SERVICE_REFRESH')
     },
     reset() {
       this.form = this.initForm()

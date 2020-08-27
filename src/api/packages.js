@@ -42,3 +42,11 @@ export function removePackage(key) {
     method: 'delete'
   })
 }
+
+// 获取打包服务列表
+export function getServiceList() {
+  return request({
+    url: PREFIX + '/service',
+    method: 'get'
+  })
+}

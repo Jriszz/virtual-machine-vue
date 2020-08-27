@@ -1,14 +1,18 @@
-import { getParamEnum, getPackageList, addPackage, getPackageDetail, removePackage } from '@/api/packages.js'
+import { getParamEnum, getPackageList, addPackage, getPackageDetail, removePackage, getServiceList } from '@/api/packages.js'
 
 const packages = {
   state: {
     // 刷新列表页
     refresh: false,
+    // 刷新服务列表
+    refreshService: false,
     // 任务列表
     packageList: [],
     // 任务详情、修改、新建页
     packageFormVisable: false,
-    packageFormType: 'info'
+    packageFormType: 'info',
+    // 服务列表
+    serviceList: []
   },
 
   mutations: {
@@ -20,6 +24,15 @@ const packages = {
     },
     FINISH_REFRESH: (state) => {
       state.refresh = false
+    },
+    TRIGGER_SERVICE_REFRESH: (state) => {
+      state.refreshService = true
+    },
+    FINISH_SERVICE_REFRESH: (state) => {
+      state.refreshService = false
+    },
+    SET_SERVICE_LIST: (state, serviceList) => {
+      state.serviceList = serviceList
     }
   },
 
@@ -61,8 +74,17 @@ const packages = {
         console.log(res)
       }
       return res
-    }
+    },
 
+    async GetServiceList({ commit }) {
+      const res = await getServiceList()
+      if (res.error_code === 0) {
+        commit('SET_SERVICE_LIST', res.data)
+      } else {
+        console.log(res)
+      }
+      return res
+    }
   }
 }
 
