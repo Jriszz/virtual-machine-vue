@@ -2,7 +2,7 @@
   "name": "user_center",
   "version": "1.0.0",
   "license": "MIT",
-  "description": "兴盛优选权限与资源管理",
+  "description": "蓝图",
   "author": "deng <yu12377@gmail.com>",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",

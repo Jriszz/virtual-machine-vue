@@ -78,7 +78,7 @@
           <el-col :span="6">
             <el-form-item label="调试模式">
               <el-radio-group v-model="form.debug" :disabled="!isSuperAdmin">
-                <el-radio label="yes">是</el-radio>
+                <el-radio label="true">是</el-radio>
                 <el-radio label="">否</el-radio>
               </el-radio-group>
             </el-form-item>
@@ -222,7 +222,7 @@ export default {
         this.sub_type = false
         this.language = false
         this.channel = false
-        this.receiver = false
+        this.receiver = true
       } else if (newValue === 'international5.1.2') {
         this.form = this.initForm()
         this.form.ver = '5.1.2'
@@ -239,7 +239,7 @@ export default {
         this.sub_type = true
         this.language = false
         this.channel = false
-        this.receiver = false
+        this.receiver = true
       } else {
         this.form = this.initForm()
       }
