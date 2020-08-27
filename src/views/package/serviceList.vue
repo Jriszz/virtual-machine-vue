@@ -107,7 +107,7 @@ export default {
       this.loading = false
     },
     async viewLog(key) {
-      alert("规划中……")
+      alert('规划中…')
     },
     reset() {
       this.form = this.initForm()
