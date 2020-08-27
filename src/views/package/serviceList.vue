@@ -31,17 +31,30 @@
         :data="serviceList"
         :stripe="true">
         <el-table-column
+          prop="address"
+          width="200"
+          label="打包服务"/>
+        <el-table-column
           label="操作"
           width="200">
+          <template slot-scope="scope">
+            <el-button size="mini" plain @click="viewTask(scope.row.task)">查看当前任务</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作">
           <template slot-scope="scope">
             <el-button size="mini" plain @click="viewLog(scope.row.address)">查看实时日志</el-button>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="address"
-          label="打包服务"/>
       </el-table>
     </el-card>
+    <el-dialog :visible.sync="packageShowTask" width="40%" title="当前正在打包的任务信息">
+      <el-input
+        :rows="16"
+        v-model="currentTask"
+        type="textarea"/>
+    </el-dialog>
   </div>
 </template>
 
@@ -58,6 +71,8 @@ export default {
       loading: false,
       errorflag: false,
       errorinfo: '',
+      packageShowTask: false,
+      currentTask: '',
       form: {}
     }
   },
@@ -106,7 +121,15 @@ export default {
       }
       this.loading = false
     },
-    async viewLog(key) {
+    viewTask(task) {
+      if (Object.keys(task).length > 0) {
+        this.currentTask = JSON.stringify(task, null, 4)
+      } else {
+        this.currentTask = '当前没有任务在运行……'
+      }
+      this.packageShowTask = true
+    },
+    viewLog(key) {
       alert('规划中…')
     },
     reset() {
