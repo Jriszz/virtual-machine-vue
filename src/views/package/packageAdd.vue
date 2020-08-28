@@ -76,10 +76,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="调试模式">
-              <el-radio-group v-model="form.debug" :disabled="!isSuperAdmin">
-                <el-radio label="true">是</el-radio>
-                <el-radio label="">否</el-radio>
+            <el-form-item label="签名证书">
+              <el-radio-group v-model="form.sign">
+                <el-radio label="laiye">来也</el-radio>
+                <el-radio label="aosen">奥森</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -261,7 +261,7 @@ export default {
         sub_type: 'enterprise',
         language: 'zh-cn',
         channel: 'official',
-        debug: '',
+        sign: 'laiye',
         receiver: 'all'
       }
       return _form

@@ -29,11 +29,19 @@
 
       <el-table
         :data="serviceList"
-        :stripe="true">
+        :row-class-name="tableRowClassName">
         <el-table-column
           prop="address"
           width="200"
           label="打包服务"/>
+        <el-table-column
+          label="当前状态"
+          width="200">
+          <template slot-scope="scope">
+            <span v-if="Object.keys(scope.row.task).length>0">打包中</span>
+            <span v-else>空闲中</span>
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作"
           width="200">
@@ -57,6 +65,15 @@
     </el-dialog>
   </div>
 </template>
+
+<style>
+  .el-table .warning-row {
+    background: oldlace;
+  }
+  .el-table .success-row {
+    background: #f0f9eb;
+  }
+</style>
 
 <script>
 import { MessageBox, Message } from 'element-ui'
@@ -96,6 +113,13 @@ export default {
     this.getServiceList()
   },
   methods: {
+    tableRowClassName({ row, rowIndex }) {
+      if (Object.keys(row.task).length > 0) {
+        return 'warning-row'
+      } else {
+        return 'success-row'
+      }
+    },
     async getServiceList() {
       this.resetResult()
       this.loading = true

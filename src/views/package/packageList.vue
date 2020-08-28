@@ -86,16 +86,16 @@
           width="100"
           label="beta版"/>
         <el-table-column
-          prop="debug"
-          label="调试">
+          prop="sign"
+          label="签名"
+          width="80">
           <template slot-scope="scope">
-            <span v-if="scope.row.debug===''">否</span>
-            <span v-else>是</span>
+            <span v-if="scope.row.sign==='laiye'">来也</span>
+            <span v-else>奥森</span>
           </template>
         </el-table-column>
         <el-table-column
-          label="操作"
-          width="150">
+          label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" plain @click="showTags(scope.row.tags)">分支</el-button>
             <el-button size="mini" type="danger" plain @click="removePackage(scope.row.key)">删除</el-button>
