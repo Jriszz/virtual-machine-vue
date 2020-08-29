@@ -52,7 +52,7 @@
         <el-table-column
           label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" plain @click="viewLog(scope.row.address)">查看实时日志</el-button>
+            <el-button size="mini" plain @click="viewLog(scope.row.onlineLog)">查看实时日志</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -153,8 +153,8 @@ export default {
       }
       this.packageShowTask = true
     },
-    viewLog(key) {
-      alert('规划中…')
+    viewLog(url) {
+      window.open(url, '_blank')
     },
     reset() {
       this.form = this.initForm()
