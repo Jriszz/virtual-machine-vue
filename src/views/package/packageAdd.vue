@@ -262,7 +262,8 @@ export default {
         language: 'zh-cn',
         channel: 'official',
         sign: 'laiye',
-        receiver: 'all'
+        receiver: 'all',
+        from: this.$store.state.users.sessionUser.name || this.$store.state.users.sessionUser.username
       }
       return _form
     },
