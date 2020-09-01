@@ -137,7 +137,7 @@
             <template slot-scope="scope">
               <el-button size="mini" type="primary" plain @click="taskSync(scope.row.id)">同步</el-button>
               <el-button size="mini" type="primary" plain @click="getTaskDetail(scope.row.id)">详情</el-button>
-              <el-button size="mini" type="primary" plain @click="getTaskLog(scope.row.task_id)">日志</el-button>
+              <el-button size="mini" type="primary" plain @click="openLogPage(scope.row.task_id)">日志</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -177,6 +177,7 @@ export default {
       errorflag: false,
       errorinfo: '',
       form: this.initForm(),
+      logUrl: '',
       totals: 0
     }
   },
@@ -227,6 +228,7 @@ export default {
       const params = this.tools.cleanObjNullProperty(this.form)
       const res = await this.$store.dispatch('GetTaskList', params)
       if (res.error_code === 0) {
+        this.logUrl = res.data.log_url
         this.totals = res.data.totals
       } else {
         console.log(res)
@@ -244,6 +246,9 @@ export default {
       this.errorflag = false
       await this.$store.dispatch('GetTaskDetail', id)
       this.loading = false
+    },
+    openLogPage(task_id) {
+      window.open(this.logUrl + "?task_id=" + task_id, "_blank")
     },
     async getTaskLog(task_id) {
       this.loading = true
