@@ -92,22 +92,22 @@
           size="small">
           <el-table-column
             prop="task_id"
-            width="160"
+            width="140"
             label="任务编号"/>
           <el-table-column
             prop="worker_name"
-            width="160"
+            width="140"
             label="Worker名称"/>
           <el-table-column
             prop="flow_name"
-            width="250"
+            min-width="250"
             label="流程名称"/>
           <el-table-column
             prop="dep_name"
-            width="160"
+            min-width="180"
             label="部门名称"/>
           <el-table-column
-            width="160"
+            width="150"
             label="起止时间">
             <template slot-scope="scope">
               <div>
@@ -153,10 +153,10 @@
           </el-table-column>
           <el-table-column
             label="操作"
-            min-width="150">
+            min-width="220">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" plain @click="taskSync(scope.row.task_id)">同步</el-button>
-              <el-button size="mini" type="primary" plain @click="getTaskDetail(scope.row.id)">详情</el-button>
+              <el-button size="mini" type="primary" plain @click="openTaskDetail(scope.row.task_id)">详情</el-button>
               <el-button size="mini" type="primary" plain @click="openLogPage(scope.row.task_id)">日志</el-button>
             </template>
           </el-table-column>
@@ -193,6 +193,7 @@ export default {
       errorinfo: '',
       form: this.initForm(),
       logUrl: '',
+      detailUrl: '',
       totals: 0
     }
   },
@@ -245,6 +246,7 @@ export default {
       const res = await this.$store.dispatch('GetTaskList', params)
       if (res.error_code === 0) {
         this.logUrl = res.data.log_url
+        this.detailUrl = res.data.detail_url
         this.totals = res.data.totals
         Message({
           message: res.msg,
@@ -268,11 +270,9 @@ export default {
       await this.getTaskList()
       this.loading = false
     },
-    async getTaskDetail(id) {
-      this.loading = true
-      this.errorflag = false
-      await this.$store.dispatch('GetTaskDetail', id)
-      this.loading = false
+    async openTaskDetail(task_id) {
+      await this.taskSync(task_id)
+      window.open(this.detailUrl + '?task_id=' + task_id, '_blank')
     },
     openLogPage(task_id) {
       window.open(this.logUrl + '?task_id=' + task_id, '_blank')
