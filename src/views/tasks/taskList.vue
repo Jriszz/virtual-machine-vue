@@ -15,6 +15,7 @@
           <el-col :span="12">
             <el-form-item label="任务状态">
               <el-radio-group v-model="form.status">
+                <el-radio label="">全部</el-radio>
                 <el-radio label="deploying">部署中</el-radio>
                 <el-radio label="running">运行中</el-radio>
                 <el-radio label="finished">已完成</el-radio>
@@ -22,38 +23,40 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="任务结果">
-              <el-radio-group v-model="form.result">
-                <el-radio :label="0">运行失败</el-radio>
-                <el-radio :label="1">运行成功</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
             <el-form-item label="任务编号">
               <el-input v-model="form.task_id" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12">
-            <el-form-item label="部署ID">
-              <el-input v-model="form.dep_id" />
+            <el-form-item label="任务结果">
+              <el-radio-group v-model="form.result">
+                <el-radio label="">全部</el-radio>
+                <el-radio :label="1">运行成功</el-radio>
+                <el-radio :label="0">运行失败</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="部门名称">
+              <el-input v-model="form.dep_name" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="WorkerID">
-              <el-input v-model="form.worker_id" />
+            <el-form-item label="同步状态">
+              <el-radio-group v-model="form.sync">
+                <el-radio label="">全部</el-radio>
+                <el-radio :label="1">已同步</el-radio>
+                <el-radio :label="0">未同步</el-radio>
+              </el-radio-group>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="任务详情">
-              <el-radio-group v-model="form.detail">
-                <el-radio :label="0">否</el-radio>
-                <el-radio :label="1">是</el-radio>
-              </el-radio-group>
+            <el-form-item label="Worker名称">
+              <el-input v-model="form.worker_name" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -69,7 +72,7 @@
           <el-button
             type="primary"
             plain
-            @click="taskSync('')">同步</el-button>
+            @click="taskSync('')">批量同步</el-button>
         </el-form-item>
       </el-form>
 
@@ -85,7 +88,8 @@
         <el-table
           :data="taskList"
           :stripe="true"
-          :border="true">
+          :border="true"
+          size="small">
           <el-table-column
             prop="task_id"
             width="160"
@@ -100,8 +104,22 @@
             label="流程名称"/>
           <el-table-column
             prop="dep_name"
-            width="200"
+            width="160"
             label="部门名称"/>
+          <el-table-column
+            width="160"
+            label="起止时间">
+            <template slot-scope="scope">
+              <div>
+                <span style="display: block; line-height: 1">{{ scope.row.start_time }}</span>
+                <span style="display: block; line-height: 1">{{ scope.row.end_time }}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="elapsed"
+            width="80"
+            label="耗时(秒)"/>
           <el-table-column
             prop="status"
             width="80"
@@ -115,6 +133,7 @@
           </el-table-column>
           <el-table-column
             prop="result"
+            width="80"
             label="任务结果">
             <template slot-scope="scope">
               <span v-if="scope.row.result===true">成功</span>
@@ -124,6 +143,7 @@
           </el-table-column>
           <el-table-column
             prop="sync"
+            width="80"
             label="是否同步">
             <template slot-scope="scope">
               <span v-if="scope.row.sync===true">已同步</span>
@@ -133,9 +153,9 @@
           </el-table-column>
           <el-table-column
             label="操作"
-            width="220">
+            min-width="150">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary" plain @click="taskSync(scope.row.id)">同步</el-button>
+              <el-button size="mini" type="primary" plain @click="taskSync(scope.row.task_id)">同步</el-button>
               <el-button size="mini" type="primary" plain @click="getTaskDetail(scope.row.id)">详情</el-button>
               <el-button size="mini" type="primary" plain @click="openLogPage(scope.row.task_id)">日志</el-button>
             </template>
@@ -155,20 +175,15 @@
         </div>
       </el-card>
     </el-card>
-    <!-- <task-form /> -->
-    <!-- <task-role-list-form /> -->
   </div>
 </template>
 
 <script>
 import { MessageBox, Message } from 'element-ui'
-// import taskForm from './taskForm'
-// import taskRoleListForm from './taskRoleListForm'
 
 export default {
   name: 'TaskList',
   components: { MessageBox, Message },
-  // components: { taskForm, MessageBox, Message, systemSelect, taskRoleListForm },
 
   data() {
     return {
@@ -211,8 +226,9 @@ export default {
     initForm() {
       const _form = {
         task_id: '',
-        status: 'finished',
-        result: 0,
+        status: '',
+        result: '',
+        sync: '',
         dep_id: '',
         worker_id: '',
         detail: 0,
@@ -230,6 +246,11 @@ export default {
       if (res.error_code === 0) {
         this.logUrl = res.data.log_url
         this.totals = res.data.totals
+        Message({
+          message: res.msg,
+          type: 'success',
+          duration: 5 * 1000
+        })
       } else {
         console.log(res)
       }
@@ -238,7 +259,13 @@ export default {
     async taskSync(task_id) {
       this.loading = true
       this.errorflag = false
-      await this.$store.dispatch('TaskSync', task_id)
+      const res = await this.$store.dispatch('TaskSync', task_id)
+      Message({
+        message: res.msg,
+        type: 'success',
+        duration: 5 * 1000
+      })
+      await this.getTaskList()
       this.loading = false
     },
     async getTaskDetail(id) {
@@ -248,7 +275,7 @@ export default {
       this.loading = false
     },
     openLogPage(task_id) {
-      window.open(this.logUrl + "?task_id=" + task_id, "_blank")
+      window.open(this.logUrl + '?task_id=' + task_id, '_blank')
     },
     async getTaskLog(task_id) {
       this.loading = true

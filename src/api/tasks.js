@@ -12,10 +12,11 @@ export function getTaskList(params) {
 }
 
 // 任务结果同步
-export function taskSync() {
+export function taskSync(params) {
   return request({
     url: PREFIX + '/task/sync',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 
