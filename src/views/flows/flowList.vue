@@ -5,6 +5,21 @@
         <span>流程列表</span>
       </div>
 
+      <el-form
+        :label-width="labelWidth"
+        size="small">
+        <el-form-item>
+          <el-button
+            type="info"
+            plain
+            @click="getFlowTaskSummaryList">刷新流程</el-button>
+          <el-button
+            type="primary"
+            plain
+            @click="createTask('a', '')">批量创建任务</el-button>
+        </el-form-item>
+      </el-form>
+
       <el-alert
         v-show="errorflag"
         :description="errorinfo"
@@ -115,7 +130,7 @@
             label="操作"
             min-width="100">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary" plain @click="flowSync(scope.row.flow_id)">同步</el-button>
+              <el-button size="mini" type="primary" plain @click="createTask('s', scope.row.id)">创建任务</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -138,6 +153,7 @@
 
 <script>
 import { MessageBox, Message } from 'element-ui'
+import { createTaskByFlow } from '@/api/flows'
 
 export default {
   name: 'FlowList',
@@ -208,6 +224,23 @@ export default {
         this.getCurrentPageFlow()
         Message({
           message: res.msg,
+          type: 'success',
+          duration: 5 * 1000
+        })
+      }
+    },
+    async createTask(number, id) {
+      const res = await createTaskByFlow({ number: number, id: id })
+      if (res && res.error_code === 0) {
+        let message
+        if (res.data instanceof Array) {
+          message = '成功创建' + res.data.length + '个任务'
+          console.log(res)
+        } else {
+          message = res.msg + ': ' + res.data.taskId
+        }
+        Message({
+          message,
           type: 'success',
           duration: 5 * 1000
         })

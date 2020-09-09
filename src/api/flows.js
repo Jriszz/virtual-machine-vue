@@ -27,3 +27,12 @@ export function getFlowTaskSummaryList() {
     method: 'get'
   })
 }
+
+// 创建任务
+export function createTaskByFlow(data) {
+  return request({
+    url: PREFIX + '/flow/create-task',
+    method: 'post',
+    data
+  })
+}
