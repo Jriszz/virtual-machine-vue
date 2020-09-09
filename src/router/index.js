@@ -114,6 +114,20 @@ export const asyncRoutes = [
   },
 
   {
+    path: '/flows',
+    component: Layout,
+    redirect: '/',
+    name: 'flows',
+    hidden: false,
+    // meta: { roles: ['super_admin'] },
+    children: [{
+      path: '',
+      component: () => import('@/views/flows/index'),
+      meta: { title: '流程列表', icon: 'list' }
+    }]
+  },
+
+  {
     path: '/tasks',
     component: Layout,
     redirect: '/',
