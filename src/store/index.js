@@ -9,6 +9,7 @@ import resources from './modules/resource'
 import roles from './modules/role'
 import tasks from './modules/task'
 import flows from './modules/flow'
+import reports from './modules/report'
 import packages from './modules/package'
 
 Vue.use(Vuex)
@@ -23,6 +24,7 @@ const store = new Vuex.Store({
     roles,
     tasks,
     flows,
+    reports,
     packages
   },
   getters
