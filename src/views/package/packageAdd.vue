@@ -43,10 +43,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="Beta版本">
-              <el-radio-group v-model="form.beta" :disabled="!beta">
-                <el-radio label="beta">是</el-radio>
-                <el-radio label="">否</el-radio>
+            <el-form-item label="签名证书">
+              <el-radio-group v-model="form.sign">
+                <el-radio label="laiye">来也</el-radio>
+                <el-radio label="aosen">奥森</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -76,11 +76,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="签名证书">
-              <el-radio-group v-model="form.sign">
-                <el-radio label="laiye">来也</el-radio>
-                <el-radio label="aosen">奥森</el-radio>
-              </el-radio-group>
+            <el-form-item label="Beta版本" prop="beta">
+              <el-input v-model="form.beta" :disabled="!beta"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -142,6 +139,16 @@ export default {
   components: {},
 
   data() {
+    var checkBetaFormat = (rule, value, callback) => {
+      const re = /^beta[2-9]{0,1}$/
+      if (value === '' || value === undefined || value === null) {
+        callback()
+      } else if (re.test(value) === true) {
+        callback()
+      } else {
+        callback(new Error('Beta参数格式错误可选的值有: beta,beta2,beta3......beta9'))
+      }
+    }
     return {
       labelWidth: '120px',
       loading: false,
@@ -175,6 +182,7 @@ export default {
       }],
       form: this.initForm(),
       rules: {
+        beta: [{ validator: checkBetaFormat, message: 'beta参数格式错误,可选的值有: beta,beta2,beta3......beta9', trigger: 'blur' }],
         ver: [{ required: true, message: '版本编号必填', trigger: 'blur' }],
         channel: [{ required: true, message: '渠道代码必填', trigger: 'blur' }]
       }
@@ -261,7 +269,7 @@ export default {
         sub_type: 'enterprise',
         language: 'zh-cn',
         channel: 'official',
-        sign: 'laiye',
+        sign: 'aosen',
         receiver: 'all',
         from: this.$store.state.users.sessionUser.name || this.$store.state.users.sessionUser.username
       }
