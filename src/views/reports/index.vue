@@ -73,7 +73,7 @@ export default {
       loading: false,
       errorflag: false,
       errorinfo: '',
-      lastDay: 7,
+      lastDay: 15,
       dateRange: []
     }
   },
