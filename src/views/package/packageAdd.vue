@@ -77,7 +77,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="Beta版本" prop="beta">
-              <el-input v-model="form.beta" :disabled="!beta"/>
+              <el-input v-model="form.beta" :disabled="!beta" placeholder="留空或如beta2,beta3......beta9"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -115,7 +115,7 @@
         <el-row>
           <el-col>
             <el-form-item label="源码分支">
-              <el-input :rows="2" :disabled="!tags" v-model="form.tags" type="textarea" placeholder="形如：BotScript:BRANCH:release-5.1.1;extends:BRANCH:product-5.1.2"/>
+              <el-input :rows="2" :disabled="!tags" v-model="form.tags" type="textarea" placeholder="如：BotScript:BRANCH:release-5.1.1;extends:BRANCH:product-5.1.2"/>
             </el-form-item>
           </el-col>
         </el-row>
