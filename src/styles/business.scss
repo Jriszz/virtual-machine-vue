@@ -34,11 +34,19 @@
 
 /* card标题栏 */
 .el-card__header {
+  *zoom:1;
   padding: 10px 20px;
   font-size: 14px;
   letter-spacing: 2px;
   color: #ffffff;
   background-color: #c2bfbfda;
+}
+.el-card__header:after{ 
+  content:"."; 
+  display:block; 
+  height:0; 
+  visibility:hidden; 
+  clear:both; 
 }
 
 /* 单选按钮标签文字颜色 */
@@ -116,4 +124,24 @@
 }
 .el-dialog .el-dialog__body {
   padding-top: 0px;
+}
+// 解决父元素踏陷
+.clearfix{*zoom:1;}  
+.clearfix:after{ 
+  content:"."; 
+  display:block; 
+  height:0; 
+  visibility:hidden; 
+  clear:both; 
+}
+.floatLeft {
+  float: left;
+}
+.floatRight {
+  float: right;
+}
+.customButton {
+  padding-top: 0px;
+  padding-bottom: 0px;
+  font-weight: bold;
 }

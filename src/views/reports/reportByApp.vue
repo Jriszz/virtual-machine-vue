@@ -1,8 +1,11 @@
 <template>
   <div>
     <el-card class="box-card" style="margin:10px 10px 10px 0px;">
-      <div slot="header" class="header">
+      <div slot="header" class="header floatLeft">
         <strong>统计任务成功率——按应用</strong>
+      </div>
+      <div slot="header" class="floatRight">
+        <el-button class="customButton" size="mini" type="text" @click="exportData">导出CSV</el-button>
       </div>
       <el-table
         :data="reportByApp"
@@ -57,6 +60,10 @@ export default {
   },
   watch: {},
   mounted() {},
-  methods: {}
+  methods: {
+    exportData() {
+      this.tools.JSONToCSVConvertor({ data: this.reportByApp, title: 'reportByApp.csv', showLabel: true })
+    }
+  }
 }
 </script>

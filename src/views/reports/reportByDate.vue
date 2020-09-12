@@ -1,8 +1,11 @@
 <template>
   <div>
     <el-card class="box-card" style="margin:10px 10px 10px 0px; height: 400px; ">
-      <div slot="header" class="header">
+      <div slot="header" class="header floatLeft">
         <strong>统计任务成功率——按日期</strong>
+      </div>
+      <div slot="header" class="floatRight">
+        <el-button class="customButton" size="mini" type="text" @click="exportData">导出CSV</el-button>
       </div>
       <ve-line :data="reportByDate" :settings="chartSettings"/>
     </el-card>
@@ -43,6 +46,10 @@ export default {
   },
   watch: {},
   mounted() {},
-  methods: {}
+  methods: {
+    exportData() {
+      this.tools.JSONToCSVConvertor({ data: this.reportByDate.rows, title: 'reportByDate.csv', showLabel: true })
+    }
+  }
 }
 </script>

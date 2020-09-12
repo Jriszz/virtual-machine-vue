@@ -61,10 +61,69 @@ function getQueryString(name) {
   return null
 }
 
+// JSON转换成csv下载
+function JSONToCSVConvertor(obj) {
+  /*
+  * 参数 data 是导出的数据
+  * 参数 title 是导出的标题
+  * showLabel 表示是否显示表头 默认显示
+  */
+  const JSONData = obj['data']
+  const ShowLabel = typeof obj['showLabel'] === 'undefined' ? true : obj['showLabel']
+  const ReportTitle = obj['title']
+  const arrData = typeof JSONData !== 'object' ? JSON.parse(JSONData) : JSONData
+  let CSV = ''
+  if (ShowLabel) {
+    let row = ''
+    for (const index in arrData[0]) {
+      row += index + ','
+    }
+    row = row.slice(0, -1)
+    CSV += row + '\r\n'
+  }
+  for (let i = 0; i < arrData.length; i++) {
+    let row = ''
+    for (const index in arrData[i]) {
+      row += '"' + arrData[i][index] + '",'
+    }
+    row.slice(0, row.length - 1)
+    CSV += row + '\r\n'
+  }
+  if (CSV === '') {
+    console.error()
+    return
+  }
+  const link = document.createElement('a')
+  link.id = 'lnkDwnldLnk'
+  document.body.appendChild(link)
+  const csv = CSV
+  const csvUrl = _getDownloadUrl(csv)
+  let filename = ReportTitle || 'UserExport'
+  filename = filename + '.csv'
+  const linkDom = document.getElementById('lnkDwnldLnk')
+  linkDom.setAttribute('download', filename)
+  linkDom.setAttribute('href', csvUrl)
+  linkDom.click()
+  document.body.removeChild(link)
+}
+
+function _getDownloadUrl(text) {
+  const BOM = '\uFEFF'
+  if (window.Blob && window.URL && window.URL.createObjectURL) {
+    const csvData = new Blob([BOM + text], {
+      type: 'text/csv'
+    })
+    return URL.createObjectURL(csvData)
+  } else {
+    return 'data:attachment/csv;charset=utf-8,' + BOM + encodeURIComponent(text)
+  }
+}
+
 export default {
   cleanObjNullProperty,
   objectToFormData,
   getCookie,
   dateToStr,
+  JSONToCSVConvertor,
   getQueryString
 }
