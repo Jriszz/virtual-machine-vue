@@ -157,7 +157,7 @@ export default {
           Message({
             message: res.msg,
             type: 'success',
-            duration: 5 * 1000
+            duration: 3 * 1000
           })
         } else {
           Message({

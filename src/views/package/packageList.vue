@@ -179,7 +179,7 @@ export default {
         Message({
           message: res.msg,
           type: 'success',
-          duration: 5 * 1000
+          duration: 3 * 1000
         })
       } else {
         console.log(res)
@@ -215,7 +215,7 @@ export default {
           Message({
             message: res.msg,
             type: 'success',
-            duration: 5 * 1000
+            duration: 3 * 1000
           })
           this.$store.commit('TRIGGER_REFRESH')
         }
