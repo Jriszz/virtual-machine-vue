@@ -12,7 +12,16 @@
         :label-width="labelWidth"
         size="small">
         <el-row>
-          <el-col :span="12">
+          <el-col :span="8">
+            <el-form-item label="任务结果">
+              <el-radio-group v-model="form.result">
+                <el-radio label="">全部</el-radio>
+                <el-radio :label="1">运行成功</el-radio>
+                <el-radio :label="0">运行失败</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="任务状态">
               <el-radio-group v-model="form.status">
                 <el-radio label="">全部</el-radio>
@@ -22,30 +31,7 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="任务编号">
-              <el-input v-model="form.task_id" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="任务结果">
-              <el-radio-group v-model="form.result">
-                <el-radio label="">全部</el-radio>
-                <el-radio :label="1">运行成功</el-radio>
-                <el-radio :label="0">运行失败</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="部门名称">
-              <el-input v-model="form.dep_name" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item label="同步状态">
               <el-radio-group v-model="form.sync">
                 <el-radio label="">全部</el-radio>
@@ -54,9 +40,49 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="Worker名称">
-              <el-input v-model="form.worker_name" />
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="错误类型">
+              <el-select v-model="form.error_type" clearable placeholder="请选择">
+                <el-option
+                  v-for="item in error_type_enum"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="任务编号">
+              <el-input v-model="form.task_id" clearable/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="部门名称">
+              <el-input v-model="form.dep_name" clearable/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="流程名称">
+              <el-input v-model="form.flow_name" clearable/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="运行时间">
+              <el-date-picker
+                v-model="dateRange"
+                type="daterange"
+                range-separator="至"
+                value-format="yyyy-MM-dd"
+                @change="setQueryDate"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="Worker">
+              <el-input v-model="form.worker_name" clearable/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -97,7 +123,7 @@
           <el-table-column
             prop="worker_name"
             width="140"
-            label="Worker名称"/>
+            label="Worker"/>
           <el-table-column
             prop="flow_name"
             min-width="250"
@@ -138,6 +164,20 @@
             <template slot-scope="scope">
               <span v-if="scope.row.result===true">成功</span>
               <span v-else-if="scope.row.result===false">失败</span>
+              <span v-else>未知</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="error_type"
+            width="100"
+            label="错误类型">
+            <template slot-scope="scope">
+              <span v-if="scope.row.error_type===0">运行成功</span>
+              <span v-else-if="scope.row.error_type===1">找不到子EXE</span>
+              <span v-else-if="scope.row.error_type===2">找不到子流程</span>
+              <span v-else-if="scope.row.error_type===3">加载流程失败</span>
+              <span v-else-if="scope.row.error_type===4">运行流程超时</span>
+              <span v-else-if="scope.row.error_type===9">运行流程出错</span>
               <span v-else>未知</span>
             </template>
           </el-table-column>
@@ -194,7 +234,27 @@ export default {
       form: this.initForm(),
       logUrl: '',
       detailUrl: '',
-      totals: 0
+      totals: 0,
+      error_type_enum: [{
+        value: 0,
+        label: '运行成功'
+      }, {
+        value: 1,
+        label: '找不到子EXE'
+      }, {
+        value: 2,
+        label: '找不到子流程'
+      }, {
+        value: 3,
+        label: '加载流程失败'
+      }, {
+        value: 4,
+        label: '运行流程超时'
+      }, {
+        value: 9,
+        label: '运行流程出错'
+      }],
+      dateRange: null
     }
   },
   computed: {
@@ -232,11 +292,23 @@ export default {
         sync: '',
         dep_id: '',
         worker_id: '',
-        detail: 0,
+        error_type: null,
+        flow_name: '',
+        start_date: null,
+        end_date: null,
         page: 1,
         pageSize: 10
       }
       return _form
+    },
+    setQueryDate() {
+      if (this.dateRange === null) {
+        this.form.start_date = null
+        this.form.end_date = null
+      } else {
+        this.form.start_date = this.dateRange[0]
+        this.form.end_date = this.dateRange[1]
+      }
     },
     async getTaskList() {
       this.resetResult()

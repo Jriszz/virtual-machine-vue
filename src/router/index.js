@@ -36,19 +36,6 @@ export const constantRoutes = [
       component: () => import('@/views/dashboard/index'),
       meta: { title: '个人信息', icon: 'table' }
     }]
-  },
-
-  {
-    path: '/accesslog',
-    component: Layout,
-    redirect: '/',
-    name: 'accesslog',
-    hidden: false,
-    children: [{
-      path: '',
-      component: () => import('@/views/user/userAccessLog'),
-      meta: { title: '访问日志', icon: 'eye-open' }
-    }]
   }
 ]
 
@@ -57,6 +44,20 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
+  {
+    path: '/accesslog',
+    component: Layout,
+    redirect: '/',
+    name: 'accesslog',
+    hidden: false,
+    meta: { roles: ['super_admin'] },
+    children: [{
+      path: '',
+      component: () => import('@/views/user/userAccessLog'),
+      meta: { title: '访问日志', icon: 'eye-open' }
+    }]
+  },
+
   {
     path: '/users',
     component: Layout,
@@ -77,7 +78,7 @@ export const asyncRoutes = [
     redirect: '/',
     name: 'roles',
     hidden: false,
-    // meta: { roles: ['super_admin'] },
+    meta: { roles: ['super_admin'] },
     children: [{
       path: '',
       component: () => import('@/views/role/index'),
@@ -91,7 +92,7 @@ export const asyncRoutes = [
     redirect: '/',
     name: 'systems',
     hidden: false,
-    // meta: { roles: ['super_admin'] },
+    meta: { roles: ['super_admin'] },
     children: [{
       path: '',
       component: () => import('@/views/businessSystem/index'),
@@ -105,7 +106,7 @@ export const asyncRoutes = [
     redirect: '/',
     name: 'resources',
     hidden: false,
-    // meta: { roles: ['super_admin'] },
+    meta: { roles: ['super_admin'] },
     children: [{
       path: '',
       component: () => import('@/views/systemResource/index'),
