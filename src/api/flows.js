@@ -36,3 +36,20 @@ export function createTaskByFlow(data) {
     data
   })
 }
+
+// 获取计划列表
+export function getPlanStatus() {
+  return request({
+    url: PREFIX + '/plan/status-switch',
+    method: 'get'
+  })
+}
+
+// 切换计划列表
+export function switchPlanStatus(data) {
+  return request({
+    url: PREFIX + '/plan/status-switch',
+    method: 'post',
+    data
+  })
+}

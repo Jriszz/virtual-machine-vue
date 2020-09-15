@@ -1,4 +1,4 @@
-import { getFlowList, getFlowVersionList, getFlowTaskSummaryList } from '@/api/flows'
+import { getFlowList, getFlowVersionList, getFlowTaskSummaryList, getPlanStatus } from '@/api/flows'
 
 const flows = {
   state: {
@@ -40,8 +40,20 @@ const flows = {
     // 流程及任务概要列表
     async GetFlowTaskSummaryList({ commit }) {
       const res = await getFlowTaskSummaryList()
+      const res2 = await getPlanStatus()
+      const flow_list = res.data
+      const plan_list = res2.data
+      for (const flow in flow_list) {
+        for (const plan in plan_list) {
+          if (flow_list[flow].flow_name === plan_list[plan].name) {
+            flow_list[flow]['status'] = plan_list[plan].isActivated
+            flow_list[flow]['cronExpression'] = plan_list[plan].cronExpression
+            break
+          }
+        }
+      }
       if (res.error_code === 0) {
-        commit('SET_FLOW_LIST', res.data)
+        commit('SET_FLOW_LIST', flow_list)
       }
       return res
     }

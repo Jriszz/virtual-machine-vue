@@ -17,6 +17,14 @@
             type="primary"
             plain
             @click="createTask('a', '')">批量创建任务</el-button>
+          <el-button
+            type="primary"
+            plain
+            @click="switchPlanStatus(0, null)">停止所有计划</el-button>
+          <el-button
+            type="primary"
+            plain
+            @click="switchPlanStatus(1, null)">开启所有计划</el-button>
         </el-form-item>
       </el-form>
 
@@ -127,10 +135,28 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="操作"
+            label="计划状态"
             min-width="100">
             <template slot-scope="scope">
+              <span v-if="scope.row.status===1" class="colorGreen">已启用</span>
+              <span v-else-if="scope.row.status===0" class="colorYellow">未启用</span>
+              <span v-else class="colorRed">未找到计划</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="计划运行配置"
+            min-width="150">
+            <template slot-scope="scope">
+              {{ scope.row.cronExpression }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作"
+            min-width="300">
+            <template slot-scope="scope">
               <el-button size="mini" type="primary" plain @click="createTask('s', scope.row.id)">创建任务</el-button>
+              <el-button size="mini" type="primary" plain @click="switchPlanStatus(0, scope.row.flow_name)">停止计划</el-button>
+              <el-button size="mini" type="primary" plain @click="switchPlanStatus(1, scope.row.flow_name)">开启计划</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -153,7 +179,7 @@
 
 <script>
 import { MessageBox, Message } from 'element-ui'
-import { createTaskByFlow } from '@/api/flows'
+import { createTaskByFlow, switchPlanStatus } from '@/api/flows'
 
 export default {
   name: 'FlowList',
@@ -246,6 +272,17 @@ export default {
         })
       }
     },
+    async switchPlanStatus(status, plan_name) {
+      const res = await switchPlanStatus({ status: status, plan_name: plan_name })
+      if (res && res.error_code === 0) {
+        Message({
+          message: res.msg,
+          type: 'success',
+          duration: 5 * 1000
+        })
+        this.getFlowTaskSummaryList()
+      }
+    },
     getCurrentPageFlow() {
       const start = (this.page - 1) * this.pageSize
       const end = this.page * this.pageSize
@@ -290,3 +327,15 @@ export default {
   }
 }
 </script>
+
+<style>
+.colorGreen {
+  color: green;
+}
+.colorYellow {
+  color:darkorange
+}
+.colorRed {
+  color: red;
+}
+</style>
