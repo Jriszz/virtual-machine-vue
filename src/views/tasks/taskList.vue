@@ -360,12 +360,11 @@ export default {
     },
     reset() {
       this.form = this.initForm()
+      this.dateRange = null
       this.resetResult()
-      this.totals = 0
     },
     resetResult() {
       this.errorflag = false
-      this.result = []
     },
     // 分页相关的方法
     getNextPage() {
