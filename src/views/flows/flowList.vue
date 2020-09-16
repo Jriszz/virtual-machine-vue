@@ -48,7 +48,7 @@
                 :data="record.row.versions">
                 <el-table-column
                   prop="flow_id"
-                  width="100"
+                  width="80"
                   label="流程ID"/>
                 <el-table-column
                   prop="flow_name"
@@ -89,43 +89,31 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="flow_id"
-            width="80"
-            label="流程ID"/>
-          <el-table-column
             prop="flow_name"
             min-width="200"
             label="流程名称"/>
-          <el-table-column
-            prop="package_id"
-            width="100"
-            label="流程包ID"/>
           <el-table-column
             prop="flow_package_name"
             min-width="200"
             label="流程包名称"/>
           <el-table-column
-            prop="package_version_id"
-            width="100"
-            label="流程包版本ID"/>
-          <el-table-column
             prop="flow_package_version"
             width="120"
             label="流程包版本名称"/>
           <el-table-column
-            width="120"
-            label="流程包版本数量">
+            width="80"
+            label="版本数量">
             <template slot-scope="scope">
               <span>{{ scope.row.versions.length }}</span>
             </template>
           </el-table-column>
           <el-table-column
             prop="task_total"
-            width="120"
+            width="80"
             label="任务总数"/>
           <el-table-column
             prop="task_success"
-            width="120"
+            width="80"
             label="成功总数"/>
           <el-table-column
             label="成功率"
@@ -136,7 +124,7 @@
           </el-table-column>
           <el-table-column
             label="计划状态"
-            min-width="100">
+            min-width="80">
             <template slot-scope="scope">
               <span v-if="scope.row.status===1" class="colorGreen">已启用</span>
               <span v-else-if="scope.row.status===0" class="colorYellow">未启用</span>
@@ -145,7 +133,7 @@
           </el-table-column>
           <el-table-column
             label="计划运行配置"
-            min-width="150">
+            min-width="120">
             <template slot-scope="scope">
               {{ scope.row.cronExpression }}
             </template>
