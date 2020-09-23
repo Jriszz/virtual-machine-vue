@@ -16,7 +16,7 @@
           <el-button
             type="primary"
             plain
-            @click="createTask('a', '')">批量创建任务</el-button>
+            @click="openCreateTaskForm('a', '', '批量创建任务')">批量创建任务</el-button>
           <el-button
             type="primary"
             plain
@@ -142,7 +142,7 @@
             label="操作"
             min-width="300">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary" plain @click="createTask('s', scope.row.id)">创建任务</el-button>
+              <el-button size="mini" type="primary" plain @click="openCreateTaskForm('s', scope.row.id, '创建任务')">创建任务</el-button>
               <el-button size="mini" type="primary" plain @click="switchPlanStatus(0, scope.row.flow_name)">停止计划</el-button>
               <el-button size="mini" type="primary" plain @click="switchPlanStatus(1, scope.row.flow_name)">开启计划</el-button>
             </template>
@@ -162,16 +162,40 @@
         </div>
       </el-card>
     </el-card>
+    <el-dialog
+      v-if="createTaskFormVisable"
+      :visible.sync="createTaskFormVisable"
+      width="40%">
+      <div class="formTitle">
+        <span>{{ formTitle }}</span>
+      </div>
+
+      <el-form
+        v-loading="loading"
+        ref="form"
+        :label-width="labelWidth"
+        :model="form"
+        size="small">
+        <el-form-item label="Worker">
+          <worker-select :initworkerid="null" @change="form.worker_name=$event"/>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="createTask">提交</el-button>
+          <el-button @click="createTaskFormVisable=false">关闭</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { MessageBox, Message } from 'element-ui'
 import { createTaskByFlow, switchPlanStatus } from '@/api/flows'
+import WorkerSelect from '@/components/onlineWorkerSelect'
 
 export default {
   name: 'FlowList',
-  components: { MessageBox, Message },
+  components: { MessageBox, Message, WorkerSelect },
 
   data() {
     return {
@@ -185,7 +209,10 @@ export default {
       pageSize: 10,
       flowList: [],
       flowVersionList: [],
-      totals: 0
+      totals: 0,
+      createTaskFormVisable: false,
+      form: {},
+      formTitle: '创建任务'
     }
   },
   computed: {
@@ -243,8 +270,17 @@ export default {
         })
       }
     },
-    async createTask(number, id) {
-      const res = await createTaskByFlow({ number: number, id: id })
+    openCreateTaskForm(number, id, formTitle) {
+      this.form['number'] = number
+      this.form['id'] = id
+      this.formTitle = formTitle
+      this.createTaskFormVisable = true
+    },
+    async createTask() {
+      this.loading = true
+      const res = await createTaskByFlow(this.form)
+      this.loading = false
+      this.createTaskFormVisable = false
       if (res && res.error_code === 0) {
         let message
         if (res.data instanceof Array) {

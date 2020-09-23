@@ -99,7 +99,8 @@
           label="来源"
           width="80"/>
         <el-table-column
-          label="操作">
+          label="操作"
+          min-width="200">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" plain @click="showTags(scope.row.tags)">分支</el-button>
             <el-button size="mini" type="danger" plain @click="removePackage(scope.row.key)">删除</el-button>

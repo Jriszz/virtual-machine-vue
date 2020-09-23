@@ -28,6 +28,14 @@ export function getFlowTaskSummaryList() {
   })
 }
 
+// 在线Worker列表
+export function onlineWorkerList() {
+  return request({
+    url: PREFIX + '/worker-list',
+    method: 'get'
+  })
+}
+
 // 创建任务
 export function createTaskByFlow(data) {
   return request({
