@@ -251,6 +251,9 @@ export default {
         value: 4,
         label: '运行流程超时'
       }, {
+        value: 5,
+        label: 'Worker运行崩溃'
+      }, {
         value: 9,
         label: '运行流程出错'
       }],
