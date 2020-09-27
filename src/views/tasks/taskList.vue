@@ -12,7 +12,7 @@
         :label-width="labelWidth"
         size="small">
         <el-row>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="任务结果">
               <el-radio-group v-model="form.result">
                 <el-radio label="">全部</el-radio>
@@ -21,7 +21,16 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
+            <el-form-item label="同步状态">
+              <el-radio-group v-model="form.sync">
+                <el-radio label="">全部</el-radio>
+                <el-radio :label="1">已同步</el-radio>
+                <el-radio :label="0">未同步</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="任务状态">
               <el-radio-group v-model="form.status">
                 <el-radio label="">全部</el-radio>
@@ -31,18 +40,9 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="同步状态">
-              <el-radio-group v-model="form.sync">
-                <el-radio label="">全部</el-radio>
-                <el-radio :label="1">已同步</el-radio>
-                <el-radio :label="0">未同步</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="错误类型">
               <el-select v-model="form.error_type" clearable placeholder="请选择">
                 <el-option
@@ -53,24 +53,37 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="任务编号">
               <el-input v-model="form.task_id" clearable/>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="部门名称">
-              <el-input v-model="form.dep_name" clearable/>
+          <el-col :span="12">
+            <el-form-item label="创建时间">
+              <el-date-picker
+                v-model="dateRangeCreate"
+                type="datetimerange"
+                range-separator="至"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                @change="setQueryDateCreate"/>
             </el-form-item>
+            <!-- <el-form-item label="部门名称">
+              <el-input v-model="form.dep_name" clearable/>
+            </el-form-item> -->
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="流程名称">
               <el-input v-model="form.flow_name" clearable/>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
+            <el-form-item label="Worker">
+              <el-input v-model="form.worker_name" clearable/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="运行时间">
               <el-date-picker
                 v-model="dateRange"
@@ -78,11 +91,6 @@
                 range-separator="至"
                 value-format="yyyy-MM-dd"
                 @change="setQueryDate"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="Worker">
-              <el-input v-model="form.worker_name" clearable/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -257,7 +265,8 @@ export default {
         value: 9,
         label: '运行流程出错'
       }],
-      dateRange: null
+      dateRange: null,
+      dateRangeCreate: null
     }
   },
   computed: {
@@ -299,6 +308,8 @@ export default {
         flow_name: '',
         start_date: null,
         end_date: null,
+        create_time_s: null,
+        create_time_e: null,
         page: 1,
         pageSize: 10
       }
@@ -311,6 +322,15 @@ export default {
       } else {
         this.form.start_date = this.dateRange[0]
         this.form.end_date = this.dateRange[1]
+      }
+    },
+    setQueryDateCreate() {
+      if (this.dateRangeCreate === null) {
+        this.form.create_time_s = null
+        this.form.create_time_e = null
+      } else {
+        this.form.create_time_s = this.dateRangeCreate[0]
+        this.form.create_time_e = this.dateRangeCreate[1]
       }
     },
     async getTaskList() {
@@ -364,6 +384,7 @@ export default {
     reset() {
       this.form = this.initForm()
       this.dateRange = null
+      this.dateRangeCreate = null
       this.resetResult()
     },
     resetResult() {
