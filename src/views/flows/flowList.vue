@@ -8,6 +8,26 @@
       <el-form
         :label-width="labelWidth"
         size="small">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="流程类型">
+              <el-radio-group v-model="queryForm.flowType" @change="filterFlow">
+                <el-radio :label="0">全部</el-radio>
+                <el-radio :label="1">自测流程</el-radio>
+                <el-radio :label="2">普通流程</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="流程名称">
+              <el-input
+                :clearable="true"
+                v-model="queryForm.flowName"
+                placeholder="支持模糊搜索"
+                @change="filterFlow"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item>
           <el-button
             type="info"
@@ -216,18 +236,20 @@ export default {
       page: 1,
       pageSize: 10,
       flowList: [],
+      filterFlowList: [],
       flowVersionList: [],
       totals: 0,
       createTaskFormVisable: false,
       form: { worker_name: null },
+      queryForm: { flowType: 0, flowName: '' },
       formTitle: '创建任务',
       selectFlowIds: null
     }
   },
   computed: {
-    // flowList: function() {
-    //   return this.$store.state.flows.flowList
-    // },
+    allFlowList: function() {
+      return this.$store.state.flows.flowList
+    },
     isSuperAdmin: function() {
       if (this.$store.state.users.sessionUser.super_admin === 1) {
         return true
@@ -248,7 +270,9 @@ export default {
     }
   },
   mounted() {
-    this.getFlowTaskSummaryList()
+    this.getFlowTaskSummaryList().then(() => {
+      this.filterFlow()
+    })
   },
   methods: {
     async getFlowList() {
@@ -271,7 +295,7 @@ export default {
       const res = await this.$store.dispatch('GetFlowTaskSummaryList')
       if (res && res.error_code === 0) {
         this.totals = res.data.length
-        this.getCurrentPageFlow()
+        this.filterFlow()
         Message({
           message: res.msg,
           type: 'success',
@@ -330,10 +354,27 @@ export default {
         this.getFlowTaskSummaryList()
       }
     },
+    filterFlow() {
+      console.log('开始过滤流程' + this.queryForm)
+      this.filterFlowList = this.allFlowList.filter(item => {
+        if (this.queryForm.flowType === 2 && item.flow_name.startsWith('自测_')) {
+          return
+        }
+        if (this.queryForm.flowType === 1 && !item.flow_name.startsWith('自测_')) {
+          return
+        }
+        if (this.queryForm.flowName && this.queryForm.flowName.length > 0 && item.flow_name.indexOf(this.queryForm.flowName) < 0) {
+          return
+        }
+        return item
+      })
+      this.getCurrentPageFlow()
+      this.totals = this.filterFlowList.length
+    },
     getCurrentPageFlow() {
       const start = (this.page - 1) * this.pageSize
       const end = this.page * this.pageSize
-      this.flowList = this.$store.state.flows.flowList.slice(start, end)
+      this.flowList = this.filterFlowList.slice(start, end)
     },
     async getFlowVersionList(row, expandedRows) {
       this.errorflag = false
