@@ -318,6 +318,14 @@ export default {
       }
     },
     openCreateTaskForm(number, id, formTitle) {
+      if (number === 'm' && (id === null || id.toString().length === 0)) {
+        Message({
+          message: '请选择相应的流程',
+          type: 'error',
+          duration: 5 * 1000
+        })
+        return
+      }
       this.form['number'] = number
       this.form['id'] = id
       this.formTitle = formTitle
