@@ -16,7 +16,11 @@
           <el-button
             type="primary"
             plain
-            @click="openCreateTaskForm('a', '', '批量创建任务')">批量创建任务</el-button>
+            @click="openCreateTaskForm('a', '', '为所有流程创建任务')">为所有流程创建任务</el-button>
+          <el-button
+            type="primary"
+            plain
+            @click="openCreateTaskForm('m', selectFlowIds, '批量创建任务')">批量创建任务</el-button>
           <el-button
             type="primary"
             plain
@@ -41,7 +45,8 @@
           :data="flowList"
           :stripe="true"
           :border="true"
-          size="small">
+          size="small"
+          @selection-change="selectFlow">
           <el-table-column type="expand">
             <template slot-scope="record">
               <el-table
@@ -88,6 +93,9 @@
               </el-table>
             </template>
           </el-table-column>
+          <el-table-column
+            type="selection"
+            width="55"/>
           <el-table-column
             prop="flow_name"
             min-width="200"
@@ -212,7 +220,8 @@ export default {
       totals: 0,
       createTaskFormVisable: false,
       form: { worker_name: null },
-      formTitle: '创建任务'
+      formTitle: '创建任务',
+      selectFlowIds: null
     }
   },
   computed: {
@@ -268,6 +277,20 @@ export default {
           type: 'success',
           duration: 5 * 1000
         })
+      }
+    },
+    selectFlow(val) {
+      console.log(val)
+      this.selectFlowList = val
+      if (val.length === 0) {
+        this.selectFlowIds = null
+      } else if (val.length === 1) {
+        this.selectFlowIds = val[0].id
+      } else {
+        this.selectFlowIds = ''
+        for (let i = 0; i < val.length; i++) {
+          this.selectFlowIds += val[i].id.toString() + ';'
+        }
       }
     },
     openCreateTaskForm(number, id, formTitle) {
