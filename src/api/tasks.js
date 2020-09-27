@@ -36,3 +36,12 @@ export function taskLog(params) {
     params
   })
 }
+
+// 任务重启
+export function taskRestart(data) {
+  return request({
+    url: PREFIX + '/task/restart',
+    method: 'post',
+    data
+  })
+}

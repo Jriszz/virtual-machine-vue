@@ -201,11 +201,12 @@
           </el-table-column>
           <el-table-column
             label="操作"
-            min-width="220">
+            min-width="260">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" plain @click="taskSync(scope.row.task_id)">同步</el-button>
               <el-button size="mini" type="primary" plain @click="openTaskDetail(scope.row.task_id)">详情</el-button>
               <el-button size="mini" type="primary" plain @click="openLogPage(scope.row.task_id)">日志</el-button>
+              <el-button size="mini" type="primary" plain @click="taskRestart(scope.row.task_id)">重启</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -228,6 +229,7 @@
 
 <script>
 import { MessageBox, Message } from 'element-ui'
+import { taskRestart } from '@/api/tasks'
 
 export default {
   name: 'TaskList',
@@ -363,6 +365,20 @@ export default {
         duration: 5 * 1000
       })
       await this.getTaskList()
+      this.loading = false
+    },
+    async taskRestart(task_id) {
+      this.loading = true
+      this.errorflag = false
+      const res = await taskRestart({ 'task_id': task_id })
+      if (res && res.error_code === 0) {
+        Message({
+          message: res.msg + '，生成新任务' + res.data.taskId,
+          type: 'success',
+          duration: 5 * 1000
+        })
+        await this.getTaskList()
+      }
       this.loading = false
     },
     async openTaskDetail(task_id) {
