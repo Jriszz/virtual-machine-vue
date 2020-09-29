@@ -206,7 +206,7 @@
               <el-button size="mini" type="primary" plain @click="taskSync(scope.row.task_id)">同步</el-button>
               <el-button size="mini" type="primary" plain @click="openTaskDetail(scope.row.task_id)">详情</el-button>
               <el-button size="mini" type="primary" plain @click="openLogPage(scope.row.task_id)">日志</el-button>
-              <el-button size="mini" type="primary" plain @click="taskRestart(scope.row.task_id)">重启</el-button>
+              <el-button size="mini" type="primary" plain @click="taskRestart(scope.row.task_id)">克隆</el-button>
             </template>
           </el-table-column>
         </el-table>
