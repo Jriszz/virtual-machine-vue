@@ -174,6 +174,9 @@ export default {
         value: 'current',
         label: '当前迭代'
       }, {
+        value: 'blank',
+        label: '不带UiBot(Robot)'
+      }, {
         value: 'hailianxun5.1.1',
         label: '海联讯5.1.1'
       }, {
@@ -248,6 +251,24 @@ export default {
         this.sub_type = true
         this.language = false
         this.channel = false
+        this.receiver = true
+      } else if (newValue === 'blank') {
+        this.form = this.initForm()
+        this.form.ver = '5.2.0'
+        this.form.branch = 'blank-5.2.0'
+        this.form.pack_type = 'worker'
+        this.form.tags = 'worker-by-electron-view:BRANCH:blank-5.2.0;deputy:BRANCH:blank-5.2.0;script-of-install:BRANCH:blank-5.2.0;rpa-patch-worker:TAG:T_V5.2.0_all;UiBotBrowser:TAG:T_V5.2.0_all;uibot-updater:TAG:T_V5.2.0_all;workerscheduler:TAG:T_V5.2.0_all;BotScript:TAG:T_V5.2.0_all;extends:TAG:T_V5.2.0_all;uibot-chrome:TAG:T_V5.2.0_all;worker-by-electron-main:BRANCH:blank-5.2.0'
+        this.ver = true
+        this.tag_name = true
+        this.tags = true
+        this.branch = true
+        this.stage_type = true
+        this.arch = true
+        this.beta = true
+        this.pack_type = true
+        this.sub_type = true
+        this.language = true
+        this.channel = true
         this.receiver = true
       } else {
         this.form = this.initForm()
