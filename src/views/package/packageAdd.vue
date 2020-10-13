@@ -113,9 +113,17 @@
         </el-row>
 
         <el-row>
-          <el-col>
+          <el-col :span="18">
             <el-form-item label="源码分支">
               <el-input :rows="2" :disabled="!tags" v-model="form.tags" type="textarea" placeholder="如：BotScript:BRANCH:release-5.1.1;extends:BRANCH:product-5.1.2"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="启用缓存">
+              <el-radio-group v-model="form.cache">
+                <el-radio label="yes">启用</el-radio>
+                <el-radio label="no">禁用</el-radio>
+              </el-radio-group>
             </el-form-item>
           </el-col>
         </el-row>
@@ -169,6 +177,7 @@ export default {
       language: true,
       channel: true,
       receiver: true,
+      cache: true,
       builtin_version: 'current',
       builtin_versions: [{
         value: 'current',
@@ -292,6 +301,7 @@ export default {
         channel: 'official',
         sign: 'aosen',
         receiver: 'all',
+        cache: 'yes',
         from: this.$store.state.users.sessionUser.name || this.$store.state.users.sessionUser.username
       }
       return _form

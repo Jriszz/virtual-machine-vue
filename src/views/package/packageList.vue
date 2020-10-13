@@ -86,6 +86,14 @@
           width="100"
           label="beta版"/>
         <el-table-column
+          label="缓存"
+          width="80">
+          <template slot-scope="scope">
+            <span v-if="scope.row.cache==='no'">禁用</span>
+            <span v-else>启用</span>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="sign"
           label="签名"
           width="80">
