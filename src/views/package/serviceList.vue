@@ -74,7 +74,7 @@
     </el-card>
     <el-dialog :visible.sync="packageShowTask" width="40%" title="当前正在打包的任务信息">
       <el-input
-        :rows="16"
+        :rows="18"
         v-model="currentTask"
         type="textarea"/>
     </el-dialog>
