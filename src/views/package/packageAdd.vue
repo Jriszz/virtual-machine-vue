@@ -44,7 +44,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="签名证书">
-              <el-radio-group v-model="form.sign">
+              <el-radio-group v-model="form.sign" :disabled="!sign">
                 <el-radio label="laiye">来也</el-radio>
                 <el-radio label="aosen">奥森</el-radio>
                 <el-radio label="">不签</el-radio>
@@ -166,6 +166,7 @@ export default {
       title: '在线打包',
       isEditScene: false,
       isAddScene: false,
+      sign: true,
       ver: true,
       tag_name: true,
       tags: true,
@@ -214,6 +215,7 @@ export default {
     builtin_version: function(newValue, oldValue) {
       if (newValue === 'current') {
         this.form = this.initForm()
+        this.sign = true
         this.form.ver = ''
         this.form.branch = 'master'
         this.ver = true
@@ -233,6 +235,7 @@ export default {
         this.form.ver = '5.1.1'
         this.form.branch = '海联讯-5.1.1'
         this.form.arch = 'x86'
+        this.sign = true
         this.ver = false
         this.tag_name = false
         this.tags = false
@@ -250,6 +253,7 @@ export default {
         this.form.ver = '5.1.2'
         this.form.branch = 'language-5.1.2'
         this.form.language = 'en-us'
+        this.sign = true
         this.ver = false
         this.tag_name = false
         this.tags = false
