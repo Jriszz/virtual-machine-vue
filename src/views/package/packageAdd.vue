@@ -47,6 +47,7 @@
               <el-radio-group v-model="form.sign">
                 <el-radio label="laiye">来也</el-radio>
                 <el-radio label="aosen">奥森</el-radio>
+                <el-radio label="">不签</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -77,7 +78,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="Beta版本" prop="beta">
-              <el-input v-model="form.beta" :disabled="!beta" placeholder="留空或如beta2,beta3......beta9"/>
+              <el-input v-model="form.beta" :disabled="!beta" placeholder="留空或如beta,beta2......beta9"/>
             </el-form-item>
           </el-col>
         </el-row>
