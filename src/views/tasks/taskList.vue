@@ -123,7 +123,53 @@
           :data="taskList"
           :stripe="true"
           :border="true"
-          size="small">
+          size="small"
+          @expand-change="getTaskRecords">
+          <el-table-column type="expand">
+            <template slot-scope="record">
+              <el-table
+                :data="record.row.records">
+                <el-table-column
+                  prop="module"
+                  min-width="100"
+                  label="所属模块"/>
+                <el-table-column
+                  prop="command"
+                  min-width="150"
+                  label="测试命令"/>
+                <el-table-column
+                  prop="name"
+                  min-width="200"
+                  label="用例名称"/>
+                <el-table-column
+                  prop="desc"
+                  min-width="200"
+                  label="用例描述"/>
+                <el-table-column
+                  prop="expect"
+                  min-width="200"
+                  label="预期结果"/>
+                <el-table-column
+                  prop="actual"
+                  min-width="200"
+                  label="实际结果"/>
+                <el-table-column
+                  prop="result"
+                  width="80"
+                  label="是否通过">
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.result===true">通过</span>
+                    <span v-else-if="scope.row.error_type===false">失败</span>
+                    <span v-else>未知</span>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="message"
+                  min-width="200"
+                  label="执行消息"/>
+              </el-table>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="task_id"
             width="140"
@@ -152,11 +198,11 @@
           </el-table-column>
           <el-table-column
             prop="elapsed"
-            width="80"
+            width="70"
             label="耗时(秒)"/>
           <el-table-column
             prop="status"
-            width="80"
+            width="70"
             label="任务状态">
             <template slot-scope="scope">
               <span v-if="scope.row.status==='deploying'">部署中</span>
@@ -167,7 +213,7 @@
           </el-table-column>
           <el-table-column
             prop="result"
-            width="80"
+            width="70"
             label="任务结果">
             <template slot-scope="scope">
               <span v-if="scope.row.result===true">成功</span>
@@ -177,7 +223,7 @@
           </el-table-column>
           <el-table-column
             prop="error_type"
-            width="100"
+            width="70"
             label="错误类型">
             <template slot-scope="scope">
               <span v-if="scope.row.error_type===0">运行成功</span>
@@ -191,7 +237,7 @@
           </el-table-column>
           <el-table-column
             prop="sync"
-            width="80"
+            width="70"
             label="是否同步">
             <template slot-scope="scope">
               <span v-if="scope.row.sync===true">已同步</span>
@@ -229,7 +275,7 @@
 
 <script>
 import { MessageBox, Message } from 'element-ui'
-import { taskRestart } from '@/api/tasks'
+import { getTaskList, taskRestart, taskRecords } from '@/api/tasks'
 
 export default {
   name: 'TaskList',
@@ -242,6 +288,7 @@ export default {
       errorflag: false,
       errorinfo: '',
       form: this.initForm(),
+      taskList: [],
       logUrl: '',
       detailUrl: '',
       totals: 0,
@@ -272,9 +319,9 @@ export default {
     }
   },
   computed: {
-    taskList: function() {
-      return this.$store.state.tasks.taskList
-    },
+    // taskList: function() {
+    //   return this.$store.state.tasks.taskList
+    // },
     isSuperAdmin: function() {
       if (this.$store.state.users.sessionUser.super_admin === 1) {
         return true
@@ -335,16 +382,26 @@ export default {
         this.form.create_time_e = this.dateRangeCreate[1]
       }
     },
+    async getTaskRecords(expandedRows, expanded) {
+      if (expandedRows.records.length === 0) {
+        const res = await taskRecords(expandedRows['id'])
+        if (res.error_code === 0 && res.data.length > 0) {
+          expandedRows['records'] = res.data
+        }
+      }
+    },
     async getTaskList() {
       this.resetResult()
       this.loading = true
       this.errorflag = false
       const params = this.tools.cleanObjNullProperty(this.form)
-      const res = await this.$store.dispatch('GetTaskList', params)
+      // const res = await this.$store.dispatch('GetTaskList', params)
+      const res = await getTaskList(params)
       if (res.error_code === 0) {
         this.logUrl = res.data.log_url
         this.detailUrl = res.data.detail_url
         this.totals = res.data.totals
+        this.taskList = res.data.tasks
         Message({
           message: res.msg,
           type: 'success',

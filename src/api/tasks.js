@@ -45,3 +45,11 @@ export function taskRestart(data) {
     data
   })
 }
+
+// 任务用例执行记录
+export function taskRecords(primary_id) {
+  return request({
+    url: PREFIX + '/task/' + primary_id + '/record-list',
+    method: 'get'
+  })
+}

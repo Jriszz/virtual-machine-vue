@@ -92,7 +92,7 @@
           <el-col :span="6">
             <el-form-item label="消息接收">
               <el-radio-group v-model="form.receiver" :disabled="!receiver">
-                <el-radio label="all">长研群</el-radio>
+                <el-radio label="all">CI群</el-radio>
                 <el-radio label="test">测试群</el-radio>
                 <el-radio label="debug">调试群</el-radio>
               </el-radio-group>

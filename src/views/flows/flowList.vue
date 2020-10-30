@@ -80,6 +80,10 @@
                   width="200"
                   label="流程名称"/>
                 <el-table-column
+                  prop="author"
+                  min-width="80"
+                  label="作者"/>
+                <el-table-column
                   prop="package_id"
                   min-width="100"
                   label="流程包ID"/>
@@ -120,6 +124,10 @@
             prop="flow_name"
             min-width="200"
             label="流程名称"/>
+          <el-table-column
+            prop="author"
+            min-width="80"
+            label="作者"/>
           <el-table-column
             prop="flow_package_name"
             min-width="200"
@@ -333,23 +341,27 @@ export default {
     },
     async createTask() {
       this.loading = true
-      const res = await createTaskByFlow(this.form)
-      this.loading = false
-      this.createTaskFormVisable = false
-      if (res && res.error_code === 0) {
-        let message
-        if (res.data instanceof Array) {
-          message = '成功创建' + res.data.length + '个任务'
-          console.log(res)
-        } else {
-          message = res.msg + ': ' + res.data.taskId
+      try {
+        const res = await createTaskByFlow(this.form)
+        this.createTaskFormVisable = false
+        if (res && res.error_code === 0) {
+          let message
+          if (res.data instanceof Array) {
+            message = '成功创建' + res.data.length + '个任务'
+            console.log(res)
+          } else {
+            message = res.msg + ': ' + res.data.taskId
+          }
+          Message({
+            message,
+            type: 'success',
+            duration: 5 * 1000
+          })
         }
-        Message({
-          message,
-          type: 'success',
-          duration: 5 * 1000
-        })
+      } catch (err) {
+        console.log(err)
       }
+      this.loading = false
     },
     async switchPlanStatus(status, plan_name) {
       const res = await switchPlanStatus({ status: status, plan_name: plan_name })
