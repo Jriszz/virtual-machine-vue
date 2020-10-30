@@ -143,6 +143,20 @@ export const asyncRoutes = [
   },
 
   {
+    path: '/records',
+    component: Layout,
+    redirect: '/',
+    name: 'records',
+    hidden: false,
+    // meta: { roles: ['super_admin'] },
+    children: [{
+      path: '',
+      component: () => import('@/views/records/index'),
+      meta: { title: '用例结果', icon: 'list' }
+    }]
+  },
+
+  {
     path: '/reports',
     component: Layout,
     redirect: '/',

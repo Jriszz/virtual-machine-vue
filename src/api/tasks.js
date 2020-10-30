@@ -53,3 +53,12 @@ export function taskRecords(primary_id) {
     method: 'get'
   })
 }
+
+// 任务用例执行记录列表
+export function getRecordList(params) {
+  return request({
+    url: PREFIX + '/case-record-list',
+    method: 'get',
+    params
+  })
+}
