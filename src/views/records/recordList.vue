@@ -14,17 +14,17 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="用例名称">
-              <el-input v-model="form.name" clearable/>
+              <el-input v-model="form.name" clearable placeholder="模糊查询"/>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="被测命令">
-              <el-input v-model="form.command" clearable/>
+              <el-input v-model="form.command" clearable placeholder="模糊查询"/>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="所属模块">
-              <el-input v-model="form.module" clearable/>
+              <el-input v-model="form.module" clearable placeholder="模糊查询"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -57,7 +57,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="流程名称">
-              <el-input v-model="form.flow_name" clearable/>
+              <el-input v-model="form.flow_name" clearable placeholder="精确查询"/>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -96,7 +96,7 @@
             <template slot-scope="record">
               <el-row>
                 <el-col :span="14">
-                  <el-form label-position="left" class="demo-table-expand">
+                  <el-form label-position="left" class="demo-table-expand"> 
                     <el-form-item label="用例名称">
                       <span>{{ record.row.name }}</span>
                     </el-form-item>
@@ -259,11 +259,11 @@ export default {
     },
     setQueryDate() {
       if (this.dateRange === null) {
-        this.form.start_date = null
-        this.form.end_date = null
+        this.form.create_time_s = null
+        this.form.create_time_e = null
       } else {
-        this.form.start_date = this.dateRange[0]
-        this.form.end_date = this.dateRange[1]
+        this.form.create_time_s = this.dateRange[0]
+        this.form.create_time_e = this.dateRange[1]
       }
     },
     async getRecordList() {
