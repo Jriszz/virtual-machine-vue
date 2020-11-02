@@ -67,9 +67,6 @@
                 value-format="yyyy-MM-dd HH:mm:ss"
                 @change="setQueryDateCreate"/>
             </el-form-item>
-            <!-- <el-form-item label="部门名称">
-              <el-input v-model="form.dep_name" clearable/>
-            </el-form-item> -->
           </el-col>
         </el-row>
         <el-row>
@@ -158,9 +155,9 @@
                   width="80"
                   label="是否通过">
                   <template slot-scope="scope">
-                    <span v-if="scope.row.result===true">通过</span>
-                    <span v-else-if="scope.row.error_type===false">失败</span>
-                    <span v-else>未知</span>
+                    <span v-if="scope.row.result===true" class="colorGreen">通过</span>
+                    <span v-else-if="scope.row.result===false" class="colorRed">失败</span>
+                    <span v-else class="colorYellow">未知</span>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -216,9 +213,13 @@
             width="70"
             label="任务结果">
             <template slot-scope="scope">
-              <span v-if="scope.row.result===true">成功</span>
-              <span v-else-if="scope.row.result===false">失败</span>
-              <span v-else>未知</span>
+              <span v-if="scope.row.result===true" class="colorGreen">成功</span>
+              <span v-else-if="scope.row.result===false" class="colorRed">
+                <el-tooltip :content="scope.row.message" class="item" effect="dark" placement="top-start">
+                  <span>失败</span>
+                </el-tooltip>
+              </span>
+              <span v-else class="colorYellow">未知</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -483,3 +484,30 @@ export default {
   }
 }
 </script>
+
+<style>
+  .colorGreen {
+  color: green;
+  }
+  .colorYellow {
+    color:darkorange
+  }
+  .colorRed {
+    color: red;
+  }
+  .backGreen {
+    color: white;
+    font-weight: bold;
+    background-color: green;
+  }
+  .backYellow {
+    color: white;
+    font-weight: bold;
+    background-color:darkorange
+  }
+  .backRed {
+    color: white;
+    font-weight: bold;
+    background-color: red;
+  }
+</style>

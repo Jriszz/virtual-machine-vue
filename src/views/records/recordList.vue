@@ -96,7 +96,7 @@
             <template slot-scope="record">
               <el-row>
                 <el-col :span="14">
-                  <el-form label-position="left" class="demo-table-expand"> 
+                  <el-form label-position="left" class="demo-table-expand">
                     <el-form-item label="用例名称">
                       <span>{{ record.row.name }}</span>
                     </el-form-item>
