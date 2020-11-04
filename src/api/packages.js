@@ -50,3 +50,29 @@ export function getServiceList() {
     method: 'get'
   })
 }
+
+// 获取打包记录列表
+export function getPackageRecordList(params) {
+  return request({
+    url: '/ferrymen/package-record-list',
+    method: 'get',
+    params
+  })
+}
+
+// 删除打包记录列表
+export function deletePackageRecord(primary_id) {
+  return request({
+    url: '/ferrymen/package-record/' + primary_id,
+    method: 'delete'
+  })
+}
+
+// 打包版本发布到gitea release
+export function releasePackage(primary_id, data) {
+  return request({
+    url: '/ferrymen/package-record/' + primary_id + '/release',
+    method: 'post',
+    data
+  })
+}

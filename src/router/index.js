@@ -28,13 +28,13 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
-    name: 'Dashboard',
+    redirect: '/profiles',
+    name: '个中信息',
     hidden: false,
     children: [{
-      path: 'dashboard',
+      path: 'profiles',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '个人信息', icon: 'table' }
+      meta: { title: '个人信息', icon: 'user' }
     }]
   }
 ]
@@ -45,143 +45,91 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
-    path: '/accesslog',
+    path: '/userCenter',
     component: Layout,
-    redirect: '/',
-    name: 'accesslog',
+    redirect: '',
+    name: 'userCenter',
     hidden: false,
-    meta: { roles: ['super_admin'] },
-    children: [{
-      path: '',
-      component: () => import('@/views/user/userAccessLog'),
-      meta: { title: '访问日志', icon: 'eye-open' }
-    }]
+    meta: { title: '用户中心', icon: 'peoples', roles: ['super_admin'] },
+    children: [
+      {
+        path: 'accesslog',
+        component: () => import('@/views/user/userAccessLog'),
+        meta: { title: '访问日志', icon: 'eye-open' }
+      },
+      {
+        path: 'users',
+        component: () => import('@/views/user/index'),
+        meta: { title: '用户列表', icon: 'user', roles: ['super_admin'] }
+      },
+      {
+        path: 'roles',
+        component: () => import('@/views/role/index'),
+        meta: { title: '角色列表', icon: 'peoples' }
+      },
+      {
+        path: 'systems',
+        component: () => import('@/views/businessSystem/index'),
+        meta: { title: '站点列表', icon: 'component' }
+      },
+      {
+        path: 'resources',
+        component: () => import('@/views/systemResource/index'),
+        meta: { title: '站点资源', icon: 'list' }
+      }
+    ]
   },
 
   {
-    path: '/users',
+    path: '/platform',
     component: Layout,
-    redirect: '/',
-    name: 'users',
+    redirect: '',
+    name: 'platform',
     hidden: false,
-    meta: { roles: ['super_admin'] },
-    children: [{
-      path: '',
-      component: () => import('@/views/user/index'),
-      meta: { title: '用户列表', icon: 'user', roles: ['super_admin'] }
-    }]
+    meta: { title: '测试平台', icon: 'table' },
+    children: [
+      {
+        path: 'flows',
+        component: () => import('@/views/flows/index'),
+        meta: { title: '流程列表', icon: 'list' }
+      },
+      {
+        path: 'tasks',
+        component: () => import('@/views/tasks/index'),
+        meta: { title: '任务列表', icon: 'list' }
+      },
+      {
+        path: 'records',
+        component: () => import('@/views/records/index'),
+        meta: { title: '用例结果', icon: 'list' }
+      },
+      {
+        path: 'reports',
+        component: () => import('@/views/reports/index'),
+        meta: { title: '统计报表', icon: 'chart' }
+      }
+    ]
   },
 
   {
-    path: '/roles',
+    path: '/cicd',
     component: Layout,
     redirect: '/',
-    name: 'roles',
+    name: 'CICD平台',
     hidden: false,
-    meta: { roles: ['super_admin'] },
-    children: [{
-      path: '',
-      component: () => import('@/views/role/index'),
-      meta: { title: '角色列表', icon: 'peoples' }
-    }]
-  },
-
-  {
-    path: '/systems',
-    component: Layout,
-    redirect: '/',
-    name: 'systems',
-    hidden: false,
-    meta: { roles: ['super_admin'] },
-    children: [{
-      path: '',
-      component: () => import('@/views/businessSystem/index'),
-      meta: { title: '站点列表', icon: 'component' }
-    }]
-  },
-
-  {
-    path: '/resources',
-    component: Layout,
-    redirect: '/',
-    name: 'resources',
-    hidden: false,
-    meta: { roles: ['super_admin'] },
-    children: [{
-      path: '',
-      component: () => import('@/views/systemResource/index'),
-      meta: { title: '站点资源', icon: 'list' }
-    }]
-  },
-
-  {
-    path: '/flows',
-    component: Layout,
-    redirect: '/',
-    name: 'flows',
-    hidden: false,
-    // meta: { roles: ['super_admin'] },
-    children: [{
-      path: '',
-      component: () => import('@/views/flows/index'),
-      meta: { title: '流程列表', icon: 'list' }
-    }]
-  },
-
-  {
-    path: '/tasks',
-    component: Layout,
-    redirect: '/',
-    name: 'tasks',
-    hidden: false,
-    // meta: { roles: ['super_admin'] },
-    children: [{
-      path: '',
-      component: () => import('@/views/tasks/index'),
-      meta: { title: '任务列表', icon: 'list' }
-    }]
-  },
-
-  {
-    path: '/records',
-    component: Layout,
-    redirect: '/',
-    name: 'records',
-    hidden: false,
-    // meta: { roles: ['super_admin'] },
-    children: [{
-      path: '',
-      component: () => import('@/views/records/index'),
-      meta: { title: '用例结果', icon: 'list' }
-    }]
-  },
-
-  {
-    path: '/reports',
-    component: Layout,
-    redirect: '/',
-    name: 'reports',
-    hidden: false,
-    // meta: { roles: ['super_admin'] },
-    children: [{
-      path: '',
-      component: () => import('@/views/reports/index'),
-      meta: { title: '统计报表', icon: 'list' }
-    }]
-  },
-
-  {
-    path: '/package',
-    component: Layout,
-    redirect: '/',
-    name: 'package',
-    hidden: false,
-    // meta: { roles: ['super_admin'] },
-    children: [{
-      path: '',
-      component: () => import('@/views/package/index'),
-      meta: { title: '在线打包', icon: 'list' }
-    }]
+    meta: { title: 'CICD平台', icon: 'component' },
+    children: [
+      {
+        path: 'package',
+        component: () => import('@/views/package/index'),
+        meta: { title: '在线打包', icon: 'list' }
+      },
+      {
+        path: 'version',
+        component: () => import('@/views/package/packageRecordList'),
+        meta: { title: '版本管理', icon: 'list' }
+      }
+    ]
   },
 
   // 404 page must be placed at the end !!!
