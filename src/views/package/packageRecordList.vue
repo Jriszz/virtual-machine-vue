@@ -288,6 +288,11 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item>
+          <div>
+            <span v-if="currentPackage.sign!='laiye'" class="backYellow">当前签名为：{{ currentPackage.sign }}，请确定是否继续发布？正常情况下只应该对外发布Laiye签名的包！</span>
+          </div>
+        </el-form-item>
+        <el-form-item>
           <el-button @click="releasePackage('form')">提交</el-button>
           <el-button @click="releasePackageFormVisable=false">关闭</el-button>
         </el-form-item>

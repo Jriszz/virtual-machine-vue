@@ -116,7 +116,7 @@
         <el-row>
           <el-col :span="18">
             <el-form-item label="源码分支">
-              <el-input :rows="2" :disabled="!tags" v-model="form.tags" type="textarea" placeholder="如：BotScript:BRANCH:release-5.1.1;extends:BRANCH:product-5.1.2"/>
+              <el-input :rows="3" :disabled="!tags" v-model="form.tags" type="textarea" placeholder="如：BotScript:BRANCH:release-5.1.1;extends:BRANCH:product-5.1.2"/>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -272,7 +272,7 @@ export default {
         this.form.branch = 'blank-5.2.0'
         this.form.pack_type = 'worker'
         this.form.sign = ''
-        this.form.tags = 'worker-by-electron-view:BRANCH:blank-5.2.0;deputy:BRANCH:blank-5.2.0;script-of-install:BRANCH:blank-5.2.0;rpa-patch-worker:TAG:T_V5.2.0_all;UiBotBrowser:TAG:T_V5.2.0_all;uibot-updater:TAG:T_V5.2.0_all;workerscheduler:TAG:T_V5.2.0_all;BotScript:TAG:T_V5.2.0_all;extends:TAG:T_V5.2.0_all;uibot-chrome:TAG:T_V5.2.0_all;worker-by-electron-main:BRANCH:blank-5.2.0'
+        this.form.tags = 'worker-by-electron-view:BRANCH:blank-5.2.0;deputy:BRANCH:blank-5.2.0;script-of-install:BRANCH:blank-5.2.0;rpa-patch-worker:TAG:T_V5.2.0_all;UiBotBrowser:TAG:T_V5.2.0_all;uibot-updater:TAG:T_V5.2.0_all;workerscheduler:TAG:T_V5.2.0_all;BotScript:BRANCH:blank-5.2.0;extends:TAG:T_V5.2.0_all;uibot-chrome:TAG:T_V5.2.0_all;worker-by-electron-main:BRANCH:blank-5.2.0'
         this.ver = true
         this.sign = false
         this.tag_name = true
