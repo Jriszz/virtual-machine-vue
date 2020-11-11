@@ -224,7 +224,7 @@
           </el-table-column>
           <el-table-column
             prop="error_type"
-            width="70"
+            width="120"
             label="错误类型">
             <template slot-scope="scope">
               <span v-if="scope.row.error_type===0">运行成功</span>
@@ -232,6 +232,7 @@
               <span v-else-if="scope.row.error_type===2">找不到子流程</span>
               <span v-else-if="scope.row.error_type===3">加载流程失败</span>
               <span v-else-if="scope.row.error_type===4">运行流程超时</span>
+              <span v-else-if="scope.row.error_type===5">Worker运行崩溃</span>
               <span v-else-if="scope.row.error_type===9">运行流程出错</span>
               <span v-else>未知</span>
             </template>
@@ -248,7 +249,7 @@
           </el-table-column>
           <el-table-column
             label="操作"
-            min-width="260">
+            min-width="280">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" plain @click="taskSync(scope.row.task_id)">同步</el-button>
               <el-button size="mini" type="primary" plain @click="openTaskDetail(scope.row.task_id)">详情</el-button>
