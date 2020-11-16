@@ -76,3 +76,11 @@ export function releasePackage(primary_id, data) {
     data
   })
 }
+
+// 上传安装包到OSS
+export function uploadOSS(primary_id) {
+  return request({
+    url: '/ferrymen/package-record/' + primary_id + '/upload-oss',
+    method: 'post'
+  })
+}
