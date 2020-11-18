@@ -43,97 +43,99 @@ export const constantRoutes = [
  * asyncRoutes
  * the routes that need to be dynamically loaded based on user roles
  */
-export const asyncRoutes = [
-  {
-    path: '/userCenter',
-    component: Layout,
-    redirect: '',
-    name: 'userCenter',
-    hidden: false,
-    meta: { title: '用户中心', icon: 'peoples', roles: ['super_admin'] },
-    children: [
-      {
-        path: 'accesslog',
-        component: () => import('@/views/user/userAccessLog'),
-        meta: { title: '访问日志', icon: 'eye-open' }
-      },
-      {
-        path: 'users',
-        component: () => import('@/views/user/index'),
-        meta: { title: '用户列表', icon: 'user', roles: ['super_admin'] }
-      },
-      {
-        path: 'roles',
-        component: () => import('@/views/role/index'),
-        meta: { title: '角色列表', icon: 'peoples' }
-      },
-      {
-        path: 'systems',
-        component: () => import('@/views/businessSystem/index'),
-        meta: { title: '站点列表', icon: 'component' }
-      },
-      {
-        path: 'resources',
-        component: () => import('@/views/systemResource/index'),
-        meta: { title: '站点资源', icon: 'list' }
-      }
-    ]
+export const asyncRoutes = [{
+  path: '/userCenter',
+  component: Layout,
+  redirect: '',
+  name: 'userCenter',
+  hidden: false,
+  meta: { title: '用户中心', icon: 'peoples', roles: ['super_admin'] },
+  children: [{
+    path: 'accesslog',
+    component: () => import('@/views/user/userAccessLog'),
+    meta: { title: '访问日志', icon: 'eye-open' }
   },
-
   {
-    path: '/platform',
-    component: Layout,
-    redirect: '',
-    name: 'platform',
-    hidden: false,
-    meta: { title: '测试平台', icon: 'table' },
-    children: [
-      {
-        path: 'flows',
-        component: () => import('@/views/flows/index'),
-        meta: { title: '流程列表', icon: 'list' }
-      },
-      {
-        path: 'tasks',
-        component: () => import('@/views/tasks/index'),
-        meta: { title: '任务列表', icon: 'list' }
-      },
-      {
-        path: 'records',
-        component: () => import('@/views/records/index'),
-        meta: { title: '用例结果', icon: 'list' }
-      },
-      {
-        path: 'reports',
-        component: () => import('@/views/reports/index'),
-        meta: { title: '统计报表', icon: 'chart' }
-      }
-    ]
+    path: 'users',
+    component: () => import('@/views/user/index'),
+    meta: { title: '用户列表', icon: 'user', roles: ['super_admin'] }
   },
-
   {
-    path: '/cicd',
-    component: Layout,
-    redirect: '/',
-    name: 'CICD平台',
-    hidden: false,
-    meta: { title: 'CICD平台', icon: 'component' },
-    children: [
-      {
-        path: 'package',
-        component: () => import('@/views/package/index'),
-        meta: { title: '在线打包', icon: 'list' }
-      },
-      {
-        path: 'version',
-        component: () => import('@/views/package/packageRecordList'),
-        meta: { title: '版本管理', icon: 'list' }
-      }
-    ]
+    path: 'roles',
+    component: () => import('@/views/role/index'),
+    meta: { title: '角色列表', icon: 'peoples' }
   },
+  {
+    path: 'systems',
+    component: () => import('@/views/businessSystem/index'),
+    meta: { title: '站点列表', icon: 'component' }
+  },
+  {
+    path: 'resources',
+    component: () => import('@/views/systemResource/index'),
+    meta: { title: '站点资源', icon: 'list' }
+  }
+  ]
+},
 
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+{
+  path: '/platform',
+  component: Layout,
+  redirect: '',
+  name: 'platform',
+  hidden: false,
+  meta: { title: '测试平台', icon: 'table' },
+  children: [{
+    path: 'flows',
+    component: () => import('@/views/flows/index'),
+    meta: { title: '流程列表', icon: 'list' }
+  },
+  {
+    path: 'tasks',
+    component: () => import('@/views/tasks/index'),
+    meta: { title: '任务列表', icon: 'list' }
+  },
+  {
+    path: 'records',
+    component: () => import('@/views/records/index'),
+    meta: { title: '用例结果', icon: 'list' }
+  },
+  {
+    path: 'reports',
+    component: () => import('@/views/reports/index'),
+    meta: { title: '统计报表', icon: 'chart' }
+  },
+  {
+    path: 'envir-table',
+    component: () => import('@/views/envManager/envir_config'),
+    name: 'EnvirConfig',
+    meta: { title: '环境配置', icon: 'table' }
+  }
+  ]
+},
+
+{
+  path: '/cicd',
+  component: Layout,
+  redirect: '/',
+  name: 'CICD平台',
+  hidden: false,
+  meta: { title: 'CICD平台', icon: 'component' },
+  children: [{
+    path: 'package',
+    component: () => import('@/views/package/index'),
+    meta: { title: '在线打包', icon: 'list' }
+  },
+  {
+    path: 'version',
+    component: () => import('@/views/package/packageRecordList'),
+    meta: { title: '版本管理', icon: 'list' }
+  }
+  ]
+},
+
+// 404 page must be placed at the end !!!
+{ path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({
