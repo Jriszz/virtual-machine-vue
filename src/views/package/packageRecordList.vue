@@ -226,7 +226,7 @@
             label="指纹信息"/> -->
           <el-table-column
             label="操作"
-            min-width="420">
+            min-width="500">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" plain @click="download(scope.row.fingerprint_url)">版本信息</el-button>
               <el-button size="mini" type="primary" plain @click="download(scope.row.download_url)">下载</el-button>
