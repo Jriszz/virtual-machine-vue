@@ -3,7 +3,6 @@ import { Message } from 'element-ui'
 import { hideLoading } from '@/utils/loading'
 // create an axios instance
 const service = axios.create({
-  baseURL: process.env.BASE_API2,
   timeout: 6000 // request timeout
 
 })

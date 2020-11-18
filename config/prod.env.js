@@ -2,5 +2,5 @@
 module.exports = {
   NODE_ENV: '"production"',
   BASE_API: '"/api"',
-  BASE_API2: ''
+  BASE_API2: '/'
 }
