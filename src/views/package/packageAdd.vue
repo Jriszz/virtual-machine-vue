@@ -114,9 +114,9 @@
         </el-row>
 
         <el-row>
-          <el-col :span="18">
-            <el-form-item label="源码分支">
-              <el-input :rows="3" :disabled="!tags" v-model="form.tags" type="textarea" placeholder="如：BotScript:BRANCH:release-5.1.1;extends:BRANCH:product-5.1.2"/>
+          <el-col :span="6">
+            <el-form-item label="默认分支">
+              <el-input v-model="form.default_branch" placeholder="源码分支中没有指定分支时默认采用此分支"/>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -125,6 +125,11 @@
                 <el-radio label="yes">启用</el-radio>
                 <el-radio label="no">禁用</el-radio>
               </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="源码分支">
+              <el-input :rows="3" :disabled="!tags" v-model="form.tags" type="textarea" placeholder="如：BotScript:BRANCH:release-5.1.1;extends:BRANCH:product-5.1.2"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -299,6 +304,7 @@ export default {
         tag_name: '',
         tags: '',
         branch: 'master',
+        default_branch: null,
         stage_type: 'module',
         arch: 'all',
         beta: '',
