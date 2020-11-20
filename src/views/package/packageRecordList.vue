@@ -395,17 +395,25 @@ export default {
       this.loading = false
     },
     async deletePackageRecord(primary_id) {
-      const res = await packages.deletePackageRecord(primary_id)
-      if (res.error_code === 0) {
-        Message({
-          message: res.msg,
-          type: 'success',
-          duration: 5 * 1000
-        })
-        this.getPackageRecordList()
-      } else {
-        console.log(res)
-      }
+      MessageBox.confirm(
+        '此操作将物理删除此打包版本对应的文件与记录，是否继续？',
+        '操作确认',
+        {
+          distinguishCancelAndClose: true,
+          confirmButtonText: '删除',
+          cancelButtonText: '取消'
+        }
+      ).then(async() => {
+        const res = await packages.deletePackageRecord(primary_id)
+        if (res.error_code === 0) {
+          Message({
+            message: res.msg,
+            type: 'success',
+            duration: 5 * 1000
+          })
+          this.getPackageRecordList()
+        }
+      }).catch(action => {})
     },
     releasePackage(form) {
       this.resultLoading = true
