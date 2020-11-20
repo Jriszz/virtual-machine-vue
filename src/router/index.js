@@ -104,13 +104,8 @@ export const asyncRoutes = [{
     path: 'reports',
     component: () => import('@/views/reports/index'),
     meta: { title: '统计报表', icon: 'chart' }
-  },
-  {
-    path: 'envir-table',
-    component: () => import('@/views/envManager/envir_config'),
-    name: 'EnvirConfig',
-    meta: { title: '环境配置', icon: 'table' }
   }
+
   ]
 },
 
@@ -130,8 +125,13 @@ export const asyncRoutes = [{
     path: 'version',
     component: () => import('@/views/package/packageRecordList'),
     meta: { title: '版本管理', icon: 'list' }
-  }
-  ]
+  },
+  {
+    path: 'envir-table',
+    component: () => import('@/views/envManager/envir_config'),
+    name: 'EnvirConfig',
+    meta: { title: '环境配置', icon: 'table' }
+  }]
 },
 
 // 404 page must be placed at the end !!!

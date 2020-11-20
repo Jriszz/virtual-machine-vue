@@ -89,7 +89,17 @@
           <el-input v-model="temp.ip_address" placeholder="IP地址" />
         </el-form-item>
         <el-form-item label="应用路径" prop="app_path">
-          <el-input v-model="temp.app_path" placeholder="应用路径" />
+          <!-- <el-input v-model="temp.app_path" placeholder="应用路径" /> -->
+          <el-select
+            v-model="temp.app_path"
+            filterable
+            allow-create
+            placeholder="请选择应用路径">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :value="item.value"/>
+          </el-select>
         </el-form-item>
         <!-- `checked` 为 true 或 false -->
         <el-form-item>
@@ -170,6 +180,7 @@ export default {
         search_condition: '',
         sort: '+id'
       },
+      options: [],
       importanceOptions: [1, 2, 3],
       calendarTypeOptions,
       calendarTypeOptions2,
@@ -227,6 +238,7 @@ export default {
       environ_info(this.listQuery).then(response => {
         this.list = response.data.config_list
         this.total = response.data.total
+        this.options = response.data.app_path_option
 
         // Just to simulate the time of the request
         setTimeout(() => {
@@ -361,7 +373,7 @@ export default {
           // 禁用按钮
           this.isDisabled = true
           this.temp.app_name = this.temp.app_name + '_' + this.temp.version_id
-
+          console.log(this.temp)
           put_environ_info(this.temp).then(response => {
             this.innerVisible = false
             this.temp.app_name = temp_app_name
@@ -422,6 +434,7 @@ export default {
 
       environ_info(row).then(response => {
         let app_name_list = ''
+
         app_name_list = (response.data.config_list.app_name).split('_')
         this.temp.app_name = app_name_list[0]
         this.temp.version_id = app_name_list[1]
