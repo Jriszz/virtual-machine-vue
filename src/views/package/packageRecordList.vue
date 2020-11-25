@@ -158,12 +158,9 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="安装包名称"
-            width="450">
-            <template slot-scope="scope">
-              <span>{{ scope.row.download_url.split('/').pop() }}</span>
-            </template>
-          </el-table-column>
+            prop="app_name"
+            width="450"
+            label="安装包名称"/>
           <!-- <el-table-column
             prop="package"
             width="100"
