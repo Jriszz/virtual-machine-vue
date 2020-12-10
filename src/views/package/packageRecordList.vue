@@ -27,6 +27,7 @@
                 <el-radio :label="null">全部</el-radio>
                 <el-radio label="aosen">奥森</el-radio>
                 <el-radio label="laiye">来也</el-radio>
+                <el-radio label="laiye_h">硬件</el-radio>
                 <el-radio label="none">不签</el-radio>
               </el-radio-group>
             </el-form-item>

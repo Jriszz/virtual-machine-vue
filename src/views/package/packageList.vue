@@ -99,7 +99,10 @@
           width="80">
           <template slot-scope="scope">
             <span v-if="scope.row.sign==='laiye'">来也</span>
-            <span v-else>奥森</span>
+            <span v-else-if="scope.row.sign==='laiye_h'">硬件</span>
+            <span v-else-if="scope.row.sign==='aosen'">奥森</span>
+            <span v-else-if="scope.row.sign===''">不签</span>
+            <span v-else>{{ scope.row.sign }}</span>
           </template>
         </el-table-column>
         <el-table-column

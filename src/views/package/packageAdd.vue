@@ -46,7 +46,7 @@
             <el-form-item label="签名证书">
               <el-radio-group v-model="form.sign" :disabled="!sign">
                 <el-radio label="laiye">来也</el-radio>
-                <el-radio label="aosen">奥森</el-radio>
+                <el-radio label="laiye_h">硬件</el-radio>
                 <el-radio label="">不签</el-radio>
               </el-radio-group>
             </el-form-item>
@@ -85,7 +85,7 @@
 
         <el-row>
           <el-col :span="6">
-            <el-form-item label="打包分支">
+            <el-form-item label="打包工程分支">
               <el-input v-model="form.branch" :disabled="!branch"/>
             </el-form-item>
           </el-col>
@@ -115,7 +115,7 @@
 
         <el-row>
           <el-col :span="6">
-            <el-form-item label="默认分支">
+            <el-form-item label="源库默认分支">
               <el-input v-model="form.default_branch" placeholder="源码分支中没有指定分支时默认采用此分支"/>
             </el-form-item>
           </el-col>
@@ -300,11 +300,11 @@ export default {
     initForm() {
       const _form = {
         secret: 'aead5f0b9a1bf24b62036bbe16daabcd',
-        ver: '5.3.0',
+        ver: '5.5.0',
         tag_name: '',
         tags: '',
         branch: 'master',
-        default_branch: null,
+        default_branch: 'master',
         stage_type: 'module',
         arch: 'all',
         beta: '',
@@ -312,7 +312,7 @@ export default {
         sub_type: 'enterprise',
         language: 'zh-cn',
         channel: 'official',
-        sign: 'aosen',
+        sign: 'laiye',
         receiver: 'all',
         cache: 'yes',
         from: this.$store.state.users.sessionUser.name || this.$store.state.users.sessionUser.username
