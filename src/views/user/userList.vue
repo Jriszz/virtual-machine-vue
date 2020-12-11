@@ -18,7 +18,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="登陆名">
+            <el-form-item label="登录名">
               <el-input v-model="form.username" />
             </el-form-item>
           </el-col>

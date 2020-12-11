@@ -41,7 +41,7 @@ router.beforeEach(async(to, from, next) => {
             console.log('拉取会话信息失败')
             console.log(error)
             store.dispatch('FedLogOut').then(() => {
-              Message.error('获取用户信息失败，请重新登陆！')
+              Message.error('获取用户信息失败，请重新登录！')
               next({ path: '/' })
             })
           }
@@ -51,7 +51,7 @@ router.beforeEach(async(to, from, next) => {
   } else {
     console.log('getToken get null')
     if (whiteList.indexOf(to.path) !== -1) {
-      console.log('未登陆，但为白名单')
+      console.log('未登录，但为白名单')
       next()
     } else {
       // window.location.href = '/api/user/login'

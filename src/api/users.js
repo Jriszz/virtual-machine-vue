@@ -19,7 +19,7 @@ export function signup(data) {
   })
 }
 
-// 用户登陆
+// 用户登录
 export function login(data) {
   return request({
     url: PREFIX + '/login',
@@ -36,7 +36,7 @@ export function getSessionInfo() {
   })
 }
 
-// 用户退出登陆
+// 用户退出登录
 export function logout() {
   return request({
     url: PREFIX + '/logout',

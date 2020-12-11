@@ -30,7 +30,7 @@
           <el-row>
             <el-col :span="11">
               <el-button :loading="loading" type="primary" style="width:100%;" @click.native.prevent="handleLogin">
-                登陆
+                登录
               </el-button>
             </el-col>
             <el-col :span="2">

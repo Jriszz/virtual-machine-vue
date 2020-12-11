@@ -69,7 +69,7 @@
         <el-form-item v-if="isDetailScene" label="修改时间">
           <el-input v-model="form.update_time"/>
         </el-form-item>
-        <el-form-item v-if="isDetailScene" label="最近一次登陆">
+        <el-form-item v-if="isDetailScene" label="最近一次登录">
           <el-input v-model="form.last_login_time"/>
         </el-form-item>
         <el-form-item v-if="isDetailScene" label="最近修改密码">

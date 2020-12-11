@@ -96,7 +96,7 @@ export default {
             })
             this.$store.dispatch('LogOut').then(() => {
               Message({
-                message: '密码修改成功，请重新登陆',
+                message: '密码修改成功，请重新登录',
                 type: 'success',
                 duration: 5 * 1000
               })

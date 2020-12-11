@@ -309,7 +309,7 @@ export default {
         arch: 'all',
         beta: '',
         pack_type: 'creator',
-        sub_type: 'enterprise',
+        sub_type: 'community',
         language: 'zh-cn',
         channel: 'official',
         sign: 'laiye',

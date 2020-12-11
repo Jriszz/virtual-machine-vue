@@ -34,8 +34,8 @@ service.interceptors.response.use(
     if (res.error_code === 0) {
       return response.data
     } else if (res.error_code === 1005) {
-      MessageBox.confirm('会话超时，是重新登陆还是停留在此页面？', '会话超时', {
-        confirmButtonText: '重新登陆',
+      MessageBox.confirm('会话超时，是重新登录还是停留在此页面？', '会话超时', {
+        confirmButtonText: '重新登录',
         cancelButtonText: '保持在当前页',
         type: 'warning'
       }).then(() => {

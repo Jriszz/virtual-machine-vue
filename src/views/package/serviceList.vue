@@ -31,7 +31,7 @@
         <h1 style="color: red">当前没有打包服务在线，无法提供打包服务！</h1>
         <h1 style="color: green">打包服务启动指南</h1>
         <ol>
-          <li class="startServiceSetp">以uibot用户远程登陆192.168.0.84，密码UiBot2020;</li>
+          <li class="startServiceSetp">以uibot用户远程登录192.168.0.84，密码UiBot2020;</li>
           <li class="startServiceSetp">按【Win + Q】打开系统搜索框，输入Terminal，选择“以管理员身份运行”;</li>
           <li class="startServiceSetp">输入：【cmd】，从powershell切换到cmd；</li>
           <li class="startServiceSetp">输入：【cd C:\online-package】，切换到在线打包工程目录；</li>
