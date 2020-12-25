@@ -48,3 +48,17 @@ export function remove_environ_info(params) {
 
   return request_obj
 }
+
+export function refresh_worker(params) {
+  let request_params = ''
+  console.log(params)
+  request_params = { 'ip_address': params['ip_address'] }
+
+  const request_obj = request({
+    url: '/refresh-worker',
+    method: 'get',
+    params: request_params
+  })
+
+  return request_obj
+}

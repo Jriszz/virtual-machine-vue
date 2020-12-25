@@ -34,6 +34,12 @@
           <span>{{ row.ip_address }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="worker在线状态" min-width="20px">
+        <template slot-scope="{row}">
+          <span v-if="row.worker_state === 2" style="color:#67C23A">在线</span>
+          <span v-else style="color:#909399">离线</span>
+        </template>
+      </el-table-column>
       <el-table-column label="应用名" min-width="20px">
         <template slot-scope="{row}">
           <span>{{ row.app_name }}</span>
@@ -44,7 +50,7 @@
           <span>{{ row.version_bit }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column label="Actions" align="left" width="350" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button size="mini" type="warning" @click="handleModify(row,$index)">
             修改
@@ -54,6 +60,9 @@
           </el-button>
           <el-button v-if="row.status!='deleted'" size="mini" type="info" @click="handleCopy(row,$index)">
             复制
+          </el-button>
+          <el-button v-if="row.app_name.includes('Worker')" size="mini" type="primary" @click="refresh(row,$index)">
+            刷新worker
           </el-button>
         </template>
       </el-table-column>
@@ -131,7 +140,7 @@
 </template>
 
 <script>
-import { environ_info, new_environ_info, put_environ_info, remove_environ_info } from '@/api/environ-config'
+import { environ_info, new_environ_info, put_environ_info, remove_environ_info, refresh_worker } from '@/api/environ-config'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 const calendarTypeOptions = [
@@ -461,6 +470,17 @@ export default {
         this.dialogFormVisible = true
       })
       this.dialogFormVisible = true
+    },
+    refresh(row, index) {
+      refresh_worker(row).then(response => {
+        setTimeout(() => {
+          environ_info(this.listQuery).then(response => {
+            this.list = response.data.config_list
+            this.total = response.data.total
+            this.options = response.data.app_path_option
+          })
+        }, 10000)
+      })
     },
     getSortClass: function(key) {
       const sort = this.listQuery.sort
