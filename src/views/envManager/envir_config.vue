@@ -444,29 +444,30 @@ export default {
       environ_info(row).then(response => {
         let app_name_list = ''
 
-        app_name_list = (response.data.config_list.app_name).split('_')
+        app_name_list = (response.data.config_list[0].app_name).split('_')
         this.temp.app_name = app_name_list[0]
         this.temp.version_id = app_name_list[1]
-        this.temp.app_path = response.data.config_list.app_path
-        this.temp.ip_address = response.data.config_list.ip_address
-        this.temp.version_bit = response.data.config_list.version_bit
-        this.temp.environ_name = response.data.config_list.environ_name
-        this.temp.environ_id = response.data.config_list.id
+        this.temp.app_path = response.data.config_list[0].app_path
+        this.temp.ip_address = response.data.config_list[0].ip_address
+        this.temp.version_bit = response.data.config_list[0].version_bit
+        this.temp.environ_name = response.data.config_list[0].environ_name
+        this.temp.environ_id = response.data.config_list[0].id
         this.dialogFormVisible = true
       })
     },
     handleCopy(row, index) {
       this.dialogStatus = 'copy'
+
       environ_info(row).then(response => {
         let app_name_list = ''
-        app_name_list = (response.data.config_list.app_name).split('_')
+        app_name_list = (response.data.config_list[0].app_name).split('_')
         this.temp.app_name = app_name_list[0]
         this.temp.version_id = app_name_list[1]
-        this.temp.app_path = response.data.config_list.app_path
-        this.temp.ip_address = response.data.config_list.ip_address
-        this.temp.version_bit = response.data.config_list.version_bit
-        this.temp.environ_name = response.data.config_list.environ_name
-        this.temp.environ_id = response.data.config_list.id
+        this.temp.app_path = response.data.config_list[0].app_path
+        this.temp.ip_address = response.data.config_list[0].ip_address
+        this.temp.version_bit = response.data.config_list[0].version_bit
+        this.temp.environ_name = response.data.config_list[0].environ_name
+        this.temp.environ_id = response.data.config_list[0].id
         this.dialogFormVisible = true
       })
       this.dialogFormVisible = true
