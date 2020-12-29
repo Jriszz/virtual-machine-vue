@@ -34,9 +34,10 @@
           <li class="startServiceSetp">以uibot用户远程登录192.168.0.84，密码UiBot2020;</li>
           <li class="startServiceSetp">按【Win + Q】打开系统搜索框，输入Terminal，选择“以管理员身份运行”;</li>
           <li class="startServiceSetp">输入：【cmd】，从powershell切换到cmd；</li>
-          <li class="startServiceSetp">输入：【cd C:\online-package】，切换到在线打包工程目录；</li>
+          <li class="startServiceSetp">输入：【cd C:\Users\uibot\online-package】，切换到在线打包工程目录；</li>
+          <li class="startServiceSetp">输入：【workon online-package】，激活Python虚拟环境；</li>
           <li class="startServiceSetp">输入：【python daemon.py】，运行在线打包守护进程；</li>
-          <li class="startServiceSetp">观察：确认日志中显示日志【打包守护进程启动成功，工作目录切换到C:\bin-generator】，代表服务启动成功；</li>
+          <li class="startServiceSetp">观察：确认日志中显示日志【打包守护进程启动成功，工作目录切换到C:\Users\uibot\bin-generator】，代表服务启动成功；</li>
           <li class="startServiceSetp">输入：按【F5】刷新当前页面，即可看在刚才启动的打包服务</li>
         </ol>
       </div>
