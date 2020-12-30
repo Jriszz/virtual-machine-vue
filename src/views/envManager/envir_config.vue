@@ -34,6 +34,12 @@
           <span>{{ row.ip_address }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="worker在线状态" min-width="20px">
+        <template slot-scope="{row}">
+          <span v-if="row.worker_state === 2" style="color:#67C23A">在线</span>
+          <span v-else style="color:#909399">离线</span>
+        </template>
+      </el-table-column>
       <el-table-column label="应用名" min-width="20px">
         <template slot-scope="{row}">
           <span>{{ row.app_name }}</span>
@@ -44,7 +50,7 @@
           <span>{{ row.version_bit }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column label="Actions" align="left" width="350" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button size="mini" type="warning" @click="handleModify(row,$index)">
             修改
@@ -54,6 +60,9 @@
           </el-button>
           <el-button v-if="row.status!='deleted'" size="mini" type="info" @click="handleCopy(row,$index)">
             复制
+          </el-button>
+          <el-button v-if="row.app_name.includes('Worker')" size="mini" type="primary" @click="refresh(row,$index)">
+            刷新worker
           </el-button>
         </template>
       </el-table-column>
@@ -131,7 +140,7 @@
 </template>
 
 <script>
-import { environ_info, new_environ_info, put_environ_info, remove_environ_info } from '@/api/environ-config'
+import { environ_info, new_environ_info, put_environ_info, remove_environ_info, refresh_worker } from '@/api/environ-config'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 const calendarTypeOptions = [
@@ -435,32 +444,44 @@ export default {
       environ_info(row).then(response => {
         let app_name_list = ''
 
-        app_name_list = (response.data.config_list.app_name).split('_')
+        app_name_list = (response.data.config_list[0].app_name).split('_')
         this.temp.app_name = app_name_list[0]
         this.temp.version_id = app_name_list[1]
-        this.temp.app_path = response.data.config_list.app_path
-        this.temp.ip_address = response.data.config_list.ip_address
-        this.temp.version_bit = response.data.config_list.version_bit
-        this.temp.environ_name = response.data.config_list.environ_name
-        this.temp.environ_id = response.data.config_list.id
+        this.temp.app_path = response.data.config_list[0].app_path
+        this.temp.ip_address = response.data.config_list[0].ip_address
+        this.temp.version_bit = response.data.config_list[0].version_bit
+        this.temp.environ_name = response.data.config_list[0].environ_name
+        this.temp.environ_id = response.data.config_list[0].id
         this.dialogFormVisible = true
       })
     },
     handleCopy(row, index) {
       this.dialogStatus = 'copy'
+
       environ_info(row).then(response => {
         let app_name_list = ''
-        app_name_list = (response.data.config_list.app_name).split('_')
+        app_name_list = (response.data.config_list[0].app_name).split('_')
         this.temp.app_name = app_name_list[0]
         this.temp.version_id = app_name_list[1]
-        this.temp.app_path = response.data.config_list.app_path
-        this.temp.ip_address = response.data.config_list.ip_address
-        this.temp.version_bit = response.data.config_list.version_bit
-        this.temp.environ_name = response.data.config_list.environ_name
-        this.temp.environ_id = response.data.config_list.id
+        this.temp.app_path = response.data.config_list[0].app_path
+        this.temp.ip_address = response.data.config_list[0].ip_address
+        this.temp.version_bit = response.data.config_list[0].version_bit
+        this.temp.environ_name = response.data.config_list[0].environ_name
+        this.temp.environ_id = response.data.config_list[0].id
         this.dialogFormVisible = true
       })
       this.dialogFormVisible = true
+    },
+    refresh(row, index) {
+      refresh_worker(row).then(response => {
+        setTimeout(() => {
+          environ_info(this.listQuery).then(response => {
+            this.list = response.data.config_list
+            this.total = response.data.total
+            this.options = response.data.app_path_option
+          })
+        }, 10000)
+      })
     },
     getSortClass: function(key) {
       const sort = this.listQuery.sort

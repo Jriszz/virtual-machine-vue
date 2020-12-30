@@ -3,6 +3,8 @@ require('./check-versions')()
 
 process.env.NODE_ENV = 'production'
 
+
+
 const ora = require('ora')
 const rm = require('rimraf')
 const path = require('path')
@@ -15,8 +17,10 @@ const spinner = ora('building for production...')
 spinner.start()
 
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
+ 
   if (err) throw err
   webpack(webpackConfig, (err, stats) => {
+ 
     spinner.stop()
     if (err) throw err
     process.stdout.write(
@@ -30,6 +34,7 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     )
 
     if (stats.hasErrors()) {
+       console.error(stats.toString("error-only"));
       console.log(chalk.red('  Build failed with errors.\n'))
       process.exit(1)
     }
