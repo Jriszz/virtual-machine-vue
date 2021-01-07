@@ -168,9 +168,15 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="task_id"
             width="140"
-            label="任务编号"/>
+            label="任务编号">
+            <template slot-scope="scope">
+              <div>
+                <span v-if="scope.row.task_type === 1">{{ scope.row.task_id }}</span>
+                <span v-else>{{ scope.row.id }}</span>
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="worker_name"
             width="140"
@@ -180,9 +186,13 @@
             min-width="250"
             label="流程名称"/>
           <el-table-column
-            prop="dep_name"
-            min-width="180"
-            label="部门名称"/>
+            prop="flow_version"
+            min-width="70"
+            label="流程版本"/>
+          <el-table-column
+            prop="author"
+            min-width="60"
+            label="作者"/>
           <el-table-column
             width="150"
             label="起止时间">
@@ -242,7 +252,8 @@
             width="70"
             label="是否同步">
             <template slot-scope="scope">
-              <span v-if="scope.row.sync===true">已同步</span>
+              <span v-if="scope.row.task_type===0"></span>
+              <span v-else-if="scope.row.sync===true">已同步</span>
               <span v-else-if="scope.row.sync===false">末同步</span>
               <span v-else>未知</span>
             </template>
@@ -251,10 +262,10 @@
             label="操作"
             min-width="280">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary" plain @click="taskSync(scope.row.task_id)">同步</el-button>
+              <el-button v-if="scope.row.task_type === 1" size="mini" type="primary" plain @click="taskSync(scope.row.task_id)">同步</el-button>
               <el-button size="mini" type="primary" plain @click="openTaskDetail(scope.row.task_id)">详情</el-button>
-              <el-button size="mini" type="primary" plain @click="openLogPage(scope.row.task_id)">日志</el-button>
-              <el-button size="mini" type="primary" plain @click="taskRestart(scope.row.task_id)">克隆</el-button>
+              <el-button v-if="scope.row.task_type === 1" size="mini" type="primary" plain @click="openLogPage(scope.row.task_id)">日志</el-button>
+              <el-button v-if="scope.row.task_type === 1" size="mini" type="primary" plain @click="taskRestart(scope.row.task_id)">克隆</el-button>
             </template>
           </el-table-column>
         </el-table>

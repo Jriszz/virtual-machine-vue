@@ -125,8 +125,12 @@
             min-width="200"
             label="流程名称"/>
           <el-table-column
+            prop="flow_version"
+            min-width="70"
+            label="流程版本"/>
+          <el-table-column
             prop="author"
-            min-width="80"
+            min-width="60"
             label="作者"/>
           <el-table-column
             prop="flow_package_name"
