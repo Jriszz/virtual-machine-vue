@@ -217,7 +217,7 @@
         :model="form"
         size="small">
         <el-form-item label="Worker">
-          <worker-select :initworkerid="form.worker_name" @change="form.worker_name=$event"/>
+          <worker-select :initworkerid="form.worker_id" @change="form.worker_id=$event"/>
         </el-form-item>
         <el-form-item>
           <el-button @click="createTask">提交</el-button>
@@ -252,7 +252,7 @@ export default {
       flowVersionList: [],
       totals: 0,
       createTaskFormVisable: false,
-      form: { worker_name: null },
+      form: { worker_id: null },
       queryForm: { flowType: 0, flowName: '' },
       formTitle: '创建任务',
       selectFlowIds: null

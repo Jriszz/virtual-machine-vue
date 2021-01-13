@@ -15,7 +15,7 @@
       v-for="worker in workers"
       :key="worker.id"
       :label="worker.label"
-      :value="worker.value">
+      :value="worker.id">
       <span>{{ worker.label }}</span>
     </el-option>
   </el-select>

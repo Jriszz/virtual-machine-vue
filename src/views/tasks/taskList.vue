@@ -76,8 +76,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="Worker">
-              <el-input v-model="form.worker_name" clearable/>
+            <el-form-item label="宿主">
+              <el-input v-model="form.ip_address" clearable/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -168,19 +168,17 @@
             </template>
           </el-table-column>
           <el-table-column
+            prop="task_id"
             width="140"
-            label="任务编号">
-            <template slot-scope="scope">
-              <div>
-                <span v-if="scope.row.task_type === 1">{{ scope.row.task_id }}</span>
-                <span v-else>{{ scope.row.id }}</span>
-              </div>
-            </template>
-          </el-table-column>
+            label="任务编号"/>
           <el-table-column
-            prop="worker_name"
-            width="140"
-            label="Worker"/>
+            prop="ip_address"
+            width="120"
+            label="宿主"/>
+          <el-table-column
+            prop="package"
+            width="70"
+            label="软件包"/>
           <el-table-column
             prop="flow_name"
             min-width="250"
@@ -243,6 +241,7 @@
               <span v-else-if="scope.row.error_type===3">加载流程失败</span>
               <span v-else-if="scope.row.error_type===4">运行流程超时</span>
               <span v-else-if="scope.row.error_type===5">Worker运行崩溃</span>
+              <span v-else-if="scope.row.error_type===8">存在失败用例</span>
               <span v-else-if="scope.row.error_type===9">运行流程出错</span>
               <span v-else>未知</span>
             </template>
@@ -252,7 +251,7 @@
             width="70"
             label="是否同步">
             <template slot-scope="scope">
-              <span v-if="scope.row.task_type===0"></span>
+              <span v-if="scope.row.task_type===0"/>
               <span v-else-if="scope.row.sync===true">已同步</span>
               <span v-else-if="scope.row.sync===false">末同步</span>
               <span v-else>未知</span>
@@ -260,11 +259,12 @@
           </el-table-column>
           <el-table-column
             label="操作"
-            min-width="280">
+            min-width="400">
             <template slot-scope="scope">
-              <el-button v-if="scope.row.task_type === 1" size="mini" type="primary" plain @click="taskSync(scope.row.task_id)">同步</el-button>
               <el-button size="mini" type="primary" plain @click="openTaskDetail(scope.row.task_id)">详情</el-button>
-              <el-button v-if="scope.row.task_type === 1" size="mini" type="primary" plain @click="openLogPage(scope.row.task_id)">日志</el-button>
+              <el-button size="mini" type="primary" plain @click="openLogPage(scope.row.task_id, 'task')">任务日志</el-button>
+              <el-button size="mini" type="primary" plain @click="openLogPage(scope.row.task_id, 'extend')">扩展日志</el-button>
+              <el-button v-if="scope.row.task_type === 1 && scope.row.sync === false" size="mini" type="primary" plain @click="taskSync(scope.row.task_id)">同步</el-button>
               <el-button v-if="scope.row.task_type === 1" size="mini" type="primary" plain @click="taskRestart(scope.row.task_id)">克隆</el-button>
             </template>
           </el-table-column>
@@ -324,6 +324,9 @@ export default {
         value: 5,
         label: 'Worker运行崩溃'
       }, {
+        value: 8,
+        label: '存在失败用例'
+      }, {
         value: 9,
         label: '运行流程出错'
       }],
@@ -365,7 +368,7 @@ export default {
         result: '',
         sync: '',
         dep_id: '',
-        worker_id: '',
+        ip_address: '',
         error_type: null,
         flow_name: '',
         start_date: null,
@@ -455,8 +458,8 @@ export default {
       await this.taskSync(task_id)
       window.open(this.detailUrl + '?task_id=' + task_id, '_blank')
     },
-    openLogPage(task_id) {
-      window.open(this.logUrl + '?task_id=' + task_id, '_blank')
+    openLogPage(task_id, type) {
+      window.open(this.logUrl + '?task_id=' + task_id + '&type=' + type, '_blank')
     },
     async getTaskLog(task_id) {
       this.loading = true
