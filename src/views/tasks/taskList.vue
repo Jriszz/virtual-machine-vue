@@ -266,6 +266,7 @@
               <el-button size="mini" type="primary" plain @click="openLogPage(scope.row.task_id, 'extend')">扩展日志</el-button>
               <el-button v-if="scope.row.task_type === 1 && scope.row.sync === false" size="mini" type="primary" plain @click="taskSync(scope.row.task_id)">同步</el-button>
               <el-button v-if="scope.row.task_type === 1" size="mini" type="primary" plain @click="taskRestart(scope.row.task_id)">克隆</el-button>
+              <el-button v-if="isSuperAdmin" size="mini" type="danger" plain @click="deleteTask(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -288,7 +289,7 @@
 
 <script>
 import { MessageBox, Message } from 'element-ui'
-import { getTaskList, taskRestart, taskRecords } from '@/api/tasks'
+import * as tasks from '@/api/tasks'
 
 export default {
   name: 'TaskList',
@@ -398,9 +399,20 @@ export default {
         this.form.create_time_e = this.dateRangeCreate[1]
       }
     },
+    async deleteTask(id) {
+      const res = await tasks.deleteTask(id)
+      if (res && res.error_code === 0) {
+        Message({
+          message: res.msg,
+          type: 'success',
+          duration: 5 * 1000
+        })
+        await this.getTaskList()
+      }
+    },
     async getTaskRecords(expandedRows, expanded) {
       if (expandedRows.records.length === 0) {
-        const res = await taskRecords(expandedRows['id'])
+        const res = await tasks.taskRecords(expandedRows['id'])
         if (res.error_code === 0 && res.data.length > 0) {
           expandedRows['records'] = res.data
         }
@@ -412,7 +424,7 @@ export default {
       this.errorflag = false
       const params = this.tools.cleanObjNullProperty(this.form)
       // const res = await this.$store.dispatch('GetTaskList', params)
-      const res = await getTaskList(params)
+      const res = await tasks.getTaskList(params)
       if (res.error_code === 0) {
         this.logUrl = res.data.log_url
         this.detailUrl = res.data.detail_url
@@ -443,7 +455,7 @@ export default {
     async taskRestart(task_id) {
       this.loading = true
       this.errorflag = false
-      const res = await taskRestart({ 'task_id': task_id })
+      const res = await tasks.taskRestart({ 'task_id': task_id })
       if (res && res.error_code === 0) {
         Message({
           message: res.msg + '，生成新任务' + res.data.taskId,

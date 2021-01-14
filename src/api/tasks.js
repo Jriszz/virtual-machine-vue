@@ -28,6 +28,14 @@ export function getTaskDetail(id) {
   })
 }
 
+// 任务删除
+export function deleteTask(id) {
+  return request({
+    url: PREFIX + '/task/' + id,
+    method: 'delete'
+  })
+}
+
 // 任务日志
 export function taskLog(params) {
   return request({
