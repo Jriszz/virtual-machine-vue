@@ -62,3 +62,21 @@ export function getRecordList(params) {
     params
   })
 }
+
+// 任务错误列表
+export function getErrorList(params) {
+  return request({
+    url: PREFIX + '/error-record',
+    method: 'get',
+    params
+  })
+}
+
+// 更新错误
+export function updateError(primary_id, data) {
+  return request({
+    url: PREFIX + '/error-record/' + primary_id + '/update',
+    method: 'post',
+    data
+  })
+}

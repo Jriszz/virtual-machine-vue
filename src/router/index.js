@@ -93,12 +93,17 @@ export const asyncRoutes = [{
   {
     path: 'tasks',
     component: () => import('@/views/tasks/index'),
-    meta: { title: '任务列表', icon: 'list' }
+    meta: { title: '流程任务', icon: 'list' }
   },
   {
     path: 'records',
     component: () => import('@/views/records/index'),
-    meta: { title: '用例结果', icon: 'list' }
+    meta: { title: '任务用例', icon: 'list' }
+  },
+  {
+    path: 'errors',
+    component: () => import('@/views/errors/index'),
+    meta: { title: '任务错误', icon: 'list' }
   },
   {
     path: 'reports',

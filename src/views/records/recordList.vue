@@ -18,13 +18,40 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
+            <el-form-item label="流程名称">
+              <el-input v-model="form.flow_name" clearable placeholder="精确查询"/>
+            </el-form-item>
+          </el-col>
+          <!-- <el-col :span="8">
             <el-form-item label="被测命令">
               <el-input v-model="form.command" clearable placeholder="模糊查询"/>
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="8">
             <el-form-item label="所属模块">
               <el-input v-model="form.module" clearable placeholder="模糊查询"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="任务编号">
+              <el-input v-model="form.task_id" clearable/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="流程作者">
+              <el-input v-model="form.author" clearable/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="运行时间">
+              <el-date-picker
+                v-model="dateRange"
+                type="daterange"
+                range-separator="至"
+                value-format="yyyy-MM-dd"
+                @change="setQueryDate"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -38,26 +65,9 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="16">
-            <el-form-item label="运行时间">
-              <el-date-picker
-                v-model="dateRange"
-                type="daterange"
-                range-separator="至"
-                value-format="yyyy-MM-dd"
-                @change="setQueryDate"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
-            <el-form-item label="任务编号">
-              <el-input v-model="form.task_id" clearable/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="流程名称">
-              <el-input v-model="form.flow_name" clearable placeholder="精确查询"/>
+            <el-form-item label="流程版本">
+              <el-input v-model="form.flow_version" clearable placeholder="精确查询"/>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -156,6 +166,14 @@
             width="200"
             label="流程名称"/>
           <el-table-column
+            prop="flow_version"
+            width="80"
+            label="流程版本"/>
+          <el-table-column
+            prop="author"
+            width="80"
+            label="流程作者"/>
+          <el-table-column
             prop="module"
             min-width="150"
             label="所属模块"/>
@@ -247,10 +265,12 @@ export default {
         command: '',
         name: '',
         result: '',
+        author: '',
         create_time_s: '',
         create_time_e: '',
         task_id: '',
         flow_name: '',
+        flow_version: '',
         ip_address: '',
         page: 1,
         pageSize: 10
