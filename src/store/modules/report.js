@@ -1,8 +1,9 @@
-import { getReortByFlow, getReortByDate, getReortByApp, getReortByVersion, getReortByOS } from '@/api/report'
+import { getReortByAuthor, getReortByFlow, getReortByDate, getReortByApp, getReortByVersion, getReortByOS } from '@/api/report'
 
 const reports = {
   state: {
     // 报表数据
+    reportByAuthor: [],
     reportByFlow: [],
     reportByDate: null,
     reportByApp: [],
@@ -12,9 +13,15 @@ const reports = {
 
   mutations: {
     // 设置报表数据
+    SET_AUTHOR_REPORT: (state, reportByAuthor) => {
+      state.reportByAuthor = {
+        columns: ['author', 'task_total', 'task_success', 'success_rate'],
+        rows: reportByAuthor
+      }
+    },
     SET_FLOW_REPORT: (state, reportByFlow) => {
       state.reportByFlow = {
-        columns: ['flow_id', 'flow_name', 'task_total', 'task_success', 'success_rate'],
+        columns: ['flow_name', 'task_total', 'task_success', 'success_rate'],
         rows: reportByFlow
       }
     },
@@ -44,11 +51,20 @@ const reports = {
   actions: {
     // 获取所有报表数据
     getAllReport({ dispatch }, queryCondition) {
+      dispatch('GetReportByAuthor', queryCondition)
       dispatch('GetReportByFlow', queryCondition)
       dispatch('GetReortByDate', queryCondition)
       dispatch('GetReortByApp', queryCondition)
       dispatch('GetReortByVersion', queryCondition)
       dispatch('GetReortByOS', queryCondition)
+    },
+    // 统计报表——按作者
+    async GetReportByAuthor({ commit }, queryCondition) {
+      const res = await getReortByAuthor(queryCondition)
+      if (res.error_code === 0) {
+        commit('SET_AUTHOR_REPORT', res.data)
+      }
+      return res
     },
     // 统计报表——按流程
     async GetReportByFlow({ commit }, queryCondition) {

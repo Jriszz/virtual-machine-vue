@@ -2,6 +2,15 @@ import request from '@/utils/request'
 
 const PREFIX = '/ferrymen'
 
+// 统计报表——按作者
+export function getReortByAuthor(params) {
+  return request({
+    url: PREFIX + '/report/by-author',
+    method: 'get',
+    params
+  })
+}
+
 // 统计报表——按流程
 export function getReortByFlow(params) {
   return request({

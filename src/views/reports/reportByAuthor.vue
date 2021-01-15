@@ -2,23 +2,23 @@
   <div>
     <el-card class="box-card" style="margin:10px 10px 10px 0px; height: 400px; ">
       <div slot="header" class="header floatLeft">
-        <strong>统计用例成功率——按日期</strong>
+        <strong>统计用例成功率——按作者</strong>
       </div>
       <div slot="header" class="floatRight">
         <el-button class="customButton" size="mini" type="text" @click="exportData">导出CSV</el-button>
       </div>
-      <ve-line :data="reportByDate" :settings="chartSettings"/>
+      <ve-histogram :data="reportByAuthor" :settings="chartSettings"/>
     </el-card>
   </div>
 </template>
 
 <script>
-import VeLine from 'v-charts/lib/line'
+import VeHistogram from 'v-charts/lib/histogram'
 import { MessageBox, Message } from 'element-ui'
 
 export default {
-  name: 'ReportByDate',
-  components: { MessageBox, Message, VeLine },
+  name: 'ReportByAuthor',
+  components: { MessageBox, Message, VeHistogram },
 
   data() {
     return {
@@ -26,9 +26,9 @@ export default {
         axisSite: { right: ['success_rate'] },
         yAxisType: ['KMB', 'percent'],
         yAxisName: ['用例数', '成功率'],
-        dimension: ['run_date'],
+        dimension: ['author'],
         metrics: ['success_rate', 'task_total', 'task_success'],
-        xAxisType: 'time',
+        // xAxisType: 'time',
         area: true,
         // itemStyle: { color: '#3298f0' },
         labelMap: {
@@ -40,15 +40,15 @@ export default {
     }
   },
   computed: {
-    reportByDate: function() {
-      return this.$store.state.reports.reportByDate
+    reportByAuthor: function() {
+      return this.$store.state.reports.reportByAuthor
     }
   },
   watch: {},
   mounted() {},
   methods: {
     exportData() {
-      this.tools.JSONToCSVConvertor({ data: this.reportByDate.rows, title: 'reportByDate.csv', showLabel: true })
+      this.tools.JSONToCSVConvertor({ data: this.reportByAuthor.rows, title: 'reportByAuthor.csv', showLabel: true })
     }
   }
 }

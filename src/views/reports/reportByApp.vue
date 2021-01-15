@@ -2,7 +2,7 @@
   <div>
     <el-card class="box-card" style="margin:10px 10px 10px 0px;">
       <div slot="header" class="header floatLeft">
-        <strong>统计任务成功率——按应用</strong>
+        <strong>统计用例成功率——按应用</strong>
       </div>
       <div slot="header" class="floatRight">
         <el-button class="customButton" size="mini" type="text" @click="exportData">导出CSV</el-button>
@@ -27,7 +27,7 @@
           label="架构"/>
         <el-table-column
           prop="task_total"
-          label="任务总数"/>
+          label="用例总数"/>
         <el-table-column
           prop="task_success"
           label="成功总数"/>

@@ -32,6 +32,7 @@
         </el-col>
       </el-form>
       <report-by-date/>
+      <report-by-author/>
       <report-by-flow/>
       <report-by-o-s/>
       <el-row>
@@ -52,6 +53,7 @@
 
 <script>
 import ReportByDate from './reportByDate'
+import ReportByAuthor from './reportByAuthor'
 import ReportByFlow from './reportByFlow'
 import ReportByApp from './reportByApp'
 // import ReportByVersion from './reportByVersion'
@@ -62,6 +64,7 @@ export default {
   name: 'Report',
   components: {
     ReportByDate,
+    ReportByAuthor,
     ReportByFlow,
     ReportByApp,
     ReportByVersion,
