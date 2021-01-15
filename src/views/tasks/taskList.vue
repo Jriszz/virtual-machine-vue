@@ -13,6 +13,22 @@
         size="small">
         <el-row>
           <el-col :span="6">
+            <el-form-item label="流程名称">
+              <el-input v-model="form.flow_name" clearable/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="任务状态">
+              <el-select v-model="form.status" clearable placeholder="请选择">
+                <el-option
+                  v-for="item in status_enum"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
             <el-form-item label="任务结果">
               <el-radio-group v-model="form.result">
                 <el-radio label="">全部</el-radio>
@@ -30,18 +46,13 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="任务状态">
-              <el-radio-group v-model="form.status">
-                <el-radio label="">全部</el-radio>
-                <el-radio label="deploying">部署中</el-radio>
-                <el-radio label="running">运行中</el-radio>
-                <el-radio label="finished">已完成</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
         </el-row>
         <el-row>
+          <el-col :span="6">
+            <el-form-item label="流程版本">
+              <el-input v-model="form.flow_version" clearable/>
+            </el-form-item>
+          </el-col>
           <el-col :span="6">
             <el-form-item label="错误类型">
               <el-select v-model="form.error_type" clearable placeholder="请选择">
@@ -54,11 +65,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="任务编号">
-              <el-input v-model="form.task_id" clearable/>
+            <el-form-item label="操作系统">
+              <el-input v-model="form.os_name" clearable/>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="6">
             <el-form-item label="创建时间">
               <el-date-picker
                 v-model="dateRangeCreate"
@@ -71,16 +82,21 @@
         </el-row>
         <el-row>
           <el-col :span="6">
-            <el-form-item label="流程名称">
-              <el-input v-model="form.flow_name" clearable/>
+            <el-form-item label="流程作者">
+              <el-input v-model="form.author" clearable/>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="宿主">
+            <el-form-item label="任务编号">
+              <el-input v-model="form.task_id" clearable/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="宿主地址">
               <el-input v-model="form.ip_address" clearable/>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="6">
             <el-form-item label="运行时间">
               <el-date-picker
                 v-model="dateRange"
@@ -172,16 +188,12 @@
             width="140"
             label="任务编号"/>
           <el-table-column
-            prop="ip_address"
-            width="120"
-            label="宿主"/>
-          <el-table-column
             prop="package"
             width="70"
             label="软件包"/>
           <el-table-column
             prop="flow_name"
-            min-width="250"
+            min-width="200"
             label="流程名称"/>
           <el-table-column
             prop="flow_version"
@@ -258,8 +270,18 @@
             </template>
           </el-table-column>
           <el-table-column
+            width="280"
+            label="宿主信息">
+            <template slot-scope="scope">
+              <div>
+                <span style="display: block; line-height: 1">{{ scope.row.os_name }}</span>
+                <span style="display: block; line-height: 1">{{ scope.row.ip_address }}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
             label="操作"
-            min-width="400">
+            min-width="450">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" plain @click="openTaskDetail(scope.row.task_id)">详情</el-button>
               <el-button size="mini" type="primary" plain @click="openLogPage(scope.row.task_id, 'task')">任务日志</el-button>
@@ -306,7 +328,23 @@ export default {
       logUrl: '',
       detailUrl: '',
       totals: 0,
+      status_enum: [{
+        value: null,
+        label: '全部'
+      }, {
+        value: 'deploying',
+        label: '部署中'
+      }, {
+        value: 'running',
+        label: '运行中'
+      }, {
+        value: 'finished',
+        label: '已完成'
+      }],
       error_type_enum: [{
+        value: null,
+        label: '全部'
+      }, {
         value: 0,
         label: '运行成功'
       }, {
@@ -365,7 +403,7 @@ export default {
     initForm() {
       const _form = {
         task_id: '',
-        status: '',
+        status: null,
         result: '',
         sync: '',
         dep_id: '',

@@ -140,9 +140,9 @@
             label="操作"
             min-width="300">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary" plain @click="openCreateTaskForm('s', scope.row.id, '创建任务')">创建任务</el-button>
-              <el-button size="mini" type="primary" plain @click="switchPlanStatus(0, scope.row.flow_name)">停止计划</el-button>
-              <el-button size="mini" type="primary" plain @click="switchPlanStatus(1, scope.row.flow_name)">开启计划</el-button>
+              <el-button v-if="scope.row.flow_id>0" size="mini" type="primary" plain @click="openCreateTaskForm('s', scope.row.id, '创建任务')">创建任务</el-button>
+              <el-button v-if="scope.row.flow_id>0" size="mini" type="primary" plain @click="switchPlanStatus(0, scope.row.flow_name)">停止计划</el-button>
+              <el-button v-if="scope.row.flow_id>0" size="mini" type="primary" plain @click="switchPlanStatus(1, scope.row.flow_name)">开启计划</el-button>
             </template>
           </el-table-column>
         </el-table>
