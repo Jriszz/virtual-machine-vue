@@ -6,25 +6,40 @@
       </div>
 
       <el-form
+        v-loading="loading"
+        ref="form"
+        :model="queryForm"
         :label-width="labelWidth"
         size="small">
         <el-row>
-          <el-col :span="12">
+          <el-col :span="6">
             <el-form-item label="流程类型">
-              <el-radio-group v-model="queryForm.flowType" @change="filterFlow">
-                <el-radio :label="0">全部</el-radio>
-                <el-radio :label="1">自测流程</el-radio>
-                <el-radio :label="2">普通流程</el-radio>
+              <el-radio-group v-model="queryForm.type">
+                <el-radio :label="null">全部</el-radio>
+                <el-radio :label="0">本地流程</el-radio>
+                <el-radio :label="1">在线流程</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="6">
             <el-form-item label="流程名称">
               <el-input
                 :clearable="true"
-                v-model="queryForm.flowName"
-                placeholder="支持模糊搜索"
-                @change="filterFlow"/>
+                v-model="queryForm.flow_name"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="流程版本">
+              <el-input
+                :clearable="true"
+                v-model="queryForm.flow_version"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="流程作者">
+              <el-input
+                :clearable="true"
+                v-model="queryForm.author"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -32,7 +47,7 @@
           <el-button
             type="info"
             plain
-            @click="getFlowTaskSummaryList">刷新流程</el-button>
+            @click="getFlowList">查询</el-button>
           <el-button
             type="primary"
             plain
@@ -67,56 +82,6 @@
           :border="true"
           size="small"
           @selection-change="selectFlow">
-          <el-table-column type="expand">
-            <template slot-scope="record">
-              <el-table
-                :data="record.row.versions">
-                <el-table-column
-                  prop="flow_id"
-                  width="80"
-                  label="流程ID"/>
-                <el-table-column
-                  prop="flow_name"
-                  width="200"
-                  label="流程名称"/>
-                <el-table-column
-                  prop="author"
-                  min-width="80"
-                  label="作者"/>
-                <el-table-column
-                  prop="package_id"
-                  min-width="100"
-                  label="流程包ID"/>
-                <el-table-column
-                  prop="flow_package_name"
-                  min-width="200"
-                  label="流程包名称"/>
-                <el-table-column
-                  prop="package_version_id"
-                  min-width="100"
-                  label="流程包版本ID"/>
-                <el-table-column
-                  prop="flow_package_version"
-                  min-width="100"
-                  label="流程包版本名称"/>
-                <el-table-column
-                  prop="task_total"
-                  width="120"
-                  label="任务总数"/>
-                <el-table-column
-                  prop="task_success"
-                  width="120"
-                  label="成功总数"/>
-                <el-table-column
-                  label="成功率"
-                  width="100">
-                  <template slot-scope="scope">
-                    <span>{{ (scope.row.task_success / scope.row.task_total * 100).toFixed(2) + "%" }}</span>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </template>
-          </el-table-column>
           <el-table-column
             type="selection"
             width="55"/>
@@ -140,13 +105,6 @@
             prop="flow_package_version"
             width="120"
             label="流程包版本名称"/>
-          <el-table-column
-            width="80"
-            label="版本数量">
-            <template slot-scope="scope">
-              <span>{{ scope.row.versions.length }}</span>
-            </template>
-          </el-table-column>
           <el-table-column
             prop="task_total"
             width="80"
@@ -190,9 +148,9 @@
         </el-table>
         <div class="block">
           <el-pagination
-            :current-page="page"
+            :current-page="queryForm.page"
             :page-sizes="[10, 20, 50, 100]"
-            :page-size="pageSize"
+            :page-size="queryForm.pageSize"
             :total="totals"
             layout="total, sizes, prev, pager, next, jumper"
             @size-change="changePageSize"
@@ -230,7 +188,7 @@
 
 <script>
 import { MessageBox, Message } from 'element-ui'
-import { createTaskByFlow, switchPlanStatus } from '@/api/flows'
+import * as flows from '@/api/flows'
 import WorkerSelect from '@/components/onlineWorkerSelect'
 
 export default {
@@ -248,20 +206,15 @@ export default {
       page: 1,
       pageSize: 10,
       flowList: [],
-      filterFlowList: [],
-      flowVersionList: [],
       totals: 0,
       createTaskFormVisable: false,
       form: { worker_id: null },
-      queryForm: { flowType: 0, flowName: '' },
+      queryForm: { type: null, flow_name: '', flow_verson: '', author: '' },
       formTitle: '创建任务',
       selectFlowIds: null
     }
   },
   computed: {
-    allFlowList: function() {
-      return this.$store.state.flows.flowList
-    },
     isSuperAdmin: function() {
       if (this.$store.state.users.sessionUser.super_admin === 1) {
         return true
@@ -276,44 +229,32 @@ export default {
   watch: {
     refresh: function(newValue, oldValue) {
       if (newValue === true) {
-        this.getFlowTaskSummaryList()
+        this.getFlowList()
         this.$store.commit('FINISH_REFRESH')
       }
     }
   },
   mounted() {
-    this.getFlowTaskSummaryList().then(() => {
-      this.filterFlow()
-    })
+    this.getFlowList()
   },
   methods: {
     async getFlowList() {
       this.resetResult()
       this.errorflag = false
-      const res = await this.$store.dispatch('GetFlowList')
+      const params = this.tools.cleanObjNullProperty(this.queryForm)
+      const res = await flows.getFlowList(params)
       if (res && res.error_code === 0) {
-        this.totals = res.data.length
-        this.getCurrentPageFlow()
+        this.totals = res.data.totals
+        this.flowList = res.data.flows
         Message({
           message: res.msg,
           type: 'success',
           duration: 5 * 1000
         })
+      } else {
+        console.log(res)
       }
-    },
-    async getFlowTaskSummaryList() {
-      this.resetResult()
-      this.errorflag = false
-      const res = await this.$store.dispatch('GetFlowTaskSummaryList')
-      if (res && res.error_code === 0) {
-        this.totals = res.data.length
-        this.filterFlow()
-        Message({
-          message: res.msg,
-          type: 'success',
-          duration: 5 * 1000
-        })
-      }
+      this.loading = false
     },
     selectFlow(val) {
       console.log(val)
@@ -346,7 +287,7 @@ export default {
     async createTask() {
       this.loading = true
       try {
-        const res = await createTaskByFlow(this.form)
+        const res = await flows.createTaskByFlow(this.form)
         this.createTaskFormVisable = false
         if (res && res.error_code === 0) {
           let message
@@ -368,47 +309,14 @@ export default {
       this.loading = false
     },
     async switchPlanStatus(status, plan_name) {
-      const res = await switchPlanStatus({ status: status, plan_name: plan_name })
+      const res = await flows.switchPlanStatus({ status: status, plan_name: plan_name })
       if (res && res.error_code === 0) {
         Message({
           message: res.msg,
           type: 'success',
           duration: 5 * 1000
         })
-        this.getFlowTaskSummaryList()
-      }
-    },
-    filterFlow() {
-      console.log('开始过滤流程' + this.queryForm)
-      this.filterFlowList = this.allFlowList.filter(item => {
-        if (this.queryForm.flowType === 2 && item.flow_name.startsWith('自测_')) {
-          return
-        }
-        if (this.queryForm.flowType === 1 && !item.flow_name.startsWith('自测_')) {
-          return
-        }
-        if (this.queryForm.flowName && this.queryForm.flowName.length > 0 && item.flow_name.indexOf(this.queryForm.flowName) < 0) {
-          return
-        }
-        return item
-      })
-      this.getCurrentPageFlow()
-      this.totals = this.filterFlowList.length
-    },
-    getCurrentPageFlow() {
-      const start = (this.page - 1) * this.pageSize
-      const end = this.page * this.pageSize
-      this.flowList = this.filterFlowList.slice(start, end)
-    },
-    async getFlowVersionList(row, expandedRows) {
-      this.errorflag = false
-      console.log(row)
-      console.log(expandedRows)
-      const res = await this.$store.dispatch('GetFlowVersionList', row.flow_id)
-      if (res && res.error_code === 0) {
-        this.flowVersionList = res.data
-      } else {
-        console.log(res)
+        this.getFlowList()
       }
     },
     reset() {
@@ -421,19 +329,19 @@ export default {
     },
     // 分页相关的方法
     getNextPage() {
-      this.page += 1
+      this.queryForm.page += 1
     },
     getPrevPage() {
-      this.page -= 1
+      this.queryForm.page -= 1
     },
     changePageSize(val) {
-      this.pageSize = val
-      this.page = 1
-      this.getCurrentPageFlow()
+      this.queryForm.pageSize = val
+      this.queryForm.page = 1
+      this.getFlowList()
     },
     changeCurrentPage(val) {
-      this.page = val
-      this.getCurrentPageFlow()
+      this.queryForm.page = val
+      this.getFlowList()
     }
     // 分页相关的方法
   }
