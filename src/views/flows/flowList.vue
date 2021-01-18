@@ -12,7 +12,7 @@
         :label-width="labelWidth"
         size="small">
         <el-row>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="流程类型">
               <el-radio-group v-model="queryForm.type">
                 <el-radio :label="null">全部</el-radio>
@@ -21,25 +21,37 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="流程名称">
               <el-input
                 :clearable="true"
-                v-model="queryForm.flow_name"/>
+                v-model="queryForm.flow_name"
+                placeholder="支持模糊查询"/>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="流程版本">
-              <el-input
-                :clearable="true"
-                v-model="queryForm.flow_version"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="流程作者">
               <el-input
                 :clearable="true"
                 v-model="queryForm.author"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="运行模式">
+              <el-radio-group v-model="queryForm.run_mode">
+                <el-radio :label="null">全部</el-radio>
+                <el-radio :label="0">普通流程</el-radio>
+                <el-radio :label="1">自测流程</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="流程版本">
+              <el-input
+                :clearable="true"
+                v-model="queryForm.flow_version"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -209,7 +221,7 @@ export default {
       totals: 0,
       createTaskFormVisable: false,
       form: { worker_id: null },
-      queryForm: { type: null, flow_name: '', flow_verson: '', author: '' },
+      queryForm: { run_mode: null, type: null, flow_name: '', flow_verson: '', author: '' },
       formTitle: '创建任务',
       selectFlowIds: null
     }
