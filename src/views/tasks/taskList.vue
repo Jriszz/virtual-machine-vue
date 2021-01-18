@@ -438,15 +438,25 @@ export default {
       }
     },
     async deleteTask(id) {
-      const res = await tasks.deleteTask(id)
-      if (res && res.error_code === 0) {
-        Message({
-          message: res.msg,
-          type: 'success',
-          duration: 5 * 1000
-        })
-        await this.getTaskList()
-      }
+      MessageBox.confirm(
+        '此操作将删除任务及任务下的日志，用例，错误等信息，是否继续？',
+        '操作确认',
+        {
+          distinguishCancelAndClose: true,
+          confirmButtonText: '删除',
+          cancelButtonText: '取消'
+        }
+      ).then(async() => {
+        const res = await tasks.deleteTask(id)
+        if (res && res.error_code === 0) {
+          Message({
+            message: res.msg,
+            type: 'success',
+            duration: 5 * 1000
+          })
+          await this.getTaskList()
+        }
+      }).catch(action => {})
     },
     async getTaskRecords(expandedRows, expanded) {
       if (expandedRows.records.length === 0) {

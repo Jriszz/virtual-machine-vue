@@ -150,11 +150,12 @@
           </el-table-column>
           <el-table-column
             label="操作"
-            min-width="300">
+            min-width="350">
             <template slot-scope="scope">
               <el-button v-if="scope.row.flow_id>0" size="mini" type="primary" plain @click="openCreateTaskForm('s', scope.row.id, '创建任务')">创建任务</el-button>
               <el-button v-if="scope.row.flow_id>0" size="mini" type="primary" plain @click="switchPlanStatus(0, scope.row.flow_name)">停止计划</el-button>
               <el-button v-if="scope.row.flow_id>0" size="mini" type="primary" plain @click="switchPlanStatus(1, scope.row.flow_name)">开启计划</el-button>
+              <el-button v-if="isSuperAdmin" size="mini" type="danger" plain @click="deleteFlow(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -267,6 +268,27 @@ export default {
         console.log(res)
       }
       this.loading = false
+    },
+    async deleteFlow(id) {
+      MessageBox.confirm(
+        '此操作将删除流程及流程下的任务，日志，用例，错误等信息，是否继续？',
+        '操作确认',
+        {
+          distinguishCancelAndClose: true,
+          confirmButtonText: '删除',
+          cancelButtonText: '取消'
+        }
+      ).then(async() => {
+        const res = await flows.deleteFlow(id)
+        if (res && res.error_code === 0) {
+          Message({
+            message: res.msg,
+            type: 'success',
+            duration: 5 * 1000
+          })
+          await this.getFlowList()
+        }
+      }).catch(action => {})
     },
     selectFlow(val) {
       console.log(val)

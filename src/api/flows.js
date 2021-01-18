@@ -11,6 +11,14 @@ export function getFlowList(params) {
   })
 }
 
+// 删除流程
+export function deleteFlow(id) {
+  return request({
+    url: PREFIX + '/flow-list/' + id,
+    method: 'delete'
+  })
+}
+
 // 具体某一流程的版本列表
 export function getFlowVersionList(params) {
   return request({
