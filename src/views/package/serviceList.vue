@@ -72,9 +72,9 @@
         </el-table-column>
       </el-table>
     </el-card>
-    <el-dialog :visible.sync="packageShowTask" width="40%" title="当前正在打包的任务信息">
+    <el-dialog :visible.sync="packageShowTask" width="35%" title="当前正在打包的任务信息">
       <el-input
-        :rows="18"
+        :rows="22"
         v-model="currentTask"
         type="textarea"/>
     </el-dialog>

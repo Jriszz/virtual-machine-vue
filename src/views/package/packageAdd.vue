@@ -39,6 +39,7 @@
               <el-radio-group v-model="form.pack_type" :disabled="!pack_type">
                 <el-radio label="creator">Creator</el-radio>
                 <el-radio label="worker">Worker</el-radio>
+                <el-radio label="newWorker">新Worker</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>

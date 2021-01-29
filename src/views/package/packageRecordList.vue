@@ -236,7 +236,7 @@
               <el-button v-if="!scope.row.is_release" :disabled="!isSuperAdmin" size="mini" type="success" plain @click="openReleasePackageForm(scope.row)">发布</el-button>
               <el-button v-if="!scope.row.oss_download_url" :disabled="!isSuperAdmin" size="mini" type="success" plain @click="uploadOSS(scope.row.id)">上传公网</el-button>
               <el-button size="mini" type="primary" plain @click="deploy(scope.row)">部署</el-button>
-              <el-button v-if="!scope.row.is_release" :disabled="!isSuperAdmin" size="mini" type="danger" plain @click="deletePackageRecord(scope.row.id)">删除</el-button>
+              <el-button v-if="!scope.row.is_release && !scope.row.oss_download_url" :disabled="!isSuperAdmin" size="mini" type="danger" plain @click="deletePackageRecord(scope.row.id)">删除</el-button>
               <el-button v-if="scope.row.oss_download_url" size="mini" type="primary" plain @click="download(scope.row.oss_download_url)">公网下载</el-button>
             </template>
           </el-table-column>
