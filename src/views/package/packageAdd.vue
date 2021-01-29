@@ -342,8 +342,8 @@ export default {
     },
     changePackageType(value) {
       console.log(value)
-      if (value === "worker" || value === "newWorker") {
-        this.form.sub_type = "enterprise"
+      if (value === 'worker' || value === 'newWorker') {
+        this.form.sub_type = 'enterprise'
         this.sub_type = false
       } else {
         this.sub_type = true

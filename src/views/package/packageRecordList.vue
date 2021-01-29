@@ -203,7 +203,8 @@
             label="正式发布"
             width="80">
             <template slot-scope="scope">
-              <span v-if="scope.row.is_release===true" class="colorGreen">已发布</span>
+              <span v-if="scope.row.is_release===true" class="colorGreen">正式版本</span>
+              <span v-else-if="scope.row.oss_download_url" class="colorYellow">发布公网</span>
               <span v-else>测试版本</span>
             </template>
           </el-table-column>
@@ -501,10 +502,12 @@ export default {
     margin-bottom: 0;
   }
   .colorGreen {
-  color: green;
+  color: white;
+  background-color: green;
   }
   .colorYellow {
-    color:darkorange
+    color:white;
+    background-color: orange;
   }
   .colorRed {
     color: red;
