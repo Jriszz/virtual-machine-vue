@@ -167,6 +167,18 @@
             prop="app_name"
             width="480"
             label="安装包名称"/>
+          <el-table-column
+            width="200"
+            label="发布描述">
+            <template slot-scope="scope">
+              <span v-if="scope.row.release_desc && scope.row.release_desc.length > 16">
+                <el-tooltip :content="scope.row.release_desc" class="item" effect="dark" placement="top-start">
+                  <span>{{ scope.row.release_desc.substr(0, 16) }}</span>
+                </el-tooltip>
+              </span>
+              <span v-else>{{ scope.row.release_desc }}</span>
+            </template>
+          </el-table-column>
           <!-- <el-table-column
             prop="package"
             width="100"
@@ -192,14 +204,6 @@
             width="80"
             label="渠道"/> -->
           <el-table-column
-            prop="sign"
-            width="80"
-            label="签名"/>
-          <el-table-column
-            prop="is_beta"
-            width="80"
-            label="beta标识"/>
-          <el-table-column
             label="正式发布"
             width="80">
             <template slot-scope="scope">
@@ -212,6 +216,14 @@
             prop="create_time"
             width="150"
             label="打包时间"/>
+          <el-table-column
+            prop="sign"
+            width="80"
+            label="签名"/>
+          <el-table-column
+            prop="is_beta"
+            width="80"
+            label="beta标识"/>
           <el-table-column
             prop="source"
             width="80"
