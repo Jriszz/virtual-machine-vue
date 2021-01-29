@@ -36,7 +36,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="产品名称">
-              <el-radio-group v-model="form.pack_type" :disabled="!pack_type">
+              <el-radio-group v-model="form.pack_type" :disabled="!pack_type" @change="changePackageType">
                 <el-radio label="creator">Creator</el-radio>
                 <el-radio label="worker">Worker</el-radio>
                 <el-radio label="newWorker">新Worker</el-radio>
@@ -310,7 +310,7 @@ export default {
         arch: 'all',
         beta: '',
         pack_type: 'creator',
-        sub_type: 'community',
+        sub_type: 'enterprise',
         language: 'zh-cn',
         channel: 'official',
         sign: 'laiye',
@@ -339,6 +339,15 @@ export default {
         }
       })
       this.loading = false
+    },
+    changePackageType(value) {
+      console.log(value)
+      if (value === "worker" || value === "newWorker") {
+        this.form.sub_type = "enterprise"
+        this.sub_type = false
+      } else {
+        this.sub_type = true
+      }
     },
     async refreshList() {
       this.$store.commit('TRIGGER_REFRESH')
