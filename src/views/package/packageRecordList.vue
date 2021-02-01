@@ -247,7 +247,7 @@
               <el-button size="mini" type="primary" plain @click="download(scope.row.fingerprint_url)">版本信息</el-button>
               <el-button size="mini" type="primary" plain @click="download(scope.row.download_url)">下载</el-button>
               <el-button v-if="!scope.row.is_release" :disabled="!isSuperAdmin" size="mini" type="success" plain @click="openReleasePackageForm(scope.row)">发布</el-button>
-              <el-button v-if="!scope.row.oss_download_url" :disabled="!isSuperAdmin" size="mini" type="success" plain @click="uploadOSS(scope.row.id)">上传公网</el-button>
+              <el-button v-if="!scope.row.oss_download_url" :disabled="!isSuperAdmin" size="mini" type="success" plain @click="openUpLoadOSSForm(scope.row)">上传公网</el-button>
               <el-button size="mini" type="primary" plain @click="deploy(scope.row)">部署</el-button>
               <el-button v-if="!scope.row.is_release && !scope.row.oss_download_url" :disabled="!isSuperAdmin" size="mini" type="danger" plain @click="deletePackageRecord(scope.row.id)">删除</el-button>
               <el-button v-if="scope.row.oss_download_url" size="mini" type="primary" plain @click="download(scope.row.oss_download_url)">公网下载</el-button>
@@ -318,6 +318,28 @@
         <div v-for="(_result, _index) in releaseResult" :key="_index" class="releaseResult">{{ _index + 1 }}: {{ _result }}</div>
       </div>
     </el-dialog>
+    <el-dialog :visible.sync="uploadOSSVisible" width="40%" title="上传公网">
+      <el-form
+        v-loading="loading"
+        ref="form"
+        :model="uploadOSSForm"
+        :rules="uploadOSSFormRules"
+        :label-width="labelWidth">
+        <el-form-item label="发布说明" prop="release_desc">
+          <el-input v-model="uploadOSSForm.release_desc" clearable />
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="info"
+            plain
+            @click="uploadOSS('form')">提交</el-button>
+          <el-button
+            type="info"
+            plain
+            @click="uploadOSSVisible = false">关闭</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -344,6 +366,12 @@ export default {
       releasePackageFormVisable: false,
       currentPackage: null,
       releaseResult: null,
+      currentRelease: {},
+      uploadOSSVisible: false,
+      uploadOSSForm: {},
+      uploadOSSFormRules: {
+        release_desc: [{ required: true, message: '发布描述必填', trigger: 'blur' }]
+      },
       rules: {
         tag_name: [{ required: true, message: 'Tag必填', trigger: 'blur' }],
         release_title: [{ required: true, message: 'Release标题必填', trigger: 'blur' }],
@@ -445,18 +473,27 @@ export default {
         this.resultLoading = false
       })
     },
+    openUpLoadOSSForm(release) {
+      this.uploadOSSVisible = true
+      this.currentRelease = release
+    },
     deploy() {
       alert('待联调！')
     },
-    async uploadOSS(primary_id) {
-      const res = await packages.uploadOSS(primary_id)
-      if (res.error_code === 0) {
+    async uploadOSS(form) {
+      this.$refs[form].validate(async valid => {
+        if (!valid) {
+          return false
+        }
+        const params = this.tools.cleanObjNullProperty(this.uploadOSSForm)
+        const res = await packages.uploadOSS(this.currentRelease.id, params)
         Message({
           message: res.msg,
           type: 'success',
-          duration: 5 * 1000
+          duration: 10 * 1000
         })
-      }
+        this.uploadOSSVisible = false
+      })
     },
     download(url) {
       window.open(url, '_blank')
