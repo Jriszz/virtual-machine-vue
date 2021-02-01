@@ -134,8 +134,9 @@
       <el-card>
         <el-table
           :data="taskList"
-          :stripe="true"
+          :stripe="false"
           :border="true"
+          :cell-class-name="getClassName"
           size="small"
           @expand-change="getTaskRecords">
           <el-table-column type="expand">
@@ -228,8 +229,7 @@
               <span v-else>未知</span>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="result"
+          <!-- <el-table-column
             width="70"
             label="任务结果">
             <template slot-scope="scope">
@@ -240,6 +240,23 @@
                 </el-tooltip>
               </span>
               <span v-else class="colorYellow">未知</span>
+            </template>
+          </el-table-column> -->
+          <el-table-column
+            width="70"
+            label="失败率">
+            <template slot-scope="scope">
+              <span v-if="scope.row.amount===0">100%</span>
+              <span v-else>{{ ((1 - scope.row.success_num / scope.row.amount) * 100).toFixed(2) }}%</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            :cell-class-name="getClassName"
+            width="180"
+            label="用例及错误统计">
+            <template slot-scope="scope">
+              <span>总数：{{ scope.row.amount }}，成功：{{ scope.row.success_num }}</span><br>
+              <span>失败：{{ scope.row.fail_num }}，错误：{{ scope.row.error_num }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -273,10 +290,8 @@
             width="280"
             label="宿主信息">
             <template slot-scope="scope">
-              <div>
-                <span style="display: block; line-height: 1">{{ scope.row.os_name }}</span>
-                <span style="display: block; line-height: 1">{{ scope.row.ip_address }}</span>
-              </div>
+              <span style="display: block; line-height: 1">{{ scope.row.os_name }}</span>
+              <span style="display: block; line-height: 1">{{ scope.row.ip_address }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -418,6 +433,20 @@ export default {
         pageSize: 10
       }
       return _form
+    },
+    getClassName({ row, column, rowIndex, columnIndex }) {
+      if (column['label'] === '用例及错误统计') {
+        if (row.error_num > 0 || row.amount === 0) {
+          return 'colorError'
+        } else if (row.fail_num / row.amount >= 0.2) {
+          return 'colorFail2'
+        } else if (row.fail_num > 0) {
+          return 'colorFail1'
+        } else {
+          // return ''
+          return 'colorSuccess'
+        }
+      }
     },
     setQueryDate() {
       if (this.dateRange === null) {
@@ -561,6 +590,25 @@ export default {
 </script>
 
 <style>
+  .colorError {
+    color: wheat;
+    font-weight: bolder;
+    background-color: rgb(120, 0, 0);
+  }
+  .colorFail2 {
+    color: wheat;
+    font-weight: bolder;
+    background-color: red;
+  }
+  .colorFail1 {
+    color: wheat;
+    font-weight: bolder;
+    background-color: orange;
+  }
+  .colorSuccess {
+    color: wheat;
+    background-color: green;
+  }
   .colorGreen {
   color: green;
   }
