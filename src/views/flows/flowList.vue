@@ -90,13 +90,18 @@
       <el-card>
         <el-table
           :data="flowList"
-          :stripe="true"
+          :stripe="false"
           :border="true"
+          :cell-class-name="getClassName"
           size="small"
           @selection-change="selectFlow">
           <el-table-column
             type="selection"
             width="55"/>
+          <el-table-column
+            prop="author"
+            min-width="60"
+            label="作者"/>
           <el-table-column
             prop="flow_name"
             min-width="200"
@@ -105,14 +110,6 @@
             prop="flow_version"
             min-width="70"
             label="流程版本"/>
-          <el-table-column
-            prop="author"
-            min-width="60"
-            label="作者"/>
-          <el-table-column
-            prop="flow_package_name"
-            min-width="200"
-            label="流程包名称"/>
           <el-table-column
             prop="flow_package_version"
             width="120"
@@ -124,12 +121,21 @@
           <el-table-column
             prop="task_success"
             width="80"
-            label="成功总数"/>
+            label="成功数"/>
           <el-table-column
-            label="成功率"
+            prop="task_fail"
+            width="80"
+            label="失败数"/>
+          <el-table-column
+            prop="task_null"
+            width="80"
+            label="未结束"/>
+          <el-table-column
+            label="失败率"
             width="100">
             <template slot-scope="scope">
-              <span>{{ (scope.row.task_success / scope.row.task_total * 100).toFixed(2) + "%" }}</span>
+              <span v-if="scope.row.task_total===0">-</span>
+              <span v-else>{{ ((scope.row.task_fail / scope.row.task_total) * 100).toFixed(2) }}%</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -251,6 +257,45 @@ export default {
     this.getFlowList()
   },
   methods: {
+    getClassName({ row, column, rowIndex, columnIndex }) {
+      if (column['label'] === '失败率') {
+        const fail_rate = row.task_fail / row.task_total
+        if (fail_rate >= 0.5) {
+          return 'colorError'
+        } else if (fail_rate >= 0.2) {
+          return 'colorFail2'
+        } else if (fail_rate > 0) {
+          return 'colorFail1'
+        } else {
+          return ''
+          // return 'colorSuccess'
+        }
+      }
+      if (column['label'] === '失败数') {
+        if (row.task_fail > 0) {
+          return 'colorFail2'
+        } else {
+          return ''
+          // return 'colorSuccess'
+        }
+      }
+      if (column['label'] === '未结束') {
+        if (row.task_null > 0) {
+          return 'colorFail1'
+        } else {
+          return ''
+          // return 'colorSuccess'
+        }
+      }
+      if (column['label'] === '成功数') {
+        if (row.task_total === row.task_success) {
+          return 'colorSuccess'
+        } else {
+          // return ''
+          return 'colorFail1'
+        }
+      }
+    },
     async getFlowList() {
       this.resetResult()
       this.errorflag = false
@@ -383,13 +428,47 @@ export default {
 </script>
 
 <style>
+.colorError {
+  color: wheat;
+  font-weight: bolder;
+  background-color: rgb(120, 0, 0);
+}
+.colorFail2 {
+  color: wheat;
+  font-weight: bolder;
+  background-color: red;
+}
+.colorFail1 {
+  color: wheat;
+  font-weight: bolder;
+  background-color: orange;
+}
+.colorSuccess {
+  color: wheat;
+  background-color: green;
+}
 .colorGreen {
-  color: green;
+color: green;
 }
 .colorYellow {
   color:darkorange
 }
 .colorRed {
   color: red;
+}
+.backGreen {
+  color: white;
+  font-weight: bold;
+  background-color: green;
+}
+.backYellow {
+  color: white;
+  font-weight: bold;
+  background-color:darkorange
+}
+.backRed {
+  color: white;
+  font-weight: bold;
+  background-color: red;
 }
 </style>

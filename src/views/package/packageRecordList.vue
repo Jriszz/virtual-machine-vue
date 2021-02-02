@@ -131,8 +131,9 @@
       <el-card>
         <el-table
           :data="packageRecordList"
-          :stripe="true"
+          :stripe="false"
           :border="true"
+          :cell-class-name="getClassName"
           size="small">
           <el-table-column type="expand">
             <template slot-scope="record">
@@ -207,8 +208,8 @@
             label="正式发布"
             width="80">
             <template slot-scope="scope">
-              <span v-if="scope.row.is_release===true" class="colorGreen">正式版本</span>
-              <span v-else-if="scope.row.oss_download_url" class="colorYellow">发布公网</span>
+              <span v-if="scope.row.is_release===true">正式版本</span>
+              <span v-else-if="scope.row.oss_download_url">发布公网</span>
               <span v-else>测试版本</span>
             </template>
           </el-table-column>
@@ -411,6 +412,17 @@ export default {
       }
       return _form
     },
+    getClassName({ row, column, rowIndex, columnIndex }) {
+      if (column['label'] === '正式发布') {
+        if (row.is_release === true) {
+          return 'colorGreen'
+        } else if (row.oss_download_url) {
+          return 'colorYellow'
+        } else {
+          return ''
+        }
+      }
+    },
     setQueryDate() {
       if (this.dateRange === null) {
         this.form.create_time_s = null
@@ -551,11 +563,11 @@ export default {
     margin-bottom: 0;
   }
   .colorGreen {
-  color: white;
+  color: wheat;
   background-color: green;
   }
   .colorYellow {
-    color:white;
+    color:wheat;
     background-color: orange;
   }
   .colorRed {

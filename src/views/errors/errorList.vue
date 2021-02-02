@@ -88,7 +88,7 @@
             min-width="400"
             label="错误消息">
             <template slot-scope="error">
-              <pre>{{ JSON.stringify(JSON.parse(error.row.message), null, 2) }}</pre>
+              <pre>{{ toJson(error.row.message) }}</pre>
             </template>
           </el-table-column>
           <el-table-column
@@ -254,6 +254,13 @@ export default {
         pageSize: 10
       }
       return _form
+    },
+    toJson(message) {
+      try {
+        return JSON.stringify(JSON.parse(message), null, 2)
+      } catch (error) {
+        return message
+      }
     },
     openHandleForm(error_id) {
       this.handleErrorVisible = true

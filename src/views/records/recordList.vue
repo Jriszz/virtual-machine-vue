@@ -99,8 +99,9 @@
       <el-card>
         <el-table
           :data="recordList"
-          :stripe="true"
+          :stripe="false"
           :border="true"
+          :cell-class-name="getClassName"
           size="small">
           <el-table-column type="expand">
             <template slot-scope="record">
@@ -190,9 +191,9 @@
             width="70"
             label="通过状态">
             <template slot-scope="scope">
-              <span v-if="scope.row.result===true" class="colorGreen">成功</span>
-              <span v-else-if="scope.row.result===false" class="colorRed">失败</span>
-              <span v-else class="colorYellow">未知</span>
+              <span v-if="scope.row.result===true">成功</span>
+              <span v-else-if="scope.row.result===false">失败</span>
+              <span v-else>未知</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -276,6 +277,17 @@ export default {
         pageSize: 10
       }
       return _form
+    },
+    getClassName({ row, column, rowIndex, columnIndex }) {
+      if (column['label'] === '通过状态') {
+        if (row.result === true) {
+          return 'colorSuccess'
+        } else if (row.result === false) {
+          return 'colorFail2'
+        } else {
+          return 'colorFail1'
+        }
+      }
     },
     setQueryDate() {
       if (this.dateRange === null) {
