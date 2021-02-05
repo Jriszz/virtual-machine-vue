@@ -86,7 +86,7 @@
 
         <el-row>
           <el-col :span="6">
-            <el-form-item label="打包工程分支">
+            <el-form-item label="打包工程分支" prop="branch">
               <el-input v-model="form.branch" :disabled="!branch"/>
             </el-form-item>
           </el-col>
@@ -116,8 +116,8 @@
 
         <el-row>
           <el-col :span="6">
-            <el-form-item label="源库默认分支">
-              <el-input v-model="form.default_branch" placeholder="源码分支中没有指定分支时默认采用此分支"/>
+            <el-form-item label="源库默认分支" prop="default_branch">
+              <el-input v-model="form.default_branch" :disabled="!default_branch" placeholder="源码分支中没有指定分支时默认采用此分支"/>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -177,6 +177,7 @@ export default {
       tag_name: true,
       tags: true,
       branch: true,
+      default_branch: true,
       stage_type: true,
       arch: true,
       beta: true,
@@ -191,6 +192,9 @@ export default {
         value: 'current',
         label: '当前迭代'
       }, {
+        value: 'huawei-5.3.0',
+        label: '华为认证'
+      }, {
         value: 'blank',
         label: '不带UiBot(Robot)'
       }, {
@@ -201,10 +205,13 @@ export default {
         label: '国际版5.1.2'
       }],
       form: this.initForm(),
+      // 打包表单字段必填校验
       rules: {
         beta: [{ validator: checkBetaFormat, message: 'beta参数格式错误,可选的值有: beta,beta2,beta3......beta9', trigger: 'blur' }],
         ver: [{ required: true, message: '版本编号必填', trigger: 'blur' }],
-        channel: [{ required: true, message: '渠道代码必填', trigger: 'blur' }]
+        channel: [{ required: true, message: '渠道代码必填', trigger: 'blur' }],
+        branch: [{ required: true, message: 'bin-generator项目分支必须', trigger: 'blur' }],
+        default_branch: [{ required: true, message: '源代码项目采用默认分支必须', trigger: 'blur' }]
       }
     }
   },
@@ -228,6 +235,7 @@ export default {
         this.tag_name = true
         this.tags = true
         this.branch = true
+        this.default_branch = true
         this.stage_type = true
         this.arch = true
         this.beta = true
@@ -292,6 +300,28 @@ export default {
         this.language = true
         this.channel = true
         this.receiver = true
+      } else if (newValue === 'huawei-5.3.0') {
+        this.form = this.initForm()
+        this.form.ver = '5.3.0'
+        this.form.branch = 'huawei-5.3.0'
+        this.form.default_branch = 'TAG:T_V5.3.0_only_Enterprise_patch2'
+        this.form.pack_type = 'creator'
+        this.form.sign = 'laiye'
+        this.form.tags = 'deputy:BRANCH:huawei-5.3.0;script-of-install:BRANCH:huawei-5.3.0;ide-by-electron-view:BRANCH:huawei-5.3.0;extend:BRANCH:huawei-5.3.0'
+        this.ver = false
+        this.sign = false
+        this.tag_name = false
+        this.tags = true
+        this.branch = false
+        this.default_branch = false
+        this.stage_type = false
+        this.arch = true
+        this.beta = false
+        this.pack_type = true
+        this.sub_type = true
+        this.language = true
+        this.channel = true
+        this.receiver = true
       } else {
         this.form = this.initForm()
       }
@@ -341,12 +371,15 @@ export default {
       this.loading = false
     },
     changePackageType(value) {
-      console.log(value)
       if (value === 'worker' || value === 'newWorker') {
         this.form.sub_type = 'enterprise'
         this.sub_type = false
       } else {
         this.sub_type = true
+      }
+
+      if (value === 'newWorker') {
+        this.form.ver = '6.0.0'
       }
     },
     async refreshList() {
