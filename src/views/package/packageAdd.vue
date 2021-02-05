@@ -307,7 +307,7 @@ export default {
         this.form.default_branch = 'TAG:T_V5.3.0_only_Enterprise_patch2'
         this.form.pack_type = 'creator'
         this.form.sign = 'laiye'
-        this.form.tags = 'deputy:BRANCH:huawei-5.3.0;script-of-install:BRANCH:huawei-5.3.0;ide-by-electron-view:BRANCH:huawei-5.3.0;extend:BRANCH:huawei-5.3.0'
+        this.form.tags = 'BotScript:BRANCH:huawei-5.3.0;deputy:BRANCH:huawei-5.3.0;script-of-install:BRANCH:huawei-5.3.0;ide-by-electron-view:BRANCH:huawei-5.3.0;extend:BRANCH:huawei-5.3.0'
         this.ver = false
         this.sign = false
         this.tag_name = false
