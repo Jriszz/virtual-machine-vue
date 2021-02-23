@@ -117,6 +117,13 @@
             type="info"
             plain
             @click="reset('form')">重置</el-button>
+          <el-button
+            type="primary"
+            plain
+            @click="downloadPublicKey">下载OpenPGP公钥</el-button>
+          <el-button
+            type="text"
+            @click="packageCheckVisible=true">OpenPGP文件完整性校验帮助</el-button>
         </el-form-item>
       </el-form>
 
@@ -243,7 +250,7 @@
             label="指纹信息"/> -->
           <el-table-column
             label="操作"
-            min-width="500">
+            min-width="600">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" plain @click="download(scope.row.fingerprint_url)">版本信息</el-button>
               <el-button size="mini" type="primary" plain @click="download(scope.row.download_url)">下载</el-button>
@@ -252,6 +259,7 @@
               <el-button size="mini" type="primary" plain @click="deploy(scope.row)">部署</el-button>
               <el-button v-if="!scope.row.is_release && !scope.row.oss_download_url" :disabled="!isSuperAdmin" size="mini" type="danger" plain @click="deletePackageRecord(scope.row.id)">删除</el-button>
               <el-button v-if="scope.row.oss_download_url" size="mini" type="primary" plain @click="download(scope.row.oss_download_url)">公网下载</el-button>
+              <el-button size="mini" type="primary" plain @click="checkSign(scope.row.id)">签名校验</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -341,6 +349,33 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <el-dialog :visible.sync="packageCheckVisible" width="50%" title="OpenPGP文件完整性校验">
+      <div>
+        <h2>OpenPGP介绍：</h2>
+        <ul>
+          <li><el-link type="primary" href="https://www.rmnof.com/article/openpgp-gnupg-introduction/" target="_blank">OpenPGP（PGP/GPG）深入浅出，完全入门指南</el-link></li>
+          <li><el-link type="primary" href="https://www.rmnof.com/article/gpg4win-gnupg-for-windows/" target="_blank">GPG4Win：一款适用于Windows的GPG文件和电子邮件加密软件</el-link></li>
+          <li><el-link type="primary" href="https://files.gpg4win.org/gpg4win-3.1.15.exe" target="_blank">GPG4Win官网下载链接</el-link></li>
+        </ul>
+        <br><br>
+        <h2>准备文件</h2>
+        <ul>
+          <li>laiye公钥</li>
+          <li>UiBot exe安装包</li>
+          <li>安装包签名摘要文件</li>
+        </ul>
+        <h2>校验步骤</h2>
+        <ol>
+          <li>安装gpg4win-3.1.15.exe，默认安装路径为C:\Program Files (x86)\GnuPG</li>
+          <li>将C:\Program Files (x86)\GnuPG\bin加入到环境变量PATH中</li>
+          <li>导入来也公钥，名称为Beijing Laiye Network Technology Co., Ltd. 密钥指纹为C9DD 4C3D 6E53 83C2 32FD  CDD3 DF9C 2CC7 345B 9D86</li>
+          <li>在命令行中运行：gpg --import laiye_public_key.txt</li>
+          <li>将安装包与签名摘要文件放置到同一个目录中</li>
+          <li>在命令行中运行：gpg --verify UiBot_Worker_official_zh-cn_x64_V5.3.0_2021.02.05.1813.exe.asc</li>
+          <li>如果命令输出中没有告警或失败，且using RSA key为C9DD4C3D6E5383C232FDCDD3DF9C2CC7345B9D86则校验通过，否则失败。</li>
+        </ol>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -364,6 +399,7 @@ export default {
       packageRecordList: [],
       totals: 0,
       dateRange: null,
+      packageCheckVisible: false,
       releasePackageFormVisable: false,
       currentPackage: null,
       releaseResult: null,
@@ -509,6 +545,14 @@ export default {
     },
     download(url) {
       window.open(url, '_blank')
+    },
+    downloadPublicKey() {
+      const url = packages.downloadOpenPGPPublicKey()
+      this.download(url)
+    },
+    async checkSign(id) {
+      const url = await packages.getPackageSignCheckFile(id)
+      this.download(url)
     },
     openReleasePackageForm(obj) {
       this.releaseResult = null

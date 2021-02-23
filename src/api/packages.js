@@ -85,3 +85,13 @@ export function uploadOSS(primary_id, data) {
     data
   })
 }
+
+// 下载OpenPGP公钥
+export function downloadOpenPGPPublicKey() {
+  return 'http://192.168.0.111:8000/package-record/openpgp-public-key'
+}
+
+// 获取安装包OpenPGP签名摘要
+export function getPackageSignCheckFile(primary_id) {
+  return 'http://192.168.0.111:8000/package-record/' + primary_id + '/sign'
+}
