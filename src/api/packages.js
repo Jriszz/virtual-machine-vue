@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 const PREFIX = '/package'
-const CI_PREFIX = '/ci'
+const CI_PREFIX = '/cicd'
 
 // 参数枚举
 export function getParamEnum() {
@@ -55,7 +55,7 @@ export function getServiceList() {
 // 获取打包记录列表
 export function getPackageRecordList(params) {
   return request({
-    url: CI_PREFIX + '/package-list',
+    url: CI_PREFIX + '/ci/package-list',
     method: 'get',
     params
   })
@@ -64,7 +64,7 @@ export function getPackageRecordList(params) {
 // 删除打包记录列表
 export function deletePackageRecord(primary_id) {
   return request({
-    url: CI_PREFIX + '/package-record/' + primary_id,
+    url: CI_PREFIX + '/ci/package-list/' + primary_id,
     method: 'delete'
   })
 }
@@ -72,7 +72,7 @@ export function deletePackageRecord(primary_id) {
 // 打包版本发布到gitea release
 export function releasePackage(primary_id, data) {
   return request({
-    url: CI_PREFIX + '/package-record/' + primary_id + '/release',
+    url: CI_PREFIX + '/ci/package-list/' + primary_id + '/release',
     method: 'post',
     data
   })
@@ -81,7 +81,7 @@ export function releasePackage(primary_id, data) {
 // 上传安装包到OSS
 export function uploadOSS(primary_id, data) {
   return request({
-    url: CI_PREFIX + '/package-record/' + primary_id + '/upload-oss',
+    url: CI_PREFIX + '/ci/package-list/' + primary_id + '/upload-oss',
     method: 'post',
     data
   })
@@ -89,10 +89,10 @@ export function uploadOSS(primary_id, data) {
 
 // 下载OpenPGP公钥
 export function downloadOpenPGPPublicKey() {
-  return 'http://192.168.0.111:9000/api/ci/package-record/openpgp-public-key'
+  return 'http://192.168.0.111/api/cicd/ci/openpgp-public-key'
 }
 
 // 获取安装包OpenPGP签名摘要
 export function getPackageSignCheckFile(primary_id) {
-  return 'http://192.168.0.111:9000/api/ci/package-record/' + primary_id + '/sign'
+  return 'http://192.168.0.111/api/cicd/ci/package-list/' + primary_id + '/sign'
 }

@@ -18,9 +18,11 @@ module.exports = {
         },
         "changeOrigin": true
       },
-      "/api/ci": {
+      "/api/cicd": {
         "target": "http://127.0.0.1:9000",
-        "pathRewrite": {},
+        "pathRewrite": {
+          "/api/cicd": ""
+        },
         "changeOrigin": true
       },
       "/api/package": {
