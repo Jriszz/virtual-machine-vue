@@ -357,7 +357,6 @@
           <li><el-link type="primary" href="https://www.rmnof.com/article/gpg4win-gnupg-for-windows/" target="_blank">GPG4Win：一款适用于Windows的GPG文件和电子邮件加密软件</el-link></li>
           <li><el-link type="primary" href="https://files.gpg4win.org/gpg4win-3.1.15.exe" target="_blank">GPG4Win官网下载链接</el-link></li>
         </ul>
-        <br><br>
         <h2>准备文件</h2>
         <ul>
           <li>laiye公钥</li>
