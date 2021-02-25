@@ -1,12 +1,11 @@
 import request from '@/utils/request'
 
-const PREFIX = '/package'
-const CI_PREFIX = '/cicd'
+const PREFIX = '/cicd'
 
 // 参数枚举
 export function getParamEnum() {
   return request({
-    url: PREFIX + '/enum',
+    url: PREFIX + '/online/enum',
     method: 'get'
   })
 }
@@ -14,7 +13,7 @@ export function getParamEnum() {
 // 获取打包列表
 export function getPackageList() {
   return request({
-    url: PREFIX + '/package',
+    url: PREFIX + '/online/package',
     method: 'get'
   })
 }
@@ -22,7 +21,7 @@ export function getPackageList() {
 // 新增打包请求
 export function addPackage(data) {
   return request({
-    url: PREFIX + '/package',
+    url: PREFIX + '/online/package',
     method: 'post',
     data
   })
@@ -31,7 +30,7 @@ export function addPackage(data) {
 // 获取打包详情
 export function getPackageDetail(key) {
   return request({
-    url: PREFIX + '/package/' + key,
+    url: PREFIX + '/online/package/' + key,
     method: 'get'
   })
 }
@@ -39,7 +38,7 @@ export function getPackageDetail(key) {
 // 删除打包请求
 export function removePackage(key) {
   return request({
-    url: PREFIX + '/package/' + key,
+    url: PREFIX + '/online/package/' + key,
     method: 'delete'
   })
 }
@@ -47,7 +46,7 @@ export function removePackage(key) {
 // 获取打包服务列表
 export function getServiceList() {
   return request({
-    url: PREFIX + '/service',
+    url: PREFIX + '/online/service',
     method: 'get'
   })
 }
@@ -55,7 +54,7 @@ export function getServiceList() {
 // 获取打包记录列表
 export function getPackageRecordList(params) {
   return request({
-    url: CI_PREFIX + '/ci/package-list',
+    url: PREFIX + '/ci/package-list',
     method: 'get',
     params
   })
@@ -64,7 +63,7 @@ export function getPackageRecordList(params) {
 // 删除打包记录列表
 export function deletePackageRecord(primary_id) {
   return request({
-    url: CI_PREFIX + '/ci/package-list/' + primary_id,
+    url: PREFIX + '/ci/package-list/' + primary_id,
     method: 'delete'
   })
 }
@@ -72,7 +71,7 @@ export function deletePackageRecord(primary_id) {
 // 打包版本发布到gitea release
 export function releasePackage(primary_id, data) {
   return request({
-    url: CI_PREFIX + '/ci/package-list/' + primary_id + '/release',
+    url: PREFIX + '/ci/package-list/' + primary_id + '/release',
     method: 'post',
     data
   })
@@ -81,7 +80,7 @@ export function releasePackage(primary_id, data) {
 // 上传安装包到OSS
 export function uploadOSS(primary_id, data) {
   return request({
-    url: CI_PREFIX + '/ci/package-list/' + primary_id + '/upload-oss',
+    url: PREFIX + '/ci/package-list/' + primary_id + '/upload-oss',
     method: 'post',
     data
   })
