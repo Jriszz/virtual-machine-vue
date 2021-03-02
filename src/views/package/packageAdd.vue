@@ -36,20 +36,26 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="产品名称">
-              <el-radio-group v-model="form.pack_type" :disabled="!pack_type" @change="changePackageType">
-                <el-radio label="creator">Creator</el-radio>
-                <el-radio label="worker">Worker</el-radio>
-                <el-radio label="newWorker">新Worker</el-radio>
-              </el-radio-group>
+              <el-select v-model="form.pack_type" placeholder="请选择" @change="changePackageType">
+                <el-option
+                  v-for="item in pack_type_list"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="item.disabled"/>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="签名证书">
-              <el-radio-group v-model="form.sign" :disabled="!sign">
-                <el-radio label="laiye">来也</el-radio>
-                <el-radio label="laiye_h">硬件</el-radio>
-                <el-radio label="">不签</el-radio>
-              </el-radio-group>
+              <el-select v-model="form.sign" placeholder="请选择">
+                <el-option
+                  v-for="item in sign_list"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="item.disabled"/>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -187,6 +193,29 @@ export default {
       channel: true,
       receiver: true,
       cache: true,
+      sign_list: [{
+        value: 'laiye',
+        label: '来也'
+      }, {
+        value: 'laiye_h',
+        label: '来也硬件KEY'
+      }, {
+        value: '',
+        label: '不签'
+      }],
+      pack_type_list: [{
+        value: 'creator',
+        label: 'creator'
+      }, {
+        value: 'worker',
+        label: 'worker'
+      }, {
+        value: 'oneKernel',
+        label: 'oneKernel'
+      }, {
+        value: 'newWorker',
+        label: '新Worker'
+      }],
       builtin_version: 'current',
       builtin_versions: [{
         value: 'current',
@@ -339,7 +368,7 @@ export default {
         stage_type: 'module',
         arch: 'all',
         beta: '',
-        pack_type: 'creator',
+        pack_type: 'oneKernel',
         sub_type: 'enterprise',
         language: 'zh-cn',
         channel: 'official',

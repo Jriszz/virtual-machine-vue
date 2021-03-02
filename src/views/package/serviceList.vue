@@ -34,9 +34,9 @@
           <li class="startServiceSetp">以uibot用户远程登录192.168.0.84，密码UiBot2020;</li>
           <li class="startServiceSetp">按【Win + Q】打开系统搜索框，输入Terminal，选择“以管理员身份运行”;</li>
           <li class="startServiceSetp">输入：【cmd】，从powershell切换到cmd；</li>
-          <li class="startServiceSetp">输入：【cd C:\Users\uibot\online-package】，切换到在线打包工程目录；</li>
-          <li class="startServiceSetp">输入：【workon online-package】，激活Python虚拟环境；</li>
-          <li class="startServiceSetp">输入：【python daemon.py】，运行在线打包守护进程；</li>
+          <li class="startServiceSetp">输入：【cd C:\Users\uibot\online_agent】，切换到在线打包工程目录；</li>
+          <li class="startServiceSetp">输入：【workon online_agent】，激活Python虚拟环境；</li>
+          <li class="startServiceSetp">输入：【python agent.py】，运行在线打包守护进程；</li>
           <li class="startServiceSetp">观察：确认日志中显示日志【打包守护进程启动成功，工作目录切换到C:\Users\uibot\bin-generator】，代表服务启动成功；</li>
           <li class="startServiceSetp">输入：按【F5】刷新当前页面，即可看在刚才启动的打包服务</li>
         </ol>
@@ -50,7 +50,7 @@
           width="200"
           label="打包服务"/>
         <el-table-column
-          label="当前状态"
+          label="任务状态"
           width="200">
           <template slot-scope="scope">
             <span v-if="Object.keys(scope.row.task).length>0">打包中</span>
@@ -58,16 +58,25 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="操作"
+          label="当前任务"
           width="200">
           <template slot-scope="scope">
             <el-button size="mini" plain @click="viewTask(scope.row.task)">查看当前任务</el-button>
           </template>
         </el-table-column>
         <el-table-column
-          label="操作">
+          label="查看日志"
+          width="200">
           <template slot-scope="scope">
             <el-button size="mini" plain @click="viewLog(scope.row.onlineLog)">查看实时日志</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="启用状态">
+          <template slot-scope="scope">
+            <el-button size="mini" plain @click="switchServiceStatus(scope.row.address)">切换</el-button>
+            <span v-if="scope.row.enable_status==='off'">已禁用，禁用后不会参与在线打包，相当于停止服务</span>
+            <span v-else>已启用</span>
           </template>
         </el-table-column>
       </el-table>
@@ -80,20 +89,6 @@
     </el-dialog>
   </div>
 </template>
-
-<style>
-  .el-table .warning-row {
-    background: oldlace;
-  }
-  .el-table .success-row {
-    background: #f0f9eb;
-  }
-  .startServiceSetp {
-    line-height: 1.5;
-    font-size: 15px;
-    font-weight: bold;
-  }
-</style>
 
 <script>
 import { MessageBox, Message } from 'element-ui'
@@ -141,6 +136,9 @@ export default {
   },
   methods: {
     tableRowClassName({ row, rowIndex }) {
+      if (row.enable_status === 'off') {
+        return 'error-row'
+      }
       if (Object.keys(row.task).length > 0) {
         return 'warning-row'
       } else {
@@ -172,6 +170,19 @@ export default {
       }
       this.loading = false
     },
+    async switchServiceStatus(host) {
+      const res = await this.$store.dispatch('SwitchServiceStatus', { 'host': host })
+      if (res.error_code === 0) {
+        Message({
+          message: res.msg,
+          type: 'success',
+          duration: 3 * 1000
+        })
+      } else {
+        console.log(res)
+      }
+      this.getServiceList()
+    },
     viewTask(task) {
       if (Object.keys(task).length > 0) {
         this.currentTask = JSON.stringify(task, null, 4)
@@ -195,3 +206,20 @@ export default {
   }
 }
 </script>
+
+<style>
+  .el-table .error-row {
+    background: rgb(250, 64, 64);
+  }
+  .el-table .warning-row {
+    background: oldlace;
+  }
+  .el-table .success-row {
+    background: #f0f9eb;
+  }
+  .startServiceSetp {
+    line-height: 1.5;
+    font-size: 15px;
+    font-weight: bold;
+  }
+</style>

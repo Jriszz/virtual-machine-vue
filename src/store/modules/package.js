@@ -1,4 +1,4 @@
-import { getParamEnum, getPackageList, addPackage, getPackageDetail, removePackage, getServiceList } from '@/api/packages.js'
+import { getParamEnum, getPackageList, addPackage, getPackageDetail, removePackage, getServiceList, switchServiceStatus } from '@/api/packages.js'
 
 const packages = {
   state: {
@@ -84,6 +84,10 @@ const packages = {
         console.log(res)
       }
       return res
+    },
+
+    async SwitchServiceStatus({ commit }, data) {
+      return await switchServiceStatus(data)
     }
   }
 }

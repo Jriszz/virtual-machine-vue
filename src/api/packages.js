@@ -51,6 +51,15 @@ export function getServiceList() {
   })
 }
 
+// 切换打包服务起用状态
+export function switchServiceStatus(data) {
+  return request({
+    url: PREFIX + '/online/service/switch',
+    method: 'post',
+    data
+  })
+}
+
 // 获取打包记录列表
 export function getPackageRecordList(params) {
   return request({
