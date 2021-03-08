@@ -139,7 +139,7 @@
           :cell-class-name="getClassName"
           size="small"
           @expand-change="getTaskRecords">
-          <el-table-column type="expand">
+          <el-table-column type="expand" fixed="left">
             <template slot-scope="record">
               <el-table
                 :data="record.row.records">
