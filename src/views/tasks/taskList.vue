@@ -137,53 +137,7 @@
           :stripe="false"
           :border="true"
           :cell-class-name="getClassName"
-          size="small"
-          @expand-change="getTaskRecords">
-          <el-table-column type="expand" fixed="left">
-            <template slot-scope="record">
-              <el-table
-                :data="record.row.records">
-                <el-table-column
-                  prop="module"
-                  min-width="100"
-                  label="所属模块"/>
-                <el-table-column
-                  prop="command"
-                  min-width="150"
-                  label="测试命令"/>
-                <el-table-column
-                  prop="name"
-                  min-width="200"
-                  label="用例名称"/>
-                <el-table-column
-                  prop="desc"
-                  min-width="200"
-                  label="用例描述"/>
-                <el-table-column
-                  prop="expect"
-                  min-width="200"
-                  label="预期结果"/>
-                <el-table-column
-                  prop="actual"
-                  min-width="200"
-                  label="实际结果"/>
-                <el-table-column
-                  prop="result"
-                  width="80"
-                  label="是否通过">
-                  <template slot-scope="scope">
-                    <span v-if="scope.row.result===true" class="colorGreen">通过</span>
-                    <span v-else-if="scope.row.result===false" class="colorRed">失败</span>
-                    <span v-else class="colorYellow">未知</span>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="message"
-                  min-width="200"
-                  label="执行消息"/>
-              </el-table>
-            </template>
-          </el-table-column>
+          size="small">
           <el-table-column
             prop="task_id"
             width="140"
@@ -243,7 +197,7 @@
             </template>
           </el-table-column> -->
           <el-table-column
-            width="70"
+            width="80"
             label="失败率">
             <template slot-scope="scope">
               <span v-if="scope.row.amount===0">100%</span>
@@ -252,11 +206,15 @@
           </el-table-column>
           <el-table-column
             :cell-class-name="getClassName"
-            width="180"
+            width="230"
             label="用例及错误统计">
             <template slot-scope="scope">
-              <span>总数：{{ scope.row.amount }}，成功：{{ scope.row.success_num }}</span><br>
-              <span>失败：{{ scope.row.fail_num }}，错误：{{ scope.row.error_num }}</span>
+              <el-row>
+                <el-col :span="6"><el-button type="text" size="mini" icon="el-icon-s-help" @click="openTaskRecordTable(scope.row.id, null)">{{ scope.row.amount }}</el-button></el-col>
+                <el-col :span="6"><el-button type="text" size="mini" icon="el-icon-success" @click="openTaskRecordTable(scope.row.id, true)">{{ scope.row.success_num }}</el-button></el-col>
+                <el-col :span="6"><el-button type="text" size="mini" icon="el-icon-error" @click="openTaskRecordTable(scope.row.id, false)">{{ scope.row.fail_num }}</el-button></el-col>
+                <el-col v-if="scope.row.error_num!==0" :span="6"><el-button type="text" size="mini" icon="el-icon-warning" @click="openTaskErrorTable(scope.row.task_id)">{{ scope.row.error_num }}</el-button></el-col>
+              </el-row>
             </template>
           </el-table-column>
           <el-table-column
@@ -321,9 +279,71 @@
         </div>
       </el-card>
     </el-card>
+    <el-dialog :visible.sync="taskRecordTableVisable" :title="currentTaskRecordTitle" width="80%">
+      <el-table
+        :border="true"
+        :fit="true"
+        :data="currentTaskRecordList">
+        <el-table-column
+          type="index"
+          width="50"/>
+        <el-table-column
+          prop="module"
+          width="80"
+          label="所属模块"/>
+        <el-table-column
+          prop="command"
+          width="120"
+          label="测试命令"/>
+        <el-table-column
+          prop="name"
+          width="200"
+          label="用例名称"/>
+        <el-table-column
+          prop="desc"
+          width="200"
+          label="用例描述"/>
+        <el-table-column
+          prop="expect"
+          width="100"
+          label="预期结果"/>
+        <el-table-column
+          prop="actual"
+          width="100"
+          label="实际结果"/>
+        <el-table-column
+          prop="result"
+          width="80"
+          label="是否通过">
+          <template slot-scope="scope">
+            <span v-if="scope.row.result===true" class="colorGreen">通过</span>
+            <span v-else-if="scope.row.result===false" class="colorRed">失败</span>
+            <span v-else class="colorYellow">未知</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="message"
+          label="执行消息"/>
+      </el-table>
+    </el-dialog>
+    <el-dialog :visible.sync="taskErrorTableVisable" :title="currentTaskErrorTitle" width="80%">
+      <el-table
+        :border="true"
+        :fit="true"
+        :data="currentTaskErrorList">
+        <el-table-column
+          type="index"
+          width="50"/>
+        <el-table-column
+          label="错误消息">
+          <template slot-scope="error">
+            <pre>{{ toJson(error.row.message) }}</pre>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
-
 <script>
 import { MessageBox, Message } from 'element-ui'
 import * as tasks from '@/api/tasks'
@@ -385,7 +405,15 @@ export default {
         label: '运行流程出错'
       }],
       dateRange: null,
-      dateRangeCreate: null
+      dateRangeCreate: null,
+      // 当前任务用例展示相关参数
+      taskRecordTableVisable: false,
+      currentTaskRecordList: [],
+      currentTaskRecordTitle: '',
+      // 当前任务错误展示相关参数
+      taskErrorTableVisable: false,
+      currentTaskErrorList: [],
+      currentTaskErrorTitle: ''
     }
   },
   computed: {
@@ -435,7 +463,7 @@ export default {
       return _form
     },
     getClassName({ row, column, rowIndex, columnIndex }) {
-      if (column['label'] === '用例及错误统计') {
+      if (column['label'] === '失败率') {
         if (row.error_num > 0 || row.amount === 0) {
           return 'colorError'
         } else if (row.fail_num / row.amount >= 0.2) {
@@ -486,6 +514,35 @@ export default {
           await this.getTaskList()
         }
       }).catch(action => {})
+    },
+    toJson(message) {
+      try {
+        return JSON.stringify(JSON.parse(message), null, 2)
+      } catch (error) {
+        return message
+      }
+    },
+    async openTaskRecordTable(id, type) {
+      this.taskRecordTableVisable = true
+      if (type === true) {
+        this.currentTaskRecordTitle = '当前任务运行成功用例列表'
+      } else if (type === false) {
+        this.currentTaskRecordTitle = '当前任务运行失败用例列表'
+      } else {
+        this.currentTaskRecordTitle = '当前任务所有用例列表'
+      }
+      const res = await tasks.taskRecords(id, { 'result': type })
+      if (res.error_code === 0 && res.data.length > 0) {
+        this.currentTaskRecordList = res.data
+      }
+    },
+    async openTaskErrorTable(task_id) {
+      this.taskErrorTableVisable = true
+      this.currentTaskErrorTitle = '当前任务错误列表'
+      const res = await tasks.getErrorList({ 'task_id': task_id })
+      if (res.error_code === 0 && res.data.errors.length > 0) {
+        this.currentTaskErrorList = res.data.errors
+      }
     },
     async getTaskRecords(expandedRows, expanded) {
       if (expandedRows.records.length === 0) {
@@ -633,4 +690,7 @@ export default {
     font-weight: bold;
     background-color: red;
   }
+  /* .el-button--text {
+    color:darkorange
+  } */
 </style>
