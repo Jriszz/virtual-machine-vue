@@ -73,6 +73,7 @@
             <el-form-item label="创建时间">
               <el-date-picker
                 v-model="dateRangeCreate"
+                :default-time="['00:00:00', '23:59:59']"
                 type="datetimerange"
                 range-separator="至"
                 value-format="yyyy-MM-dd HH:mm:ss"
@@ -100,9 +101,10 @@
             <el-form-item label="运行时间">
               <el-date-picker
                 v-model="dateRange"
-                type="daterange"
+                :default-time="['00:00:00', '23:59:59']"
+                type="datetimerange"
                 range-separator="至"
-                value-format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd HH:mm:ss"
                 @change="setQueryDate"/>
             </el-form-item>
           </el-col>
