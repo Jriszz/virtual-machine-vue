@@ -71,11 +71,11 @@
           <el-button
             type="primary"
             plain
-            @click="switchPlanStatus(0, null)">停止所有计划</el-button>
+            @click="switchPlanStatus(0, null)">批量停止计划</el-button>
           <el-button
             type="primary"
             plain
-            @click="switchPlanStatus(1, null)">开启所有计划</el-button>
+            @click="switchPlanStatus(1, null)">批量开启计划</el-button>
         </el-form-item>
       </el-form>
 
@@ -159,8 +159,8 @@
             min-width="350">
             <template slot-scope="scope">
               <el-button v-if="scope.row.flow_id>0" size="mini" type="primary" plain @click="openCreateTaskForm('s', scope.row.id, '创建任务')">创建任务</el-button>
-              <el-button v-if="scope.row.flow_id>0" size="mini" type="primary" plain @click="switchPlanStatus(0, scope.row.flow_name)">停止计划</el-button>
-              <el-button v-if="scope.row.flow_id>0" size="mini" type="primary" plain @click="switchPlanStatus(1, scope.row.flow_name)">开启计划</el-button>
+              <el-button v-if="scope.row.flow_id>0" size="mini" type="primary" plain @click="switchPlanStatus(0, scope.row.flow_name + scope.row.flow_version)">停止计划</el-button>
+              <el-button v-if="scope.row.flow_id>0" size="mini" type="primary" plain @click="switchPlanStatus(1, scope.row.flow_name + scope.row.flow_version)">开启计划</el-button>
               <el-button v-if="isSuperAdmin" size="mini" type="danger" plain @click="deleteFlow(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
@@ -230,7 +230,8 @@ export default {
       form: { worker_id: null },
       queryForm: { run_mode: null, type: null, flow_name: '', flow_verson: '', author: '' },
       formTitle: '创建任务',
-      selectFlowIds: null
+      selectFlowIds: null,
+      selectFlowNameList: []
     }
   },
   computed: {
@@ -336,16 +337,19 @@ export default {
       }).catch(action => {})
     },
     selectFlow(val) {
-      console.log(val)
+      // 每次清空原列表，否则会重复追加
+      this.selectFlowNameList = []
       this.selectFlowList = val
       if (val.length === 0) {
         this.selectFlowIds = null
       } else if (val.length === 1) {
         this.selectFlowIds = val[0].id
+        this.selectFlowNameList.push(val[0].flow_name + val[0].flow_version)
       } else {
         this.selectFlowIds = ''
         for (let i = 0; i < val.length; i++) {
           this.selectFlowIds += val[i].id.toString() + ';'
+          this.selectFlowNameList.push(val[i].flow_name + val[i].flow_version)
         }
       }
     },
@@ -388,7 +392,12 @@ export default {
       this.loading = false
     },
     async switchPlanStatus(status, plan_name) {
-      const res = await flows.switchPlanStatus({ status: status, plan_name: plan_name })
+      let res
+      if (plan_name === null) {
+        res = await flows.switchPlanStatus({ status: status, plan_name: this.selectFlowNameList })
+      } else {
+        res = await flows.switchPlanStatus({ status: status, plan_name: plan_name })
+      }
       if (res && res.error_code === 0) {
         Message({
           message: res.msg,

@@ -101,11 +101,6 @@
                 @change="setQueryDate"/>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="pdb调试文件">
-              <el-input v-model="form.pdb_md5" placeholder="请填入BotScript.dll计算得到的md5值" clearable/>
-            </el-form-item>
-          </el-col>
         </el-row>
 
         <el-form-item>
@@ -442,7 +437,6 @@ export default {
         sign: null,
         source: '',
         is_release: null,
-        pdb_md5: null,
         page: 1,
         pageSize: 10
       }
