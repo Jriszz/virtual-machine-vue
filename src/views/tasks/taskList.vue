@@ -12,12 +12,12 @@
         :label-width="labelWidth"
         size="small">
         <el-row>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item label="流程名称">
               <el-input v-model="form.flow_name" clearable/>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item label="任务状态">
               <el-select v-model="form.status" clearable placeholder="请选择">
                 <el-option
@@ -28,16 +28,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="任务结果">
-              <el-radio-group v-model="form.result">
-                <el-radio label="">全部</el-radio>
-                <el-radio :label="1">运行成功</el-radio>
-                <el-radio :label="0">运行失败</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item label="同步状态">
               <el-radio-group v-model="form.sync">
                 <el-radio label="">全部</el-radio>
@@ -46,14 +37,23 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
+          <el-col :span="9">
+            <el-form-item label="任务结果">
+              <el-radio-group v-model="form.result">
+                <el-radio label="">全部</el-radio>
+                <el-radio :label="1">运行成功</el-radio>
+                <el-radio :label="0">运行失败</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item label="流程版本">
               <el-input v-model="form.flow_version" clearable/>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item label="错误类型">
               <el-select v-model="form.error_type" clearable placeholder="请选择">
                 <el-option
@@ -64,12 +64,12 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item label="操作系统">
               <el-input v-model="form.os_name" clearable/>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="9">
             <el-form-item label="创建时间">
               <el-date-picker
                 v-model="dateRangeCreate"
@@ -82,22 +82,22 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item label="流程作者">
               <el-input v-model="form.author" clearable/>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item label="任务编号">
               <el-input v-model="form.task_id" clearable/>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item label="宿主地址">
               <el-input v-model="form.ip_address" clearable/>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="9">
             <el-form-item label="运行时间">
               <el-date-picker
                 v-model="dateRange"
@@ -406,7 +406,7 @@ export default {
         value: 9,
         label: '运行流程出错'
       }],
-      dateRange: null,
+      dateRange: this.initQueryDateTime(),
       dateRangeCreate: null,
       // 当前任务用例展示相关参数
       taskRecordTableVisable: false,
@@ -455,14 +455,22 @@ export default {
         ip_address: '',
         error_type: null,
         flow_name: '',
-        start_date: null,
-        end_date: null,
         create_time_s: null,
         create_time_e: null,
         page: 1,
         pageSize: 10
       }
+      const temp_datetime = this.initQueryDateTime()
+      _form['start_date'] = temp_datetime[0]
+      _form['end_date'] = temp_datetime[1]
       return _form
+    },
+    initQueryDateTime() {
+      const now = new Date()
+      const before_3_day = new Date(now.getTime() - 2 * 24 * 3600 * 1000)
+      const date2 = this.tools.dateToStr(now)
+      const date1 = this.tools.dateToStr(before_3_day)
+      return [date1 + ' 00:00:00', date2 + ' 23:59:59']
     },
     getClassName({ row, column, rowIndex, columnIndex }) {
       if (column['label'] === '失败率') {
@@ -620,7 +628,7 @@ export default {
     },
     reset() {
       this.form = this.initForm()
-      this.dateRange = null
+      this.dateRange = this.initQueryDateTime()
       this.dateRangeCreate = null
       this.resetResult()
     },

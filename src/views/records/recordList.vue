@@ -48,9 +48,10 @@
             <el-form-item label="运行时间">
               <el-date-picker
                 v-model="dateRange"
-                type="daterange"
+                :default-time="['00:00:00', '23:59:59']"
+                type="datetimerange"
                 range-separator="至"
-                value-format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd HH:mm:ss"
                 @change="setQueryDate"/>
             </el-form-item>
           </el-col>
@@ -243,7 +244,7 @@ export default {
       form: this.initForm(),
       recordList: [],
       totals: 0,
-      dateRange: null
+      dateRange: this.initQueryDateTime()
     }
   },
   computed: {
@@ -267,8 +268,6 @@ export default {
         name: '',
         result: '',
         author: '',
-        create_time_s: '',
-        create_time_e: '',
         task_id: '',
         flow_name: '',
         flow_version: '',
@@ -276,7 +275,15 @@ export default {
         page: 1,
         pageSize: 10
       }
+      const temp_datetime = this.initQueryDateTime()
+      _form['create_time_s'] = temp_datetime[0]
+      _form['create_time_e'] = temp_datetime[1]
       return _form
+    },
+    initQueryDateTime() {
+      const now = new Date()
+      const today = this.tools.dateToStr(now)
+      return [today + ' 00:00:00', today + ' 23:59:59']
     },
     getClassName({ row, column, rowIndex, columnIndex }) {
       if (column['label'] === '通过状态') {
@@ -319,7 +326,7 @@ export default {
     },
     reset() {
       this.form = this.initForm()
-      this.dateRange = null
+      this.dateRange = this.initQueryDateTime()
       this.resetResult()
     },
     resetResult() {

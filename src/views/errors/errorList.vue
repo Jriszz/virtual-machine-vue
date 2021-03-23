@@ -57,6 +57,17 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col :span="8">
+            <el-form-item label="运行时间">
+              <el-date-picker
+                v-model="dateRange"
+                :default-time="['00:00:00', '23:59:59']"
+                type="datetimerange"
+                range-separator="至"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                @change="setQueryDate"/>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-form-item>
           <el-button
@@ -206,7 +217,7 @@ export default {
       handleForm: {},
       errorList: [],
       totals: 0,
-      dateRange: null,
+      dateRange: this.initQueryDateTime(),
       error_status_enum: [{
         value: null,
         label: '全部'
@@ -253,7 +264,26 @@ export default {
         page: 1,
         pageSize: 10
       }
+      const temp_datetime = this.initQueryDateTime()
+      _form['create_time_s'] = temp_datetime[0]
+      _form['create_time_e'] = temp_datetime[1]
       return _form
+    },
+    initQueryDateTime() {
+      const now = new Date()
+      const before_3_day = new Date(now.getTime() - 6 * 24 * 3600 * 1000)
+      const date2 = this.tools.dateToStr(now)
+      const date1 = this.tools.dateToStr(before_3_day)
+      return [date1 + ' 00:00:00', date2 + ' 23:59:59']
+    },
+    setQueryDate() {
+      if (this.dateRange === null) {
+        this.form.create_time_s = null
+        this.form.create_time_e = null
+      } else {
+        this.form.create_time_s = this.dateRange[0]
+        this.form.create_time_e = this.dateRange[1]
+      }
     },
     toJson(message) {
       try {
@@ -323,7 +353,7 @@ export default {
     },
     reset() {
       this.form = this.initForm()
-      this.dateRange = null
+      this.dateRange = this.initQueryDateTime()
       this.resetResult()
     },
     resetResult() {
