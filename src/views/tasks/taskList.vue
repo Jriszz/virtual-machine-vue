@@ -179,7 +179,7 @@
             width="70"
             label="任务状态">
             <template slot-scope="scope">
-              <span v-if="scope.row.status==='deploying'">部署中</span>
+              <span v-if="scope.row.status==='deploying'">待运行</span>
               <span v-else-if="scope.row.status==='running'">运行中</span>
               <span v-else-if="scope.row.status==='finished'">已完成</span>
               <span v-else>未知</span>
@@ -258,10 +258,10 @@
             label="操作"
             min-width="450">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary" plain @click="openTaskDetail(scope.row.task_id)">详情</el-button>
-              <el-button size="mini" type="primary" plain @click="openLogPage(scope.row.task_id, 'task')">任务日志</el-button>
-              <el-button size="mini" type="primary" plain @click="openLogPage(scope.row.task_id, 'extend')">扩展日志</el-button>
-              <el-button v-if="scope.row.task_type === 1 && scope.row.sync === false" size="mini" type="primary" plain @click="taskSync(scope.row.task_id)">同步</el-button>
+              <el-button v-if="scope.row.status !== 'deploying'" size="mini" type="primary" plain @click="openTaskDetail(scope.row.task_id)">详情</el-button>
+              <el-button v-if="scope.row.status !== 'deploying'" size="mini" type="primary" plain @click="openLogPage(scope.row.task_id, 'task')">任务日志</el-button>
+              <el-button v-if="scope.row.status !== 'deploying'" size="mini" type="primary" plain @click="openLogPage(scope.row.task_id, 'extend')">扩展日志</el-button>
+              <el-button v-if="scope.row.status !== 'deploying' && scope.row.task_type === 1 && scope.row.sync === false" size="mini" type="primary" plain @click="taskSync(scope.row.task_id)">同步</el-button>
               <el-button v-if="scope.row.task_type === 1" size="mini" type="primary" plain @click="taskRestart(scope.row.task_id)">克隆</el-button>
               <el-button v-if="isSuperAdmin" size="mini" type="danger" plain @click="deleteTask(scope.row.id)">删除</el-button>
             </template>
@@ -370,7 +370,7 @@ export default {
         label: '全部'
       }, {
         value: 'deploying',
-        label: '部署中'
+        label: '待运行'
       }, {
         value: 'running',
         label: '运行中'
@@ -474,15 +474,19 @@ export default {
     },
     getClassName({ row, column, rowIndex, columnIndex }) {
       if (column['label'] === '失败率') {
-        if (row.error_num > 0 || row.amount === 0) {
-          return 'colorError'
-        } else if (row.fail_num / row.amount >= 0.2) {
-          return 'colorFail2'
-        } else if (row.fail_num > 0) {
-          return 'colorFail1'
+        if (row.status === 'deploying') {
+          return null
         } else {
-          // return ''
-          return 'colorSuccess'
+          if (row.error_num > 0 || row.amount === 0) {
+            return 'colorError'
+          } else if (row.fail_num / row.amount >= 0.2) {
+            return 'colorFail2'
+          } else if (row.fail_num > 0) {
+            return 'colorFail1'
+          } else {
+            // return ''
+            return 'colorSuccess'
+          }
         }
       }
     },
