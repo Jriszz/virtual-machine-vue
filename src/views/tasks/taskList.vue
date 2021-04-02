@@ -202,7 +202,8 @@
             width="80"
             label="失败率">
             <template slot-scope="scope">
-              <span v-if="scope.row.amount===0">100%</span>
+              <span v-if="scope.row.status==='deploying'"/>
+              <span v-else-if="scope.row.amount===0">100%</span>
               <span v-else>{{ ((1 - scope.row.success_num / scope.row.amount) * 100).toFixed(2) }}%</span>
             </template>
           </el-table-column>
