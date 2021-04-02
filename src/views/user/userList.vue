@@ -104,8 +104,8 @@
             label="状态">
             <template slot-scope="scope">
               <span v-if="scope.row.status===1">在职</span>
-              <span v-else-if="scope.row.gender===0">离职</span>
-              <span v-else>冻结</span>
+              <span v-else-if="scope.row.status===0">冻结</span>
+              <span v-else>离职</span>
             </template>
           </el-table-column>
           <el-table-column
