@@ -76,7 +76,7 @@
           :border="true">
           <el-table-column
             prop="username"
-            width="120"
+            width="200"
             label="用户名"/>
           <el-table-column
             prop="name"
@@ -97,10 +97,10 @@
             label="手机"/>
           <el-table-column
             prop="email"
-            width="200"
+            width="250"
             label="邮箱"/>
           <el-table-column
-            width="100"
+            width="60"
             label="状态">
             <template slot-scope="scope">
               <span v-if="scope.row.status===1">在职</span>
@@ -108,6 +108,14 @@
               <span v-else>冻结</span>
             </template>
           </el-table-column>
+          <el-table-column
+            prop="create_time"
+            width="160"
+            label="注册时间"/>
+          <el-table-column
+            prop="last_login_time"
+            width="160"
+            label="最后一次登陆时间"/>
           <!-- <el-table-column
             prop="job_no"
             width="100"
