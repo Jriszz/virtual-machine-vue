@@ -14,22 +14,26 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="应用名称">
-              <el-radio-group v-model="form.package">
-                <el-radio :label="null">全部</el-radio>
-                <el-radio label="creator">creator</el-radio>
-                <el-radio label="worker">worker</el-radio>
-              </el-radio-group>
+              <el-select v-model="form.package" clearable placeholder="请选择">
+                <el-option
+                  v-for="item in pack_type_list"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="item.disabled"/>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="签名证书">
-              <el-radio-group v-model="form.sign">
-                <el-radio :label="null">全部</el-radio>
-                <el-radio label="aosen">奥森</el-radio>
-                <el-radio label="laiye">来也</el-radio>
-                <el-radio label="laiye_h">硬件</el-radio>
-                <el-radio label="none">不签</el-radio>
-              </el-radio-group>
+              <el-select v-model="form.sign" clearable placeholder="请选择">
+                <el-option
+                  v-for="item in sign_list"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="item.disabled"/>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -50,12 +54,14 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="软件语言">
-              <el-radio-group v-model="form.language">
-                <el-radio :label="null">全部</el-radio>
-                <el-radio label="zh-cn">中文</el-radio>
-                <el-radio label="en-us">英文</el-radio>
-                <el-radio label="ja-jp">日文</el-radio>
-              </el-radio-group>
+              <el-select v-model="form.language" clearable placeholder="请选择">
+                <el-option
+                  v-for="item in language_list"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="item.disabled"/>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -78,7 +84,8 @@
             <el-form-item label="是否发布">
               <el-radio-group v-model="form.is_release">
                 <el-radio :label="null">全部</el-radio>
-                <el-radio :label="1">已发布</el-radio>
+                <el-radio :label="3">正式发布</el-radio>
+                <el-radio :label="1">临时发布</el-radio>
                 <el-radio :label="0">未发布</el-radio>
               </el-radio-group>
             </el-form-item>
@@ -391,6 +398,42 @@ export default {
       errorinfo: '',
       form: this.initForm(),
       releaseForm: { 'tag_name': '', 'release_title': '', 'release_body': '', 'prerelease': false, 'draft': false },
+      pack_type_list: [{
+        value: 'creator',
+        label: 'creator'
+      }, {
+        value: 'worker',
+        label: 'worker'
+      }, {
+        value: 'oneKernel',
+        label: 'oneKernel'
+      }],
+      sign_list: [{
+        value: 'laiye',
+        label: '来也'
+      }, {
+        value: 'laiye_h',
+        label: '硬件'
+      }, {
+        value: 'aosen',
+        label: '奥森'
+      }, {
+        value: 'none',
+        label: '不签'
+      }],
+      language_list: [{
+        value: 'zh-cn',
+        label: '中文'
+      }, {
+        value: 'en-us',
+        label: '英文'
+      }, {
+        value: 'zh-tw',
+        label: '繁体'
+      }, {
+        value: 'ja-jp',
+        label: '日文'
+      }],
       packageRecordList: [],
       totals: 0,
       dateRange: null,

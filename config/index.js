@@ -25,13 +25,6 @@ module.exports = {
         },
         "changeOrigin": true
       },
-      "/api/package": {
-        "target": "http://192.168.0.111:8002",
-        "pathRewrite": {
-          "^/api/package": ""
-        },
-        "changeOrigin": true
-      },
       "/api": {
         "target": "http://192.168.0.111:5500",
         "pathRewrite": {

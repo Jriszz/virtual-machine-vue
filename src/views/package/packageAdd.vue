@@ -212,9 +212,6 @@ export default {
       }, {
         value: 'oneKernel',
         label: 'oneKernel'
-      }, {
-        value: 'newWorker',
-        label: '新Worker'
       }],
       builtin_version: 'current',
       builtin_versions: [{
