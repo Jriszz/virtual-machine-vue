@@ -252,7 +252,7 @@
             label="指纹信息"/> -->
           <el-table-column
             label="操作"
-            min-width="450"
+            min-width="480"
             fixed="right">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="版本指纹" placement="top">
@@ -278,6 +278,9 @@
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="获取此包OpenPGP签名摘要" placement="top">
                 <el-button size="mini" type="primary" plain icon="el-icon-circle-check" @click="checkSign(scope.row.id)"/>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="克隆，采取同样参数再次打包" placement="top">
+                <el-button v-if="scope.row.params !== null" size="mini" type="primary" plain icon="el-icon-refresh" @click="clone(scope.row)"/>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -536,6 +539,34 @@ export default {
         console.log(res)
       }
       this.loading = false
+    },
+    async clone(row) {
+      MessageBox.confirm(
+        '此操作将采用同样参数再次打包，是否继续？',
+        '操作确认',
+        {
+          distinguishCancelAndClose: true,
+          confirmButtonText: '提交',
+          cancelButtonText: '取消'
+        }
+      ).then(async() => {
+        let tags = ''
+        for (const key in row.branch) {
+          tags += key + ':' + row.branch[key] + ';'
+        }
+        tags = tags.substring(0, tags.length - 1)
+        const params = row.params
+        params['tags'] = tags
+        params['secret'] = 'aead5f0b9a1bf24b62036bbe16daabcd'
+        const res = await this.$store.dispatch('AddPackage', params)
+        if (res.error_code === 0) {
+          Message({
+            message: res.msg,
+            type: 'success',
+            duration: 3 * 1000
+          })
+        }
+      }).catch(action => {})
     },
     async deletePackageRecord(primary_id) {
       MessageBox.confirm(
