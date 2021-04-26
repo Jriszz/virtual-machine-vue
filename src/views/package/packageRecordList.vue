@@ -13,22 +13,20 @@
         size="small">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="应用名称">
-              <el-select v-model="form.package" clearable placeholder="请选择">
-                <el-option
-                  v-for="item in pack_type_list"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                  :disabled="item.disabled"/>
-              </el-select>
+            <el-form-item label="是否发布">
+              <el-radio-group v-model="form.is_release">
+                <el-radio :label="null">全部</el-radio>
+                <el-radio :label="3">正式发布</el-radio>
+                <el-radio :label="1">临时发布</el-radio>
+                <el-radio :label="0">未发布</el-radio>
+              </el-radio-group>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="签名证书">
-              <el-select v-model="form.sign" clearable placeholder="请选择">
+            <el-form-item label="应用类型">
+              <el-select v-model="form.package" clearable placeholder="请选择">
                 <el-option
-                  v-for="item in sign_list"
+                  v-for="item in pack_type_list"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -53,10 +51,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="软件语言">
-              <el-select v-model="form.language" clearable placeholder="请选择">
+            <el-form-item label="签名证书">
+              <el-select v-model="form.sign" clearable placeholder="请选择">
                 <el-option
-                  v-for="item in language_list"
+                  v-for="item in sign_list"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -81,17 +79,19 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="是否发布">
-              <el-radio-group v-model="form.is_release">
-                <el-radio :label="null">全部</el-radio>
-                <el-radio :label="3">正式发布</el-radio>
-                <el-radio :label="1">临时发布</el-radio>
-                <el-radio :label="0">未发布</el-radio>
-              </el-radio-group>
+            <el-form-item label="软件语言">
+              <el-select v-model="form.language" clearable placeholder="请选择">
+                <el-option
+                  v-for="item in language_list"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="item.disabled"/>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="安装包名称">
+            <el-form-item label="应用名称">
               <el-input v-model="form.app_name" clearable/>
             </el-form-item>
           </el-col>
@@ -176,7 +176,7 @@
           <el-table-column
             prop="app_name"
             width="480"
-            label="安装包名称"/>
+            label="应用名称"/>
           <el-table-column
             width="200"
             label="发布描述">
@@ -413,13 +413,10 @@ export default {
         label: '来也'
       }, {
         value: 'laiye_h',
-        label: '硬件'
-      }, {
-        value: 'aosen',
-        label: '奥森'
+        label: '来也硬件KEY'
       }, {
         value: 'none',
-        label: '不签'
+        label: '不签——OEM包通常不签名'
       }],
       language_list: [{
         value: 'zh-cn',

@@ -201,7 +201,7 @@ export default {
         label: '来也硬件KEY'
       }, {
         value: '',
-        label: '不签'
+        label: '不签——OEM包通常不签名'
       }],
       pack_type_list: [{
         value: 'creator',
