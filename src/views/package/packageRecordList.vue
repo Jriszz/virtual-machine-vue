@@ -45,8 +45,8 @@
             <el-form-item label="应用版本">
               <el-radio-group v-model="form.edition">
                 <el-radio :label="null">全部</el-radio>
-                <el-radio label="enterprise">enterprise</el-radio>
-                <el-radio label="community">community</el-radio>
+                <el-radio label="enterprise">企业版</el-radio>
+                <el-radio label="community">社区版</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -73,8 +73,8 @@
             <el-form-item label="运行平台">
               <el-radio-group v-model="form.arch">
                 <el-radio :label="null">全部</el-radio>
-                <el-radio label="x86">x86</el-radio>
-                <el-radio label="x64">x64</el-radio>
+                <el-radio label="x86">32位</el-radio>
+                <el-radio label="x64">64位</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -252,17 +252,33 @@
             label="指纹信息"/> -->
           <el-table-column
             label="操作"
-            min-width="600"
+            min-width="450"
             fixed="right">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary" plain @click="download(scope.row.fingerprint_url)">版本信息</el-button>
-              <el-button size="mini" type="primary" plain @click="download(scope.row.download_url)">下载</el-button>
-              <el-button v-if="!scope.row.is_release" :disabled="!isSuperAdmin" size="mini" type="success" plain @click="openReleasePackageForm(scope.row)">打Tag</el-button>
-              <el-button v-if="!scope.row.oss_download_url" :disabled="!isSuperAdmin" size="mini" type="success" plain @click="openUpLoadOSSForm(scope.row)">上传公网</el-button>
-              <el-button size="mini" type="primary" plain @click="deploy(scope.row)">部署</el-button>
-              <el-button v-if="scope.row.is_release===0" :disabled="!isSuperAdmin" size="mini" type="danger" plain @click="deletePackageRecord(scope.row.id)">删除</el-button>
-              <el-button v-if="scope.row.oss_download_url" size="mini" type="primary" plain @click="download(scope.row.oss_download_url)">公网下载</el-button>
-              <el-button size="mini" type="primary" plain @click="checkSign(scope.row.id)">签名校验</el-button>
+              <el-tooltip class="item" effect="dark" content="版本指纹" placement="top">
+                <el-button size="mini" type="primary" plain icon="el-icon-document-checked" @click="download(scope.row.fingerprint_url)"/>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="内网下载" placement="top">
+                <el-button size="mini" type="primary" plain icon="el-icon-download" @click="download(scope.row.download_url)"/>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="创建gitea release" placement="top">
+                <el-button v-if="scope.row.is_release < 2" :disabled="!isSuperAdmin" size="mini" type="success" plain icon="el-icon-s-flag" @click="openReleasePackageForm(scope.row)"/>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="上传公网" placement="top">
+                <el-button v-if="!scope.row.oss_download_url" :disabled="!isSuperAdmin" size="mini" type="success" plain icon="el-icon-upload2" @click="openUpLoadOSSForm(scope.row)"/>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="版本部署" placement="top">
+                <el-button size="mini" type="primary" plain icon="el-icon-s-promotion" @click="deploy(scope.row)"/>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="删除" placement="top">
+                <el-button v-if="scope.row.is_release===0" :disabled="!isSuperAdmin" size="mini" type="danger" plain icon="el-icon-delete" @click="deletePackageRecord(scope.row.id)"/>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="公网下载" placement="top">
+                <el-button v-if="scope.row.oss_download_url" size="mini" type="primary" plain icon="el-icon-download" @click="download(scope.row.oss_download_url)"/>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="获取此包OpenPGP签名摘要" placement="top">
+                <el-button size="mini" type="primary" plain icon="el-icon-circle-check" @click="checkSign(scope.row.id)"/>
+              </el-tooltip>
             </template>
           </el-table-column>
         </el-table>
