@@ -557,7 +557,7 @@ export default {
         tags = tags.substring(0, tags.length - 1)
         const params = row.params
         params['tags'] = tags
-        params['secret'] = 'aead5f0b9a1bf24b62036bbe16daabcd'
+        params['from'] = this.$store.state.users.sessionUser.name || this.$store.state.users.sessionUser.username
         const res = await this.$store.dispatch('AddPackage', params)
         if (res.error_code === 0) {
           Message({
@@ -566,7 +566,9 @@ export default {
             duration: 3 * 1000
           })
         }
-      }).catch(action => {})
+      }).catch(error => {
+        console.log(error)
+      })
     },
     async deletePackageRecord(primary_id) {
       MessageBox.confirm(
@@ -587,7 +589,9 @@ export default {
           })
           this.getPackageRecordList()
         }
-      }).catch(action => {})
+      }).catch(error => {
+        console.log(error)
+      })
     },
     releasePackage(form) {
       this.resultLoading = true

@@ -14,13 +14,13 @@
         size="small">
         <el-row>
           <el-col :span="6">
-            <el-form-item label="预制版本">
-              <el-select v-model="builtin_version" placeholder="请选择">
+            <el-form-item label="预置版本">
+              <el-select v-model="builtin_version_id" clearable placeholder="请选择" @change="selectBuiltinVersion">
                 <el-option
                   v-for="item in builtin_versions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
                   :disabled="item.disabled"/>
               </el-select>
             </el-form-item>
@@ -141,23 +141,62 @@
           </el-col>
         </el-row>
 
-        <el-form-item>
+        <el-form-item label="打包请求">
           <el-button type="primary" @click="addPackage('form')">提交</el-button>
           <el-button type="primary" @click="reset">重置</el-button>
           <el-button type="success" @click="refreshList">刷新队列</el-button>
           <el-button type="success" @click="refreshServiceList">刷新服务</el-button>
         </el-form-item>
+        <el-form-item label="预置版本">
+          <el-button type="primary" @click="openBuiltinVersionForm">另存为新预置版本</el-button>
+          <el-button v-if="builtin_version_id!==null" type="primary" @click="saveBuiltinVersion">保存当前预置版本</el-button>
+          <el-button v-if="builtin_version_id!==null" type="primary" @click="deleteBuiltinVersion">删除当前预置版本</el-button>
+          <el-button v-if="builtin_version_id!==null" type="primary" @click="setDefault">将当前预置版本设置为默认</el-button>
+        </el-form-item>
       </el-form>
     </el-card>
+    <el-dialog v-if="addBuiltinVersionVisable" :visible.sync="addBuiltinVersionVisable" width="40%" title="增加预置版本">
+      <el-form
+        ref="addBuiltinVersionForm"
+        :label-width="labelWidth"
+        :model="addBuiltinVersionForm"
+        :rules="addBuiltinVersionFormRules"
+        size="small">
+        <el-form-item label="预置版本名称" prop="name">
+          <el-input v-model="addBuiltinVersionForm.name"/>
+        </el-form-item>
+        <el-form-item label="预置版本描述" prop="desc">
+          <el-input v-model="addBuiltinVersionForm.desc"/>
+        </el-form-item>
+        <el-form-item label="预置版本参数" prop="params">
+          <MonacoEditor
+            :code="addBuiltinVersionForm.params"
+            :change-throttle="500"
+            :options="options"
+            language="json"
+            height="400"
+            @mounted="onMountedResult"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="addBuiltinVersion('addBuiltinVersionForm')">提交</el-button>
+          <el-button @click="addBuiltinVersionVisable=false">返回修改</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
+import MonacoEditor from 'vue-monaco-editor'
+import * as packages from '@/api/packages.js'
 
 export default {
   name: 'PackageAdd',
-  components: {},
+  components: {
+    MonacoEditor
+  },
 
   data() {
     var checkBetaFormat = (rule, value, callback) => {
@@ -213,23 +252,27 @@ export default {
         value: 'oneKernel',
         label: 'oneKernel'
       }],
-      builtin_version: 'current',
-      builtin_versions: [{
-        value: 'current',
-        label: '当前迭代'
-      }, {
-        value: 'huawei-5.3.0',
-        label: '华为认证'
-      }, {
-        value: 'blank',
-        label: '不带UiBot(Robot)'
-      }, {
-        value: 'hailianxun5.1.1',
-        label: '海联讯5.1.1'
-      }, {
-        value: 'international5.1.2',
-        label: '国际版5.1.2'
-      }],
+      builtin_version_id: null,
+      builtin_version: null,
+      builtin_versions: [],
+      addBuiltinVersionVisable: false,
+      addBuiltinVersionForm: { 'name': '', 'desc': '', params: {}},
+      addBuiltinVersionFormRules: {
+        name: [{ required: true, message: '预置版本名称必填', trigger: 'blur' }]
+      },
+      options: {
+        selectOnLineNumbers: true,
+        lineNumbers: 'off',
+        lineDecorationsWidth: 0,
+        roundedSelection: false,
+        readOnly: true,
+        cursorStyle: 'line',
+        automaticLayout: true,
+        glyphMargin: true,
+        useTabStops: false,
+        fontSize: 11,
+        quickSuggestionsDelay: 500
+      },
       form: this.initForm(),
       // 打包表单字段必填校验
       rules: {
@@ -250,113 +293,14 @@ export default {
       }
     }
   },
-  watch: {
-    builtin_version: function(newValue, oldValue) {
-      if (newValue === 'current') {
-        this.form = this.initForm()
-        this.sign = true
-        this.form.ver = ''
-        this.form.branch = 'master'
-        this.ver = true
-        this.tag_name = true
-        this.tags = true
-        this.branch = true
-        this.default_branch = true
-        this.stage_type = true
-        this.arch = true
-        this.beta = true
-        this.pack_type = true
-        this.sub_type = true
-        this.language = true
-        this.channel = true
-        this.receiver = true
-      } else if (newValue === 'hailianxun5.1.1') {
-        this.form = this.initForm()
-        this.form.ver = '5.1.1'
-        this.form.branch = '海联讯-5.1.1'
-        this.form.arch = 'x86'
-        this.sign = true
-        this.ver = false
-        this.tag_name = false
-        this.tags = false
-        this.branch = false
-        this.stage_type = false
-        this.arch = true
-        this.beta = false
-        this.pack_type = false
-        this.sub_type = false
-        this.language = false
-        this.channel = false
-        this.receiver = true
-      } else if (newValue === 'international5.1.2') {
-        this.form = this.initForm()
-        this.form.ver = '5.1.2'
-        this.form.branch = 'language-5.1.2'
-        this.form.language = 'en-us'
-        this.sign = true
-        this.ver = false
-        this.tag_name = false
-        this.tags = false
-        this.branch = false
-        this.stage_type = false
-        this.arch = true
-        this.beta = false
-        this.pack_type = true
-        this.sub_type = true
-        this.language = false
-        this.channel = false
-        this.receiver = true
-      } else if (newValue === 'blank') {
-        this.form = this.initForm()
-        this.form.ver = '5.2.0'
-        this.form.branch = 'blank-5.2.0'
-        this.form.pack_type = 'worker'
-        this.form.sign = ''
-        this.form.tags = 'worker-by-electron-view:BRANCH:blank-5.2.0;deputy:BRANCH:blank-5.2.0;script-of-install:BRANCH:blank-5.2.0;rpa-patch-worker:TAG:T_V5.2.0_all;UiBotBrowser:TAG:T_V5.2.0_all;uibot-updater:TAG:T_V5.2.0_all;workerscheduler:TAG:T_V5.2.0_all;BotScript:BRANCH:blank-5.2.0;extends:TAG:T_V5.2.0_all;uibot-chrome:TAG:T_V5.2.0_all;worker-by-electron-main:BRANCH:blank-5.2.0'
-        this.ver = true
-        this.sign = false
-        this.tag_name = true
-        this.tags = true
-        this.branch = true
-        this.stage_type = true
-        this.arch = true
-        this.beta = true
-        this.pack_type = true
-        this.sub_type = true
-        this.language = true
-        this.channel = true
-        this.receiver = true
-      } else if (newValue === 'huawei-5.3.0') {
-        this.form = this.initForm()
-        this.form.ver = '5.3.0'
-        this.form.branch = 'huawei-5.3.0'
-        this.form.default_branch = 'TAG:T_V5.3.0_only_Enterprise_patch2'
-        this.form.pack_type = 'creator'
-        this.form.sign = 'laiye'
-        this.form.tags = 'BotScript:BRANCH:huawei-5.3.0;worker-by-electron-view:BRANCH:huawei-5.3.0;worker-by-electron-main:BRANCH:huawei-5.3.0;ide-by-electron-main:BRANCH:huawei-5.3.0;ide-by-electron-view:BRANCH:huawei-5.3.0;deputy:BRANCH:huawei-5.3.0;script-of-install:BRANCH:huawei-5.3.0;extend:BRANCH:huawei-5.3.0'
-        this.ver = false
-        this.sign = false
-        this.tag_name = false
-        this.tags = true
-        this.branch = false
-        this.default_branch = false
-        this.stage_type = false
-        this.arch = true
-        this.beta = false
-        this.pack_type = true
-        this.sub_type = true
-        this.language = true
-        this.channel = true
-        this.receiver = true
-      } else {
-        this.form = this.initForm()
-      }
-    }
+  watch: {},
+  mounted() {
+    this.getPackageRequestList()
   },
   methods: {
     initForm() {
+      this.builtin_version_id = null
       const _form = {
-        secret: 'aead5f0b9a1bf24b62036bbe16daabcd',
         ver: '5.5.0',
         tag_name: '',
         tags: '',
@@ -371,10 +315,107 @@ export default {
         channel: 'official',
         sign: 'laiye',
         receiver: 'all',
-        cache: 'yes',
-        from: this.$store.state.users.sessionUser.name || this.$store.state.users.sessionUser.username
+        cache: 'yes'
       }
       return _form
+    },
+    selectBuiltinVersion: function(value) {
+      for (let index = 0; index < this.builtin_versions.length; index++) {
+        if (this.builtin_versions[index].id === this.builtin_version_id) {
+          this.builtin_version = this.builtin_versions[index]
+          this.form = this.builtin_version.params
+          return
+        }
+      }
+    },
+    async getPackageRequestList() {
+      const res = await packages.getPackageRequestList()
+      if (res.error_code === 0) {
+        this.builtin_versions = res.data
+        Message({
+          message: res.msg,
+          type: 'success',
+          duration: 3 * 1000
+        })
+        for (let index = 0; index < this.builtin_versions.length; index++) {
+          if (this.builtin_versions[index].is_default === true) {
+            this.builtin_version_id = this.builtin_versions[index].id
+            this.builtin_version = this.builtin_versions[index]
+            this.form = this.builtin_version.params
+            return
+          }
+        }
+      }
+    },
+    openBuiltinVersionForm() {
+      this.addBuiltinVersionForm['params'] = JSON.stringify(this.form, null, 4)
+      this.addBuiltinVersionVisable = true
+    },
+    async addBuiltinVersion(form) {
+      this.$refs[form].validate(async valid => {
+        if (!valid) {
+          return false
+        }
+        const res = await packages.addPackageRequest(this.addBuiltinVersionForm)
+        if (res.error_code === 0) {
+          Message({
+            message: res.msg,
+            type: 'success',
+            duration: 3 * 1000
+          })
+          this.addBuiltinVersionVisable = false
+          this.getPackageRequestList()
+        }
+      })
+    },
+    async saveBuiltinVersion() {
+      const data = { 'name': this.builtin_version.name, 'desc': this.builtin_version.desc, 'params': this.form }
+      const res = await packages.updatePackageRequest(this.builtin_version.id, data)
+      if (res.error_code === 0) {
+        Message({
+          message: res.msg,
+          type: 'success',
+          duration: 3 * 1000
+        })
+        this.getPackageRequestList()
+      }
+    },
+    async deleteBuiltinVersion() {
+      MessageBox.confirm(
+        '此操作将删除预置版本【' + this.builtin_version.name + '】，是否继续？',
+        '操作确认',
+        {
+          distinguishCancelAndClose: true,
+          confirmButtonText: '删除',
+          cancelButtonText: '取消'
+        }
+      ).then(async() => {
+        const res = await packages.deletePackageRequest(this.builtin_version.id)
+        if (res.error_code === 0) {
+          Message({
+            message: res.msg,
+            type: 'success',
+            duration: 3 * 1000
+          })
+          this.getPackageRequestList()
+          this.form = this.initForm()
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    async setDefault() {
+      const res = await packages.setDefault(this.builtin_version.id)
+      if (res.error_code === 0) {
+        Message({
+          message: res.msg,
+          type: 'success',
+          duration: 3 * 1000
+        })
+      }
+    },
+    onMountedResult(editor) {
+      this.editorResult = editor
     },
     async addPackage(form) {
       this.loading = true
@@ -383,6 +424,7 @@ export default {
           return false
         }
         const params = this.tools.cleanObjNullProperty(this.form)
+        params['from'] = this.$store.state.users.sessionUser.name || this.$store.state.users.sessionUser.username
         const res = await this.$store.dispatch('AddPackage', params)
         if (res.error_code === 0) {
           Message({

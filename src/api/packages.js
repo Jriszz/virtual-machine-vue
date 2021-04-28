@@ -20,6 +20,7 @@ export function getPackageList() {
 
 // 新增打包请求
 export function addPackage(data) {
+  data['secret'] = 'aead5f0b9a1bf24b62036bbe16daabcd'
   return request({
     url: PREFIX + '/online/package',
     method: 'post',
@@ -103,4 +104,54 @@ export function downloadOpenPGPPublicKey() {
 // 获取安装包OpenPGP签名摘要
 export function getPackageSignCheckFile(primary_id) {
   return 'http://192.168.0.111/api/cicd/ci/package-list/' + primary_id + '/sign'
+}
+
+// 获取打包请求预置版本列表
+export function getPackageRequestList() {
+  return request({
+    url: PREFIX + '/ci/package-request-list',
+    method: 'get'
+  })
+}
+
+// 新增打包请求预置版本
+export function addPackageRequest(data) {
+  return request({
+    url: PREFIX + '/ci/package-request-list',
+    method: 'post',
+    data
+  })
+}
+
+// 获取打包请求预置版本详情
+export function getPackageRequest(id) {
+  return request({
+    url: PREFIX + '/ci/package-request-list/' + id,
+    method: 'get'
+  })
+}
+
+// 更新打包请求预置版本
+export function updatePackageRequest(id, data) {
+  return request({
+    url: PREFIX + '/ci/package-request-list/' + id,
+    method: 'put',
+    data
+  })
+}
+
+// 删除打包请求预置版本
+export function deletePackageRequest(id) {
+  return request({
+    url: PREFIX + '/ci/package-request-list/' + id,
+    method: 'delete'
+  })
+}
+
+// 将当前版本设置为默认
+export function setDefault(id) {
+  return request({
+    url: PREFIX + '/ci/set-default/' + id,
+    method: 'post'
+  })
 }
