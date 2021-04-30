@@ -155,3 +155,12 @@ export function setDefault(id) {
     method: 'post'
   })
 }
+
+// 创建补丁
+export function createPatch(data) {
+  return request({
+    url: PREFIX + '/ci/create-patch',
+    method: 'post',
+    data
+  })
+}

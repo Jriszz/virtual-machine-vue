@@ -256,31 +256,40 @@
             fixed="right">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="版本指纹" placement="top">
-                <el-button size="mini" type="primary" plain icon="el-icon-document-checked" @click="download(scope.row.fingerprint_url)"/>
+                <el-button size="mini" type="primary" class="myico" plain icon="el-icon-info" @click="download(scope.row.fingerprint_url)"/>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="内网下载" placement="top">
-                <el-button size="mini" type="primary" plain icon="el-icon-download" @click="download(scope.row.download_url)"/>
+                <el-button size="mini" type="primary" class="myico" plain icon="el-icon-download" @click="download(scope.row.download_url)"/>
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="创建gitea release" placement="top">
-                <el-button v-if="scope.row.is_release < 2" :disabled="!isSuperAdmin" size="mini" type="success" plain icon="el-icon-s-flag" @click="openReleasePackageForm(scope.row)"/>
+              <el-tooltip v-if="scope.row.is_release < 2" class="item" effect="dark" content="创建gitea release" placement="top">
+                <el-button :disabled="!isSuperAdmin" size="mini" type="success" class="myico" plain icon="el-icon-s-flag" @click="openReleasePackageForm(scope.row)"/>
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="上传公网" placement="top">
-                <el-button v-if="!scope.row.oss_download_url" :disabled="!isSuperAdmin" size="mini" type="success" plain icon="el-icon-upload2" @click="openUpLoadOSSForm(scope.row)"/>
+              <el-tooltip v-if="!scope.row.oss_download_url" class="item" effect="dark" content="上传公网" placement="top">
+                <el-button :disabled="!isSuperAdmin" size="mini" type="success" class="myico" plain icon="el-icon-upload" @click="openUpLoadOSSForm(scope.row)"/>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="版本部署" placement="top">
-                <el-button size="mini" type="primary" plain icon="el-icon-s-promotion" @click="deploy(scope.row)"/>
+                <el-button size="mini" type="primary" class="myico" plain icon="el-icon-s-promotion" @click="deploy(scope.row)"/>
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                <el-button v-if="scope.row.is_release===0" :disabled="!isSuperAdmin" size="mini" type="danger" plain icon="el-icon-delete" @click="deletePackageRecord(scope.row.id)"/>
+              <el-tooltip v-if="scope.row.is_release===0" class="item" effect="dark" content="删除" placement="top">
+                <el-button :disabled="!isSuperAdmin" size="mini" type="danger" class="myico" plain icon="el-icon-delete" @click="deletePackageRecord(scope.row.id)"/>
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="公网下载" placement="top">
-                <el-button v-if="scope.row.oss_download_url" size="mini" type="primary" plain icon="el-icon-download" @click="download(scope.row.oss_download_url)"/>
+              <el-tooltip v-if="scope.row.oss_download_url" class="item" effect="dark" content="复制公网下载地址" placement="top">
+                <el-button size="mini" type="primary" class="myico" plain icon="el-icon-share" @click="download(scope.row.oss_download_url)"/>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="获取此包OpenPGP签名摘要" placement="top">
-                <el-button size="mini" type="primary" plain icon="el-icon-circle-check" @click="checkSign(scope.row.id)"/>
+                <el-button size="mini" type="primary" class="myico" plain icon="el-icon-circle-check" @click="checkSign(scope.row.id)"/>
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="克隆，采取同样参数再次打包" placement="top">
-                <el-button v-if="scope.row.params !== null" size="mini" type="primary" plain icon="el-icon-refresh" @click="clone(scope.row)"/>
+              <el-tooltip v-if="scope.row.params !== null" class="item" effect="dark" content="克隆，采取同样参数再次打包" placement="top">
+                <el-button size="mini" type="primary" class="myico" plain icon="el-icon-refresh" @click="clone(scope.row)"/>
+              </el-tooltip>
+              <el-tooltip v-if="scope.row.is_release===3 && scope.row.patch_status===0" class="item" effect="dark" content="基于此版本创建补丁并拉取补丁分支" placement="top">
+                <el-button size="mini" type="primary" class="myico" plain icon="el-icon-folder-add" @click="open_create_patch_form(scope.row)"/>
+              </el-tooltip>
+              <el-tooltip v-else-if="scope.row.is_release===3 && scope.row.patch_status===1" class="item" effect="dark" content="正在后台创建补丁分支，请注意企业微信CI群中消息" placement="top">
+                <el-button size="mini" type="info" class="myico" plain icon="el-icon-loading"/>
+              </el-tooltip>
+              <el-tooltip v-else-if="scope.row.is_release===3 && scope.row.patch_status===2" class="item" effect="dark" content="检查补丁是否合入master分支，如果已合入则自动关闭补丁" placement="top">
+                <el-button size="mini" type="primary" class="myico" plain icon="el-icon-warning" @click="check_and_close_patch(scope.row)"/>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -397,6 +406,31 @@
         </ol>
       </div>
     </el-dialog>
+    <el-dialog v-if="createPatchVisable" :visible.sync="createPatchVisable" width="30%" title="创建补丁">
+      <el-form
+        ref="createPatchForm"
+        :label-width="labelWidth"
+        :model="createPatchForm"
+        :rules="createPatchFormRules"
+        size="small">
+        <el-form-item>
+          <el-link :underline="false" type="primary">下面是程序自动给出的默认值，可以按实际情况修改</el-link>
+        </el-form-item>
+        <el-form-item label="补丁名称" prop="patch_name">
+          <el-input v-model="createPatchForm.patch_name"/>
+        </el-form-item>
+        <el-form-item label="补丁分支" prop="branch_name">
+          <el-input v-model="createPatchForm.branch_name"/>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="create_patch('createPatchForm')">提交</el-button>
+          <el-button @click="createPatchVisable=false">关闭</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-link :underline="false" type="danger">此操作会创建一系列新分支，请谨慎操作！</el-link>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -467,6 +501,12 @@ export default {
         tag_name: [{ required: true, message: 'Tag必填', trigger: 'blur' }],
         release_title: [{ required: true, message: 'Release标题必填', trigger: 'blur' }],
         release_body: [{ required: true, message: 'Release内容必填', trigger: 'blur' }]
+      },
+      createPatchVisable: false,
+      createPatchForm: {},
+      createPatchFormRules: {
+        patch_name: [{ required: true, message: '补丁名称必填', trigger: 'blur' }],
+        branch_name: [{ required: true, message: '补丁分支必填', trigger: 'blur' }]
       }
     }
   },
@@ -539,6 +579,39 @@ export default {
         console.log(res)
       }
       this.loading = false
+    },
+    open_create_patch_form(row) {
+      this.createPatchVisable = true
+      const current_version = row.version
+      const temp_version = current_version.split('.')
+      temp_version[2] = (parseInt(temp_version[2]) + 1).toString()
+      const next_version = temp_version.join('.')
+      this.createPatchForm = {
+        'primary_id': row.id,
+        'patch_name': next_version,
+        'branch_name': 'from_' + current_version + '_to_' + next_version,
+        'from': this.$store.state.users.sessionUser.name || this.$store.state.users.sessionUser.username
+      }
+    },
+    async create_patch(form) {
+      this.$refs[form].validate(async valid => {
+        if (!valid) {
+          return false
+        }
+        const res = await packages.createPatch(this.createPatchForm)
+        if (res.error_code === 0) {
+          Message({
+            message: res.msg,
+            type: 'success',
+            duration: 3 * 1000
+          })
+          this.createPatchVisable = false
+          this.getPackageRecordList()
+        }
+      })
+    },
+    async check_and_close_patch(row) {
+      alert('待实现')
     },
     async clone(row) {
       MessageBox.confirm(
@@ -716,5 +789,9 @@ export default {
     color: white;
     font-weight: bold;
     background-color: red;
+  }
+  .myico {
+    padding: 3px 5px;
+    font-size: 25px;
   }
 </style>
