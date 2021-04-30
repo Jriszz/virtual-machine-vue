@@ -3,6 +3,7 @@
     <el-card class="box-card el-menu-demo" shadow="hover">
       <div slot="header">
         <span>在线打包</span>
+        <el-link href="https://wiki.laiye.com/pages/viewpage.action?pageId=36906838" target="_blank" type="success" style="float: right;">使用帮助</el-link>
       </div>
 
       <el-form
@@ -69,9 +70,8 @@
           <el-col :span="6">
             <el-form-item label="软件语言">
               <el-radio-group v-model="form.language" :disabled="!language">
-                <el-radio label="zh-cn">中文</el-radio>
-                <el-radio label="en-us">英文</el-radio>
-                <el-radio label="ja-jp">日文</el-radio>
+                <el-radio label="zh-cn">中文版</el-radio>
+                <el-radio label="en-us">国际版</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -141,13 +141,13 @@
           </el-col>
         </el-row>
 
-        <el-form-item label="打包请求">
+        <el-form-item label="打包请求操作">
           <el-button type="primary" @click="addPackage('form')">提交</el-button>
           <el-button type="primary" @click="reset">重置</el-button>
           <el-button type="success" @click="refreshList">刷新队列</el-button>
           <el-button type="success" @click="refreshServiceList">刷新服务</el-button>
         </el-form-item>
-        <el-form-item label="预置版本">
+        <el-form-item label="预置版本操作">
           <el-button type="primary" @click="openBuiltinVersionForm">另存为新预置版本</el-button>
           <el-button v-if="builtin_version_id!==null" type="primary" @click="saveBuiltinVersion">保存当前预置版本</el-button>
           <el-button v-if="builtin_version_id!==null" type="primary" @click="deleteBuiltinVersion">删除当前预置版本</el-button>
@@ -323,7 +323,7 @@ export default {
       for (let index = 0; index < this.builtin_versions.length; index++) {
         if (this.builtin_versions[index].id === this.builtin_version_id) {
           this.builtin_version = this.builtin_versions[index]
-          this.form = this.builtin_version.params
+          this.form = JSON.parse(JSON.stringify(this.builtin_version.params))
           return
         }
       }
@@ -341,7 +341,7 @@ export default {
           if (this.builtin_versions[index].is_default === true) {
             this.builtin_version_id = this.builtin_versions[index].id
             this.builtin_version = this.builtin_versions[index]
-            this.form = this.builtin_version.params
+            this.form = JSON.parse(JSON.stringify(this.builtin_version.params))
             return
           }
         }
