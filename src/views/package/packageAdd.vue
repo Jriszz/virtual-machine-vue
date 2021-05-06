@@ -4,6 +4,8 @@
       <div slot="header">
         <span>在线打包</span>
         <el-link href="https://wiki.laiye.com/pages/viewpage.action?pageId=36906838" target="_blank" type="success" style="float: right;">使用帮助</el-link>
+        <span width="100px" style="float: right">----</span>
+        <el-link href="https://wiki.laiye.com/pages/viewpage.action?pageId=36906840" target="_blank" type="success" style="float: right;">打包原理</el-link>
       </div>
 
       <el-form

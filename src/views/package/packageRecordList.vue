@@ -126,6 +126,7 @@
           <el-button
             type="text"
             @click="packageCheckVisible=true">OpenPGP文件完整性校验帮助</el-button>
+          <el-link href="https://wiki.laiye.com/pages/viewpage.action?pageId=36906994" target="_blank" type="success" style="float: right; ">快速开补丁介绍</el-link>
         </el-form-item>
       </el-form>
 
@@ -217,8 +218,9 @@
             label="正式发布"
             width="80">
             <template slot-scope="scope">
-              <span v-if="scope.row.is_release===true">正式版本</span>
-              <span v-else-if="scope.row.oss_download_url">发布公网</span>
+              <span v-if="scope.row.is_release===7">已发补丁</span>
+              <span v-else-if="scope.row.is_release===3">正式版本</span>
+              <span v-else-if="scope.row.is_release===1">临时发布</span>
               <span v-else>测试版本</span>
             </template>
           </el-table-column>
@@ -258,7 +260,7 @@
               <el-tooltip class="item" effect="dark" content="版本指纹" placement="top">
                 <el-button size="mini" type="primary" class="myico" plain icon="el-icon-info" @click="download(scope.row.fingerprint_url)"/>
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="内网下载" placement="top">
+              <el-tooltip v-if="scope.row.is_release !== 7" class="item" effect="dark" content="内网下载" placement="top">
                 <el-button size="mini" type="primary" class="myico" plain icon="el-icon-download" @click="download(scope.row.download_url)"/>
               </el-tooltip>
               <el-tooltip v-if="scope.row.is_release < 2" class="item" effect="dark" content="创建gitea release" placement="top">
@@ -267,16 +269,16 @@
               <el-tooltip v-if="!scope.row.oss_download_url" class="item" effect="dark" content="上传公网" placement="top">
                 <el-button :disabled="!isSuperAdmin" size="mini" type="success" class="myico" plain icon="el-icon-upload" @click="openUpLoadOSSForm(scope.row)"/>
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="版本部署" placement="top">
+              <el-tooltip v-if="scope.row.is_release !== 7" class="item" effect="dark" content="版本部署" placement="top">
                 <el-button size="mini" type="primary" class="myico" plain icon="el-icon-s-promotion" @click="deploy(scope.row)"/>
               </el-tooltip>
               <el-tooltip v-if="scope.row.is_release===0" class="item" effect="dark" content="删除" placement="top">
                 <el-button :disabled="!isSuperAdmin" size="mini" type="danger" class="myico" plain icon="el-icon-delete" @click="deletePackageRecord(scope.row.id)"/>
               </el-tooltip>
-              <el-tooltip v-if="scope.row.oss_download_url" class="item" effect="dark" content="复制公网下载地址" placement="top">
+              <el-tooltip v-if="scope.row.is_release !== 7 && scope.row.oss_download_url" class="item" effect="dark" content="复制公网下载地址" placement="top">
                 <el-button size="mini" type="primary" class="myico" plain icon="el-icon-share" @click="download(scope.row.oss_download_url)"/>
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="获取此包OpenPGP签名摘要" placement="top">
+              <el-tooltip v-if="scope.row.is_release !== 7" class="item" effect="dark" content="获取此包OpenPGP签名摘要" placement="top">
                 <el-button size="mini" type="primary" class="myico" plain icon="el-icon-circle-check" @click="checkSign(scope.row.id)"/>
               </el-tooltip>
               <el-tooltip v-if="scope.row.params !== null" class="item" effect="dark" content="克隆，采取同样参数再次打包" placement="top">
@@ -288,8 +290,8 @@
               <el-tooltip v-else-if="scope.row.is_release===3 && scope.row.patch_status===1" class="item" effect="dark" content="正在后台创建补丁分支，请注意企业微信CI群中消息" placement="top">
                 <el-button size="mini" type="info" class="myico" plain icon="el-icon-loading"/>
               </el-tooltip>
-              <el-tooltip v-else-if="scope.row.is_release===3 && scope.row.patch_status===2" class="item" effect="dark" content="检查补丁是否合入master分支，如果已合入则自动关闭补丁" placement="top">
-                <el-button size="mini" type="primary" class="myico" plain icon="el-icon-warning" @click="check_and_close_patch(scope.row)"/>
+              <el-tooltip v-else-if="scope.row.is_release===3 && scope.row.patch_status===2" class="item" effect="dark" content="补丁正式发布后关闭补丁状态" placement="top">
+                <el-button size="mini" type="primary" class="myico" plain icon="el-icon-warning" @click="open_close_patch_form(scope.row)"/>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -431,6 +433,29 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <el-dialog v-if="closePatchVisable" :visible.sync="closePatchVisable" width="30%" title="关闭补丁">
+      <el-form
+        ref="closePatchForm"
+        :label-width="labelWidth"
+        :model="closePatchForm"
+        :rules="closePatchFormRules"
+        size="small">
+        <el-form-item label="操作提示">
+          <el-link :underline="false" type="danger">1.此操作会关联新的补丁记录，原记录不再提供下载链接</el-link>
+          <el-link :underline="false" type="primary">2.下面请填写补丁正式发布后相应的安装包名称</el-link>
+        </el-form-item>
+        <el-form-item label="应用名称" prop="app_name">
+          <el-input v-model="closePatchForm.app_name"/>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="close_patch('closePatchForm')">提交</el-button>
+          <el-button @click="closePatchVisable=false">关闭</el-button>
+        </el-form-item>
+        <el-form-item label="操作前提">
+          <el-link :underline="false" type="danger">确保补丁上修复的代码已经合并到master分支中</el-link>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -507,6 +532,11 @@ export default {
       createPatchFormRules: {
         patch_name: [{ required: true, message: '补丁名称必填', trigger: 'blur' }],
         branch_name: [{ required: true, message: '补丁分支必填', trigger: 'blur' }]
+      },
+      closePatchVisable: false,
+      closePatchForm: {},
+      closePatchFormRules: {
+        app_name: [{ required: true, message: '补丁应用名称必填', trigger: 'blur' }]
       }
     }
   },
@@ -543,7 +573,9 @@ export default {
     },
     getClassName({ row, column, rowIndex, columnIndex }) {
       if (column['label'] === '正式发布') {
-        if (row.is_release > 1) {
+        if (row.is_release === 7) {
+          return 'colorRed'
+        } else if (row.is_release === 3) {
           return 'colorGreen'
         } else if (row.is_release === 1) {
           return 'colorYellow'
@@ -610,8 +642,29 @@ export default {
         }
       })
     },
-    async check_and_close_patch(row) {
-      alert('待实现')
+    open_close_patch_form(row) {
+      this.closePatchVisable = true
+      this.closePatchForm = {
+        'primary_id': row.id,
+        'app_name': ''
+      }
+    },
+    async close_patch(form) {
+      this.$refs[form].validate(async valid => {
+        if (!valid) {
+          return false
+        }
+        const res = await packages.closePatch(this.closePatchForm)
+        if (res.error_code === 0) {
+          Message({
+            message: res.msg,
+            type: 'success',
+            duration: 3 * 1000
+          })
+          this.closePatchVisable = false
+          this.getPackageRecordList()
+        }
+      })
     },
     async clone(row) {
       MessageBox.confirm(
@@ -773,7 +826,8 @@ export default {
     background-color: orange;
   }
   .colorRed {
-    color: red;
+    color: wheat;
+    background-color: red;
   }
   .backGreen {
     color: white;

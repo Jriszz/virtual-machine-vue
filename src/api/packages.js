@@ -164,3 +164,12 @@ export function createPatch(data) {
     data
   })
 }
+
+// 关闭补丁
+export function closePatch(data) {
+  return request({
+    url: PREFIX + '/ci/close-patch',
+    method: 'post',
+    data
+  })
+}
