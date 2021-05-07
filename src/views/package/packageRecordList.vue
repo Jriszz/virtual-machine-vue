@@ -269,6 +269,9 @@
               <el-tooltip v-if="!scope.row.oss_download_url" class="item" effect="dark" content="上传公网" placement="top">
                 <el-button :disabled="!isSuperAdmin" size="mini" type="success" class="myico" plain icon="el-icon-upload" @click="openUpLoadOSSForm(scope.row)"/>
               </el-tooltip>
+              <el-tooltip v-else-if="scope.row.oss_download_url === 'uploading'" class="item" effect="dark" content="上传公网中" placement="top">
+                <el-button size="mini" type="success" class="myico" plain icon="el-icon-loading"/>
+              </el-tooltip>
               <el-tooltip v-if="scope.row.is_release !== 7" class="item" effect="dark" content="版本部署" placement="top">
                 <el-button size="mini" type="primary" class="myico" plain icon="el-icon-s-promotion" @click="deploy(scope.row)"/>
               </el-tooltip>
@@ -362,7 +365,7 @@
     </el-dialog>
     <el-dialog :visible.sync="uploadOSSVisible" width="40%" title="上传公网">
       <el-form
-        v-loading="loading"
+        v-loading="uploadLoading"
         ref="form"
         :model="uploadOSSForm"
         :rules="uploadOSSFormRules"
@@ -472,6 +475,7 @@ export default {
       labelWidth: this.config.labelWidth,
       loading: false,
       resultLoading: false,
+      uploadLoading: false,
       errorflag: false,
       errorinfo: '',
       form: this.initForm(),
@@ -740,8 +744,10 @@ export default {
       alert('待联调！')
     },
     async uploadOSS(form) {
+      this.uploadLoading = true
       this.$refs[form].validate(async valid => {
         if (!valid) {
+          this.uploadLoading = false
           return false
         }
         const params = this.tools.cleanObjNullProperty(this.uploadOSSForm)
@@ -752,6 +758,8 @@ export default {
           duration: 10 * 1000
         })
         this.uploadOSSVisible = false
+        this.uploadLoading = false
+        this.getPackageRecordList()
       })
     },
     download(url) {
