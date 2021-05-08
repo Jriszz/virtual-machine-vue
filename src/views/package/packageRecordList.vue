@@ -264,10 +264,10 @@
                 <el-button size="mini" type="primary" class="myico" plain icon="el-icon-download" @click="download(scope.row.download_url)"/>
               </el-tooltip>
               <el-tooltip v-if="scope.row.is_release < 2" class="item" effect="dark" content="创建gitea release" placement="top">
-                <el-button :disabled="!isSuperAdmin" size="mini" type="success" class="myico" plain icon="el-icon-s-flag" @click="openReleasePackageForm(scope.row)"/>
+                <el-button size="mini" type="success" class="myico" plain icon="el-icon-s-flag" @click="openReleasePackageForm(scope.row)"/>
               </el-tooltip>
               <el-tooltip v-if="!scope.row.oss_download_url" class="item" effect="dark" content="上传公网" placement="top">
-                <el-button :disabled="!isSuperAdmin" size="mini" type="success" class="myico" plain icon="el-icon-upload" @click="openUpLoadOSSForm(scope.row)"/>
+                <el-button size="mini" type="success" class="myico" plain icon="el-icon-upload" @click="openUpLoadOSSForm(scope.row)"/>
               </el-tooltip>
               <el-tooltip v-else-if="scope.row.oss_download_url === 'uploading'" class="item" effect="dark" content="上传公网中" placement="top">
                 <el-button size="mini" type="success" class="myico" plain icon="el-icon-loading"/>
