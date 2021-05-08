@@ -122,6 +122,11 @@ export const asyncRoutes = [{
   hidden: false,
   meta: { title: 'CICD平台', icon: 'component' },
   children: [{
+    path: 'compatible',
+    component: () => import('@/views/package/compatibleRecordList'),
+    meta: { title: '兼容性修改', icon: 'list' }
+  },
+  {
     path: 'package',
     component: () => import('@/views/package/index'),
     meta: { title: '在线打包', icon: 'list' }
