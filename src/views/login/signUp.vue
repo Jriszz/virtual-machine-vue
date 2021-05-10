@@ -60,6 +60,22 @@ export default {
   components: {},
 
   data() {
+    const validateUsername = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入用户名'))
+      } else if (value.length < 4 || value.length > 20) {
+        callback(new Error('用户名限制为4到20个字符'))
+      } else {
+        callback()
+      }
+    }
+    const validatePass = (rule, value, callback) => {
+      if (value.length < 6) {
+        callback(new Error('密码不能小于6位'))
+      } else {
+        callback()
+      }
+    }
     return {
       labelWidth: '120px',
       loading: false,
@@ -68,9 +84,9 @@ export default {
       form: this.initForm(),
       rules: {
         name: [{ required: true, message: '姓名必填', trigger: 'blur' }],
-        username: [{ required: true, message: '用户名必填', trigger: 'blur' }],
-        password: [{ required: true, message: '密码必填', trigger: 'blur' }],
-        password2: [{ required: true, message: '密码2必填', trigger: 'blur' }],
+        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        password: [{ required: true, trigger: 'blur', validator: validatePass }],
+        password2: [{ required: true, trigger: 'blur', validator: validatePass }],
         phone: [{ required: true, message: '手机必填', trigger: 'blur' }],
         email: [{ required: true, message: '邮箱必填且只支持指定后缀的邮箱', trigger: 'blur' }]
       }
