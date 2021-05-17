@@ -279,7 +279,7 @@
                 <el-button :disabled="!isSuperAdmin" size="mini" type="danger" class="myico" plain icon="el-icon-delete" @click="deletePackageRecord(scope.row.id)"/>
               </el-tooltip>
               <el-tooltip v-if="scope.row.is_release !== 7 && scope.row.oss_download_url" class="item" effect="dark" content="复制公网下载地址" placement="top">
-                <el-button size="mini" type="primary" class="myico" plain icon="el-icon-share" @click="download(scope.row.oss_download_url)"/>
+                <el-button v-clipboard:copy="scope.row.oss_download_url" v-clipboard:success="onCopy" v-clipboard:error="onError" ref="copyButton" size="mini" type="primary" class="myico" plain icon="el-icon-share"/>
               </el-tooltip>
               <el-tooltip v-if="scope.row.is_release !== 7" class="item" effect="dark" content="获取此包OpenPGP签名摘要" placement="top">
                 <el-button size="mini" type="primary" class="myico" plain icon="el-icon-circle-check" @click="checkSign(scope.row.id)"/>

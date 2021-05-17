@@ -8,6 +8,8 @@ import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 
 import '@/styles/index.scss' // global css
 
+import VueClipboard from 'vue-clipboard2'
+
 import App from './App'
 import store from './store'
 import router from './router'
@@ -23,6 +25,7 @@ Vue.prototype.tools = tools
 Vue.prototype.config = config
 
 Vue.use(ElementUI, { locale })
+Vue.use(VueClipboard)
 Vue.filter('json', function(content) {
   return JSON.stringify(content, null, 2)
 })
