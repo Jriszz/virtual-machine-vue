@@ -481,14 +481,17 @@ export default {
       form: this.initForm(),
       releaseForm: { 'tag_name': '', 'release_title': '', 'release_body': '', 'prerelease': false, 'draft': false },
       pack_type_list: [{
+        value: 'oneKernel',
+        label: 'oneKernel'
+      }, {
+        value: 'extension',
+        label: 'extension'
+      }, {
         value: 'creator',
         label: 'creator'
       }, {
         value: 'worker',
         label: 'worker'
-      }, {
-        value: 'oneKernel',
-        label: 'oneKernel'
       }],
       sign_list: [{
         value: 'laiye',
