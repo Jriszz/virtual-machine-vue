@@ -29,15 +29,26 @@
 
       <div v-if="!hasServiceOnline">
         <h1 style="color: red">当前没有打包服务在线，无法提供打包服务！</h1>
-        <h1 style="color: green">打包服务启动指南</h1>
+        <h1 style="color: green">打包服务1启动指南</h1>
         <ol>
-          <li class="startServiceSetp">以uibot用户远程登录192.168.0.84，密码UiBot2020;</li>
+          <li class="startServiceSetp">以uibot用户远程登录192.168.0.138，密码UiBot2020;</li>
           <li class="startServiceSetp">按【Win + Q】打开系统搜索框，输入Terminal，选择“以管理员身份运行”;</li>
-          <li class="startServiceSetp">输入：【cmd】，从powershell切换到cmd；</li>
+          <li class="startServiceSetp">输入：【cmd】，从powershell切换到cmd——注意检查启动时是否已经是cmd模式；</li>
           <li class="startServiceSetp">输入：【cd C:\Users\uibot\online_agent】，切换到在线打包工程目录；</li>
-          <li class="startServiceSetp">输入：【workon online_agent】，激活Python虚拟环境；</li>
-          <li class="startServiceSetp">输入：【python agent.py】，运行在线打包守护进程；</li>
+          <li class="startServiceSetp">运行：【set_env.bat】脚本；</li>
+          <li class="startServiceSetp">输入：【cls && python agent.py】，运行在线打包守护进程；</li>
           <li class="startServiceSetp">观察：确认日志中显示日志【打包守护进程启动成功，工作目录切换到C:\Users\uibot\bin-generator】，代表服务启动成功；</li>
+          <li class="startServiceSetp">输入：按【F5】刷新当前页面，即可看在刚才启动的打包服务</li>
+        </ol>
+        <h1 style="color: green">打包服务2启动指南</h1>
+        <ol>
+          <li class="startServiceSetp">以uibot用户远程登录192.168.0.138，密码UiBot2020;</li>
+          <li class="startServiceSetp">按【Win + Q】打开系统搜索框，输入Terminal，选择“以管理员身份运行”;</li>
+          <li class="startServiceSetp">输入：【cmd】，从powershell切换到cmd——注意检查启动时是否已经是cmd模式；</li>
+          <li class="startServiceSetp">输入：【d: && cd d:\02-package\online_agent】，切换到在线打包工程目录；</li>
+          <li class="startServiceSetp">运行：【set_env.bat】脚本；</li>
+          <li class="startServiceSetp">输入：【cls && python agent.py】，运行在线打包守护进程；</li>
+          <li class="startServiceSetp">观察：确认日志中显示日志【打包守护进程启动成功，工作目录切换到D:\02-package\bin-generator】，代表服务启动成功；</li>
           <li class="startServiceSetp">输入：按【F5】刷新当前页面，即可看在刚才启动的打包服务</li>
         </ol>
       </div>
