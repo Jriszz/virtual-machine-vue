@@ -156,6 +156,9 @@
           <el-button v-if="builtin_version_id!==null" type="danger" @click="archiving">归档当前预置版本</el-button>
           <el-button v-if="builtin_version_id!==null" type="danger" @click="deleteBuiltinVersion">删除当前预置版本</el-button>
         </el-form-item>
+        <el-form-item v-if="builtin_version_id!==null && builtin_version.desc" label="当前版本说明">
+          <span style="color: #999999">{{ builtin_version.desc }}</span>
+        </el-form-item>
       </el-form>
     </el-card>
     <el-dialog v-if="addBuiltinVersionVisable" :visible.sync="addBuiltinVersionVisable" width="40%" title="增加预置版本">
@@ -418,15 +421,28 @@ export default {
       }
     },
     async archiving() {
-      const res = await packages.archiving(this.builtin_version.id)
-      if (res.error_code === 0) {
-        Message({
-          message: res.msg,
-          type: 'success',
-          duration: 3 * 1000
-        })
-        this.getPackageRequestList()
-      }
+      MessageBox.confirm(
+        '此操作将归档预置版本【' + this.builtin_version.name + '】，归档后此版本将不再显示，是否继续？',
+        '操作确认',
+        {
+          distinguishCancelAndClose: true,
+          confirmButtonText: '归档',
+          cancelButtonText: '取消'
+        }
+      ).then(async() => {
+        const res = await packages.archiving(this.builtin_version.id)
+        if (res.error_code === 0) {
+          Message({
+            message: res.msg,
+            type: 'success',
+            duration: 3 * 1000
+          })
+          this.getPackageRequestList()
+          this.form = this.initForm()
+        }
+      }).catch(error => {
+        console.log(error)
+      })
     },
     onMountedResult(editor) {
       this.editorResult = editor
