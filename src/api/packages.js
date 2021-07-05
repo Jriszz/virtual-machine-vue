@@ -151,7 +151,15 @@ export function deletePackageRequest(id) {
 // 将当前版本设置为默认
 export function setDefault(id) {
   return request({
-    url: PREFIX + '/ci/set-default/' + id,
+    url: PREFIX + '/ci/package-request-list/' + id + '/set-default',
+    method: 'post'
+  })
+}
+
+// 将当前版本设置为已归档
+export function archiving(id) {
+  return request({
+    url: PREFIX + '/ci/package-request-list/' + id + '/archiving',
     method: 'post'
   })
 }

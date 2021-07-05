@@ -152,8 +152,9 @@
         <el-form-item label="预置版本操作">
           <el-button type="primary" @click="openBuiltinVersionForm">另存为新预置版本</el-button>
           <el-button v-if="builtin_version_id!==null" type="primary" @click="saveBuiltinVersion">保存当前预置版本</el-button>
-          <el-button v-if="builtin_version_id!==null" type="primary" @click="deleteBuiltinVersion">删除当前预置版本</el-button>
           <el-button v-if="builtin_version_id!==null" type="primary" @click="setDefault">将当前预置版本设置为默认</el-button>
+          <el-button v-if="builtin_version_id!==null" type="danger" @click="archiving">归档当前预置版本</el-button>
+          <el-button v-if="builtin_version_id!==null" type="danger" @click="deleteBuiltinVersion">删除当前预置版本</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -414,6 +415,17 @@ export default {
           type: 'success',
           duration: 3 * 1000
         })
+      }
+    },
+    async archiving() {
+      const res = await packages.archiving(this.builtin_version.id)
+      if (res.error_code === 0) {
+        Message({
+          message: res.msg,
+          type: 'success',
+          duration: 3 * 1000
+        })
+        this.getPackageRequestList()
       }
     },
     onMountedResult(editor) {
