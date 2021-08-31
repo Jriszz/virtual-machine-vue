@@ -5,12 +5,13 @@
   "description": "蓝图",
   "author": "deng <yu12377@gmail.com>",
   "scripts": {
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js --mode development",
     "local": "cross-env NODE_ENV=local webpack-dev-server --devtool eval-source-map --inline --progress --open --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "build": "node build/build.js",
     "build:report": "npm_config_report=true npm run build",
     "lint": "eslint --fix --ext .js,.vue src",
+    "lint:fix":"eslint  --ext .js, .vue, .ts --fix",
     "test": "npm run lint",
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml"
   },

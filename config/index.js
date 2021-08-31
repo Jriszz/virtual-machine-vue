@@ -18,6 +18,13 @@ module.exports = {
         },
         "changeOrigin": true
       },
+      "/api/cd": {
+        "target": "http://192.168.0.138:6060",
+        "pathRewrite": {
+          "/api/cd": ""
+        },
+        "changeOrigin": true
+      },
       "/api/cicd": {
         "target": "http://127.0.0.1:9000",
         "pathRewrite": {
@@ -32,10 +39,11 @@ module.exports = {
         },
         "changeOrigin": true
       }
+      
     },
 
     // Various Dev Server settings
-    host: '127.0.0.1', // can be overwritten by process.env.HOST
+    host: '0.0.0.0', // can be overwritten by process.env.HOST
     port: 9500, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: true,
     errorOverlay: true,

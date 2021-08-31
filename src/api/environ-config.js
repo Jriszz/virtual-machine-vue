@@ -1,6 +1,7 @@
 import request from '@/utils/request2'
 
 const PREFIX = '/cicd'
+// const PREFIX = ''
 
 export function environ_info(req_params) {
   const request_obj = request({

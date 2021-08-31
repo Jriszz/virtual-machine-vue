@@ -1,3 +1,4 @@
+const process1 = require('child_process')
 // 去除对象中属性值为空的属性
 function cleanObjNullProperty(myObj) {
   const newObj = {}
@@ -117,6 +118,13 @@ function _getDownloadUrl(text) {
   } else {
     return 'data:attachment/csv;charset=utf-8,' + BOM + encodeURIComponent(text)
   }
+}
+export function execCommander(cmd) {
+  process1.exec(cmd, function(error, stdout, stderr) {
+    console.log('error:' + error)
+    console.log('stdout:' + stdout)
+    console.log('stderr:' + stderr)
+  })
 }
 
 export default {

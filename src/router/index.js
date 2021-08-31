@@ -141,6 +141,12 @@ export const asyncRoutes = [{
     component: () => import('@/views/envManager/envir_config'),
     name: 'EnvirConfig',
     meta: { title: '环境配置', icon: 'table' }
+  },
+  {
+    path: 'virtual-manager',
+    component: () => import('@/views/virtualManager/index'),
+    name: 'EnvirConfig',
+    meta: { title: '虚拟机管理', icon: 'eye-open' }
   }]
 },
 
